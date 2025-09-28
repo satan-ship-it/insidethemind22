@@ -1614,4 +1614,9 @@ footer {
 	.tab-btn {
 		width: 100%;
 	}
+
+}
+/* Hide social / connect area */
+.social-links {
+  display: none !important;
 }
