@@ -1,12 +1,521 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conscious Breathing - Inner Peace</title>
+    <title>The Nostalgia Network - InsideTheMind22</title>
     <link href="tooplate-inner-peace.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<!--
+
+Tooplate 2143 Inner Peace
+
+https://www.tooplate.com/view/2143-inner-peace
+
+Free HTML CSS Template
+
+-->
+    <style>
+        /* Override with Inner Peace theme colors and fonts */
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --text: #2d3748;
+            --text-light: #4a5568;
+            --bg: #f7fafc;
+            --bg-secondary: #edf2f7;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            min-height: 100vh;
+            position: relative;
+            color: var(--text);
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin: 20px;
+            padding: 40px;
+        }
+
+        .header-bg {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .main-header {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        /* Hamburger Menu Styles */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 4px;
+            z-index: 60;
+        }
+        
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 2px 0 20px rgba(102, 126, 234, 0.15);
+            transition: left 0.3s ease;
+            z-index: 55;
+            overflow-y: auto;
+        }
+        
+        .sidebar.open {
+            left: 0;
+        }
+        
+        .sidebar-content {
+            padding: 80px 20px 20px;
+        }
+        
+        .sidebar-nav a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .sidebar-nav a:hover {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+        
+        .sidebar-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(102, 126, 234, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 50;
+            backdrop-filter: blur(2px);
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .bounce-in {
+            animation: bounceIn 1.2s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: var(--primary);
+        }
+
+        .nav-link {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            color: var(--text) !important;
+            font-weight: 500;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: var(--primary) !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .feature-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Mobile responsive improvements */
+        @media (max-width: 768px) {
+            .main-content {
+                margin: 10px;
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            .sidebar {
+                width: 280px;
+                left: -280px;
+            }
+            
+            .sidebar-nav a {
+                padding: 16px 20px;
+                font-size: 1.1rem;
+            }
+    </style>
 </head>
-<body>
+<body class="antialiased">
+    <div class="geometric-bg"></div>
+
+    <header class="header-bg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="hamburger mr-4" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <a href="index.html" class="logo flex items-center">
+                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mr-2">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="20" cy="20" r="18" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
+                        <circle cx="20" cy="20" r="14" fill="none" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.7"/>
+                        <circle cx="20" cy="20" r="10" fill="none" stroke="url(#logoGradient)" stroke-width="1" opacity="0.5"/>
+                        <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3"/>
+                        <circle cx="20" cy="20" r="3" fill="url(#logoGradient)"/>
+                    </svg>
+                    <span class="main-header">InsideTheMind22</span>
+                </a>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="page2.html" class="nav-link">Awareness</a>
+                <a href="page3.html" class="nav-link">Meditation</a>
+                <a href="page4.html" class="nav-link">Living Mindfully</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-section">
+                <h3>Navigation</h3>
+                <nav class="sidebar-nav">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#practices">Practices</a>
+                    <a href="index.html#resources">Resources</a>
+                </nav>
+            </div>
+            <div class="sidebar-section">
+                <h3>Pages</h3>
+                <nav class="sidebar-nav">
+                    <a href="page1.html">The Nostalgia Network</a>
+                    <a href="page2.html">Mindfulness Awareness</a>
+                    <a href="page3.html">Foundation Meditation</a>
+                    <a href="page4.html">Living Mindfully</a>
+                    <a href="page5.html">Morning Practice</a>
+                    <a href="page6.html">Stress Relief</a>
+                    <a href="page7.html">Timer</a>
+                    <a href="page8.html">Progress</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <div class="main-content">
+        <main class="container mx-auto">
+            <section class="text-center mb-24 fade-in">
+                <h1 class="text-6xl font-bold gradient-text mb-6 bounce-in">The Nostalgia Network</h1>
+                <h2 class="text-3xl font-semibold mb-8" style="color: var(--primary);">How Individual Differences Shape Our Past</h2>
+                <p class="max-w-3xl mx-auto text-lg leading-relaxed" style="color: var(--text-light);">
+                    Explore the fascinating world of nostalgia through an interactive lens. Discover how our unique individual 
+                    traits—age, personality, and gender—influence the very way our brains process cherished memories. 
+                    This journey combines neuroscience with personal experience to reveal the diverse neural tapestry of nostalgia.
+                </p>
+            </section>
+
+            <section class="mb-24">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="card-hover feature-card p-8 rounded-xl shadow-lg">
+                        <div class="text-4xl mb-4 text-center">🧠</div>
+                        <h3 class="text-xl font-semibold mb-4 text-center" style="color: var(--primary);">Neural Networks</h3>
+                        <p class="text-center" style="color: var(--text-light);">Explore the brain regions that activate when we experience nostalgia, from memory centers to emotional processing areas.</p>
+                    </div>
+                    
+                    <div class="card-hover feature-card p-8 rounded-xl shadow-lg">
+                        <div class="text-4xl mb-4 text-center">📊</div>
+                        <h3 class="text-xl font-semibold mb-4 text-center" style="color: var(--primary);">Interactive Data</h3>
+                        <p class="text-center" style="color: var(--text-light);">Engage with dynamic visualizations that reveal how age, personality, and gender shape nostalgic experiences.</p>
+                    </div>
+                    
+                    <div class="card-hover feature-card p-8 rounded-xl shadow-lg">
+                        <div class="text-4xl mb-4 text-center">🔬</div>
+                        <h3 class="text-xl font-semibold mb-4 text-center" style="color: var(--primary);">Research-Based</h3>
+                        <p class="text-center" style="color: var(--text-light);">Built on scientific findings from neuroscience and psychology research into the mechanisms of nostalgic memory.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="rounded-2xl p-12 text-center" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05)); border: 1px solid rgba(102, 126, 234, 0.1);">
+                <h2 class="text-3xl font-bold mb-6" style="color: var(--primary);">Journey Through Memory</h2>
+                <p class="mb-8 max-w-2xl mx-auto" style="color: var(--text-light);">
+                    Dive deep into the fascinating world where neuroscience meets personal experience. Discover how your unique 
+                    characteristics influence the way you remember and cherish the past.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="index.html" class="btn-primary px-8 py-3 rounded-full hover:scale-105 transition-all duration-300 no-underline">
+                        Return Home
+                    </a>
+                    <a href="page2.html" class="btn-secondary px-8 py-3 rounded-full hover:scale-105 transition-all duration-300 no-underline">
+                        Explore Awareness
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hamburger menu functionality
+            const hamburger = document.getElementById('hamburger');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+
+            function toggleSidebar() {
+                hamburger.classList.toggle('active');
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+            }
+
+            hamburger.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+
+            // Close sidebar when clicking on navigation links
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (link.getAttribute('href').startsWith('#') || !link.getAttribute('href').includes('.html')) {
+                        // Only close sidebar for internal anchors or non-HTML links
+                        return;
+                    }
+                    toggleSidebar();
+                });
+            });
+
+            // Close sidebar on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+                    toggleSidebar();
+                }
+            });
+
+            // Add stagger animation to cards
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+                card.classList.add('fade-in');
+            });
+
+            // Enhanced scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for scroll animations
+            const animatedElements = document.querySelectorAll('.card-hover');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>
     <div class="geometric-bg"></div>
 
     <!-- Header -->
@@ -18,75 +527,3 @@
                         <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
                             <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="20" cy="20" r="18" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
-                    <circle cx="20" cy="20" r="14" fill="none" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.7"/>
-                    <circle cx="20" cy="20" r="10" fill="none" stroke="url(#logoGradient)" stroke-width="1" opacity="0.5"/>
-                    <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3"/>
-                    <circle cx="20" cy="20" r="3" fill="url(#logoGradient)"/>
-                </svg>
-                <span class="logo-text">Inner Peace</span>
-            </a>
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="index.html#about" class="nav-link">About</a></li>
-                <li><a href="index.html#practices" class="nav-link">Practices</a></li>
-                <li><a href="index.html#resources" class="nav-link">Resources</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Main Content -->
-    <main style="padding: 8rem 5% 4rem; max-width: 1200px; margin: 0 auto;">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">🌬️</div>
-            <h1 class="section-title">Conscious Breathing</h1>
-            <p class="section-subtitle">Master the art of breath awareness for instant calm and focus</p>
-        </div>
-
-        <div style="background: white; border-radius: 25px; padding: 3rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); margin-bottom: 2rem;">
-            <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Welcome to Conscious Breathing</h2>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                This is a placeholder page for the Conscious Breathing practice. Here you can add detailed information about breathing techniques, 
-                guided exercises, video content, or any other resources related to conscious breathing practices.
-            </p>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                Some topics you might want to include:
-            </p>
-            <ul style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem; padding-left: 2rem;">
-                <li>Box breathing technique</li>
-                <li>4-7-8 breathing pattern</li>
-                <li>Breath awareness meditation</li>
-                <li>Stress relief breathing exercises</li>
-                <li>Energy boosting breath work</li>
-            </ul>
-            
-            <a href="index.html" style="display: inline-block; background: var(--gradient-1); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.3s ease; margin-top: 1rem;">
-                ← Back to Homepage
-            </a>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Service</a>
-                <a href="#support">Support</a>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Inner Peace. All rights reserved. Nurturing minds, one breath at a time.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="tooplate-inner-peace-scripts.js"></script>
-</body>
-</html>
