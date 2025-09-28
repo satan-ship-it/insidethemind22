@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Nostalgia Network - InsideTheMind22</title>
     <link href="tooplate-inner-peace.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <!--
 
 Tooplate 2143 Inner Peace
@@ -19,170 +17,226 @@ Free HTML CSS Template
 
 -->
     <style>
-        /* Override with Inner Peace theme colors and fonts */
-        :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --accent: #f093fb;
-            --text: #2d3748;
-            --text-light: #4a5568;
-            --bg: #f7fafc;
-            --bg-secondary: #edf2f7;
-            --shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
+        /* Use the exact Inner Peace theme styling from index.html */
         body {
-            font-family: 'Poppins', sans-serif !important;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Chart container styling to match Inner Peace theme */
+        .chart-container {
             position: relative;
-            color: var(--text);
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .main-content {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            margin: 20px;
-            padding: 40px;
-        }
-
-        .header-bg {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
-        }
-
-        .main-header {
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-        
-        /* Hamburger Menu Styles */
-        .hamburger {
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-            padding: 4px;
-            z-index: 60;
-        }
-        
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            margin: 3px 0;
-            transition: 0.3s;
-            border-radius: 2px;
-        }
-        
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(-45deg) translate(-5px, 6px);
-        }
-        
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-        
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(45deg) translate(-5px, -6px);
-        }
-        
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 300px;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px);
-            box-shadow: 2px 0 20px rgba(102, 126, 234, 0.15);
-            transition: left 0.3s ease;
-            z-index: 55;
-            overflow-y: auto;
-        }
-        
-        .sidebar.open {
-            left: 0;
-        }
-        
-        .sidebar-content {
-            padding: 80px 20px 20px;
-        }
-        
-        .sidebar-nav a {
-            display: block;
-            padding: 12px 20px;
-            color: var(--text);
-            text-decoration: none;
-            border-radius: 8px;
-            margin-bottom: 8px;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
             transition: all 0.3s ease;
-            font-weight: 500;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
         }
         
-        .sidebar-nav a:hover {
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Brain region styling */
+        .brain-region {
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            font-weight: 600;
+            position: absolute;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            color: var(--text);
+        }
+
+        .brain-region.active, .brain-region:hover {
+            transform: scale(1.2);
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            transform: translateX(5px);
         }
         
-        .sidebar-section {
-            margin-bottom: 30px;
+        /* Filter and trait button styling */
+        .filter-btn, .trait-btn {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--text);
+            border: 2px solid transparent;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+            border-radius: 9999px;
+            padding: 8px 16px;
         }
         
-        .sidebar-section h3 {
-            font-size: 0.875rem;
-            font-weight: 600;
+        .filter-btn.active, .trait-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+            color: white !important;
+            border-color: var(--primary);
+        }
+        
+        .filter-btn:hover, .trait-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+            border-color: var(--primary);
+        }
+        
+        /* Enhanced card styling to match floating cards */
+        .enhanced-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .enhanced-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: var(--primary);
+        }
+
+        /* Main content area styling */
+        .nostalgia-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5%;
+        }
+
+        /* Section styling */
+        .nostalgia-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
             color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 15px;
-            padding-left: 20px;
+            margin-bottom: 1.5rem;
         }
-        
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(102, 126, 234, 0.3);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 50;
-            backdrop-filter: blur(2px);
+
+        .section-header p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto;
         }
-        
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
+
+        /* Filter buttons container */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem;
+            border-radius: 9999px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        
+
+        /* Content areas */
+        .filter-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .filter-content.hidden {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .filter-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Trait buttons */
+        .trait-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Findings section */
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Animation utilities */
         .fade-in {
-            animation: fadeIn 1s ease-out;
+            animation: fadeIn 0.6s ease-out;
         }
         
-        .bounce-in {
-            animation: bounceIn 1.2s ease-out;
+        .slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        .scale-in {
+            animation: scaleIn 0.5s ease-out;
         }
         
         @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
@@ -193,326 +247,515 @@ Free HTML CSS Template
             }
         }
         
-        @keyframes bounceIn {
-            0% {
+        @keyframes scaleIn {
+            from {
                 opacity: 0;
-                transform: scale(0.3);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-            70% {
                 transform: scale(0.9);
             }
-            100% {
+            to {
                 opacity: 1;
                 transform: scale(1);
             }
         }
         
-        .gradient-text {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .card-hover {
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(102, 126, 234, 0.1);
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
-            border-color: var(--primary);
-        }
-
-        .nav-link {
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            color: var(--text) !important;
-            font-weight: 500;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 50%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-        
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        .nav-link:hover {
-            color: var(--primary) !important;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-secondary {
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .feature-card {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        /* Scroll animations */
+        .scroll-reveal {
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
         }
-
-        .feature-card:hover::before {
+        
+        .scroll-reveal.revealed {
             opacity: 1;
+            transform: translateY(0);
         }
 
-        /* Mobile responsive improvements */
+        /* Mobile responsive */
         @media (max-width: 768px) {
-            .main-content {
-                margin: 10px;
-                padding: 20px;
-                border-radius: 15px;
+            .section-header h1 {
+                font-size: 2.5rem;
             }
             
-            .sidebar {
-                width: 280px;
-                left: -280px;
+            .section-header h2 {
+                font-size: 1.5rem;
             }
             
-            .sidebar-nav a {
-                padding: 16px 20px;
-                font-size: 1.1rem;
+            .filter-container {
+                flex-direction: column;
+                max-width: 280px;
             }
+            
+            .trait-buttons {
+                gap: 0.25rem;
+            }
+            
+            .trait-btn {
+                font-size: 0.875rem;
+                padding: 6px 12px;
+            }
+        }
     </style>
 </head>
-<body class="antialiased">
+<body>
     <div class="geometric-bg"></div>
 
-    <header class="header-bg sticky top-0 z-50 shadow-sm">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center">
-                <div class="hamburger mr-4" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <a href="index.html" class="logo flex items-center">
-                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mr-2">
-                        <defs>
-                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <circle cx="20" cy="20" r="18" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
-                        <circle cx="20" cy="20" r="14" fill="none" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.7"/>
-                        <circle cx="20" cy="20" r="10" fill="none" stroke="url(#logoGradient)" stroke-width="1" opacity="0.5"/>
-                        <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3"/>
-                        <circle cx="20" cy="20" r="3" fill="url(#logoGradient)"/>
-                    </svg>
-                    <span class="main-header">InsideTheMind22</span>
-                </a>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="20" cy="20" r="18" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
+                    <circle cx="20" cy="20" r="14" fill="none" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.7"/>
+                    <circle cx="20" cy="20" r="10" fill="none" stroke="url(#logoGradient)" stroke-width="1" opacity="0.5"/>
+                    <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3"/>
+                    <circle cx="20" cy="20" r="3" fill="url(#logoGradient)"/>
+                </svg>
+                <span class="logo-text">Inner Peace</span>
+            </a>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
-            <div class="hidden md:flex space-x-8">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="page2.html" class="nav-link">Awareness</a>
-                <a href="page3.html" class="nav-link">Meditation</a>
-                <a href="page4.html" class="nav-link">Living Mindfully</a>
-            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#practices" class="nav-link">Practices</a></li>
+                <li><a href="index.html#resources" class="nav-link">Resources</a></li>
+            </ul>
         </nav>
     </header>
 
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-content">
-            <div class="sidebar-section">
-                <h3>Navigation</h3>
-                <nav class="sidebar-nav">
-                    <a href="index.html">Home</a>
-                    <a href="index.html#about">About</a>
-                    <a href="index.html#practices">Practices</a>
-                    <a href="index.html#resources">Resources</a>
-                </nav>
-            </div>
-            <div class="sidebar-section">
-                <h3>Pages</h3>
-                <nav class="sidebar-nav">
-                    <a href="page1.html">The Nostalgia Network</a>
-                    <a href="page2.html">Mindfulness Awareness</a>
-                    <a href="page3.html">Foundation Meditation</a>
-                    <a href="page4.html">Living Mindfully</a>
-                    <a href="page5.html">Morning Practice</a>
-                    <a href="page6.html">Stress Relief</a>
-                    <a href="page7.html">Timer</a>
-                    <a href="page8.html">Progress</a>
-                </nav>
-            </div>
-        </div>
-    </div>
-
-    <!-- Overlay -->
-    <div class="overlay" id="overlay"></div>
-
-    <div class="main-content">
-        <main class="container mx-auto">
-            <section class="text-center mb-24 fade-in">
-                <h1 class="text-6xl font-bold gradient-text mb-6 bounce-in">The Nostalgia Network</h1>
-                <h2 class="text-3xl font-semibold mb-8" style="color: var(--primary);">How Individual Differences Shape Our Past</h2>
-                <p class="max-w-3xl mx-auto text-lg leading-relaxed" style="color: var(--text-light);">
-                    Explore the fascinating world of nostalgia through an interactive lens. Discover how our unique individual 
-                    traits—age, personality, and gender—influence the very way our brains process cherished memories. 
-                    This journey combines neuroscience with personal experience to reveal the diverse neural tapestry of nostalgia.
+    <!-- Main Content -->
+    <main class="nostalgia-content" style="padding-top: 8rem;">
+        <!-- Introduction Section -->
+        <section id="introduction" class="nostalgia-section fade-in">
+            <div class="section-header">
+                <h1>The Nostalgia Network</h1>
+                <h2>How Individual Differences Shape Our Past</h2>
+                <p>
+                    Nostalgia, the bittersweet emotion of recalling meaningful past events, is a universal human experience. It serves important psychological functions, from improving mood to fostering social connection. This research explores how our unique individual traits—our age, personality, and gender—shape the very way our brains process these cherished memories. This interactive report breaks down the key findings, revealing the diverse neural tapestry of nostalgia.
                 </p>
-            </section>
+            </div>
+        </section>
 
-            <section class="mb-24">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="card-hover feature-card p-8 rounded-xl shadow-lg">
-                        <div class="text-4xl mb-4 text-center">🧠</div>
-                        <h3 class="text-xl font-semibold mb-4 text-center" style="color: var(--primary);">Neural Networks</h3>
-                        <p class="text-center" style="color: var(--text-light);">Explore the brain regions that activate when we experience nostalgia, from memory centers to emotional processing areas.</p>
-                    </div>
+        <!-- The Nostalgic Brain Section -->
+        <section id="brain" class="nostalgia-section slide-up">
+            <div class="section-header">
+                <h2 class="section-title">The Nostalgic Brain</h2>
+                <p>
+                    When we experience nostalgia, a specific network of brain regions activates, connecting memory, emotion, and self-reflection. This section provides an interactive look at the key players in this neural circuit. Click on each highlighted region to learn about its specific role in processing your nostalgic memories.
+                </p>
+            </div>
+            <div class="filter-content">
+                <div style="position: relative; width: 100%; max-width: 500px; aspect-ratio: 1; margin: 0 auto;">
+                    <div style="position: absolute; inset: 0; background: url('https://placehold.co/600x600/FDFBF8/38332E?text=Brain+Outline') no-repeat center center; background-size: contain; opacity: 0.1;"></div>
                     
-                    <div class="card-hover feature-card p-8 rounded-xl shadow-lg">
-                        <div class="text-4xl mb-4 text-center">📊</div>
-                        <h3 class="text-xl font-semibold mb-4 text-center" style="color: var(--primary);">Interactive Data</h3>
-                        <p class="text-center" style="color: var(--text-light);">Engage with dynamic visualizations that reveal how age, personality, and gender shape nostalgic experiences.</p>
+                    <div id="hippocampus" data-region="hippocampus" class="brain-region" style="width: 25%; height: 18%; top: 45%; left: 38%;">Hippocampus</div>
+                    <div id="amygdala" data-region="amygdala" class="brain-region" style="width: 15%; height: 12%; top: 52%; left: 28%;">Amygdala</div>
+                    <div id="pfc" data-region="pfc" class="brain-region" style="width: 35%; height: 25%; top: 15%; left: 55%;">Prefrontal Cortex</div>
+                    <div id="reward" data-region="reward" class="brain-region" style="width: 20%; height: 15%; top: 60%; left: 55%;">Reward Circuit</div>
+                </div>
+                <div id="brain-info-panel" class="enhanced-card" style="min-height: 250px; display: flex; align-items: center; justify-content: center;">
+                    <p id="brain-info-text" style="text-align: center; color: var(--text-light);">Click a brain region to see its function.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Individual Differences Section -->
+        <section id="differences" class="nostalgia-section scale-in">
+            <div class="section-header">
+                <h2 class="section-title">Individual Differences in Nostalgia</h2>
+                <p>While the core neural network for nostalgia is consistent, its activation patterns and the nature of the experience differ significantly from person to person. This section allows you to explore how age, personality, and gender influence our connection to the past. Select a category to see how the data changes.</p>
+            </div>
+            
+            <div class="filter-container">
+                <button id="btn-age" class="filter-btn active">Age</button>
+                <button id="btn-personality" class="filter-btn">Personality</button>
+                <button id="btn-gender" class="filter-btn">Gender</button>
+            </div>
+
+            <div id="content-age" class="filter-content">
+                <div>
+                    <h3 class="section-title" style="color: var(--primary); margin-bottom: 1rem;">The Reminiscence Bump</h3>
+                    <p style="color: var(--text-light);">
+                        Across the lifespan, memories are not recalled equally. We tend to remember a disproportionate number of events from our adolescence and early adulthood (roughly ages 10-30). This phenomenon, known as the "reminiscence bump," is often the source of our most potent nostalgic memories, as it's a period of identity formation and significant life firsts. Older adults show heightened hippocampal activity when recalling these memories, suggesting a deeper, more consolidated encoding of these formative experiences.
+                    </p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="ageChart"></canvas>
+                </div>
+            </div>
+
+            <div id="content-personality" class="filter-content hidden">
+                <div>
+                    <p style="color: var(--text-light); margin-bottom: 1rem; text-align: center;">The Big Five personality traits influence the emotional flavor of our nostalgia. Select a trait to see its correlation with nostalgia-related brain activity.</p>
+                    <div class="trait-buttons">
+                        <button class="trait-btn active" data-trait="openness">Openness</button>
+                        <button class="trait-btn" data-trait="conscientiousness">Conscientiousness</button>
+                        <button class="trait-btn" data-trait="extraversion">Extraversion</button>
+                        <button class="trait-btn" data-trait="agreeableness">Agreeableness</button>
+                        <button class="trait-btn" data-trait="neuroticism">Neuroticism</button>
                     </div>
-                    
-                    <div class="card-hover feature-card p-8 rounded-xl shadow-lg">
-                        <div class="text-4xl mb-4 text-center">🔬</div>
-                        <h3 class="text-xl font-semibold mb-4 text-center" style="color: var(--primary);">Research-Based</h3>
-                        <p class="text-center" style="color: var(--text-light);">Built on scientific findings from neuroscience and psychology research into the mechanisms of nostalgic memory.</p>
+                    <div>
+                        <h3 id="personality-title" class="section-title" style="color: var(--primary); margin-bottom: 1rem;"></h3>
+                        <p id="personality-text" style="color: var(--text-light);"></p>
                     </div>
                 </div>
-            </section>
-
-            <section class="rounded-2xl p-12 text-center" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05)); border: 1px solid rgba(102, 126, 234, 0.1);">
-                <h2 class="text-3xl font-bold mb-6" style="color: var(--primary);">Journey Through Memory</h2>
-                <p class="mb-8 max-w-2xl mx-auto" style="color: var(--text-light);">
-                    Dive deep into the fascinating world where neuroscience meets personal experience. Discover how your unique 
-                    characteristics influence the way you remember and cherish the past.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="index.html" class="btn-primary px-8 py-3 rounded-full hover:scale-105 transition-all duration-300 no-underline">
-                        Return Home
-                    </a>
-                    <a href="page2.html" class="btn-secondary px-8 py-3 rounded-full hover:scale-105 transition-all duration-300 no-underline">
-                        Explore Awareness
-                    </a>
+                <div class="chart-container">
+                    <canvas id="personalityChart"></canvas>
                 </div>
-            </section>
-        </main>
-    </div>
+            </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Hamburger menu functionality
-            const hamburger = document.getElementById('hamburger');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
+            <div id="content-gender" class="filter-content hidden">
+                <div style="grid-column: 1 / -1;">
+                    <div class="section-header">
+                        <h3 class="section-title" style="color: var(--primary); margin-bottom: 0.5rem;">Thematic Content of Nostalgic Memories</h3>
+                        <p style="color: var(--text-light);">While the intensity of nostalgia is similar across genders, research suggests subtle differences in the content. Men's nostalgic memories more often center on agentic themes (personal achievements, overcoming challenges), while women's memories tend to focus more on relational themes (social bonds, family moments).</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="chart-container">
+                            <h4 style="text-align: center; font-weight: 600; margin-bottom: 1rem;">Female Participants</h4>
+                            <canvas id="genderChartFemale"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h4 style="text-align: center; font-weight: 600; margin-bottom: 1rem;">Male Participants</h4>
+                            <canvas id="genderChartMale"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Key Findings Section -->
+        <section id="findings" class="nostalgia-section" style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border-radius: 20px; padding: 3rem 2rem;">
+            <div class="section-header">
+                <h2 class="section-title">Key Findings & Conclusion</h2>
+            </div>
+            <div class="findings-grid">
+                <div class="enhanced-card">
+                    <h3 style="font-weight: 600; font-size: 1.125rem; color: var(--primary); margin-bottom: 0.5rem;">Brain Network is Universal</h3>
+                    <p style="font-size: 0.875rem; color: var(--text-light);">The core network for nostalgia—linking memory, emotion, and reward circuits—is largely consistent across all individuals.</p>
+                </div>
+                <div class="enhanced-card">
+                    <h3 style="font-weight: 600; font-size: 1.125rem; color: var(--primary); margin-bottom: 0.5rem;">Personality Colors the Past</h3>
+                    <p style="font-size: 0.875rem; color: var(--text-light);">Traits like neuroticism are linked to more bittersweet nostalgia with higher amygdala (emotion) activity, while extraversion correlates with positive social memories and stronger reward circuit activation.</p>
+                </div>
+                <div class="enhanced-card">
+                    <h3 style="font-weight: 600; font-size: 1.125rem; color: var(--primary); margin-bottom: 0.5rem;">Life Stage Matters</h3>
+                    <p style="font-size: 0.875rem; color: var(--text-light);">Age significantly impacts nostalgia, with memories from the "reminiscence bump" (ages 10-30) being particularly vivid and neurally pronounced, especially in older adults.</p>
+                </div>
+            </div>
+            <div style="margin-top: 2rem; text-align: center;">
+                <p style="max-width: 800px; margin: 0 auto; color: var(--text-light);">In conclusion, while we all experience nostalgia, the way we do so is as unique as our own life stories. These individual differences create a rich and varied internal landscape of memory, demonstrating that our past is not a static record but a dynamic, personal experience constantly being reshaped by who we are today.</p>
+            </div>
+        </section>
 
-            function toggleSidebar() {
-                hamburger.classList.toggle('active');
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('active');
-                document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+    </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Brain interaction data
+    const data = {
+        brain: {
+            hippocampus: {
+                title: "Hippocampus: The Memory Index",
+                text: "Crucial for forming, organizing, and retrieving autobiographical memories. During nostalgia, it's highly active, working to reconstruct the 'what, where, and when' of a past event."
+            },
+            amygdala: {
+                title: "Amygdala: The Emotional Core",
+                text: "This region processes emotions. Its activation during nostalgia attaches emotional significance—joy, comfort, or a touch of sadness—to the retrieved memory."
+            },
+            pfc: {
+                title: "Prefrontal Cortex: The Evaluator",
+                text: "The brain's executive control center helps place the memory in the context of our life story, evaluating its meaning and integrating it with our sense of self."
+            },
+            reward: {
+                title: "Reward Circuit (Ventral Striatum)",
+                text: "Associated with pleasure and reward. Its activation explains the warm, comforting, and positive feelings often produced by nostalgia, reinforcing the behavior of reminiscence."
             }
+        },
+        personality: {
+            openness: {
+                title: "Openness to Experience",
+                text: "Individuals high in openness tend to experience nostalgia more frequently. Their imaginative and curious nature may lead them to engage more deeply with past memories, showing balanced activation across the nostalgia network.",
+                correlations: { 'Hippocampus': 0.3, 'Amygdala': 0.2, 'PFC': 0.4, 'Reward': 0.35 }
+            },
+            conscientiousness: {
+                title: "Conscientiousness",
+                text: "This trait shows a weaker link to nostalgia. Conscientious individuals might recall memories related to personal goals and achievements, with slightly higher PFC activation related to structured self-reflection.",
+                correlations: { 'Hippocampus': 0.1, 'Amygdala': 0.05, 'PFC': 0.2, 'Reward': 0.1 }
+            },
+            extraversion: {
+                title: "Extraversion",
+                text: "Strongly correlated with positive, social nostalgia. Extraverts show significantly higher activation in the reward circuits, reflecting the pleasurable feeling they derive from recalling social gatherings and relationships.",
+                correlations: { 'Hippocampus': 0.4, 'Amygdala': 0.25, 'PFC': 0.3, 'Reward': 0.6 }
+            },
+            agreeableness: {
+                title: "Agreeableness",
+                text: "Agreeable individuals often recall prosocial memories focused on connection and harmony. Their brain activation patterns reflect a positive emotional tone, similar to extraverts but with a focus on relational contentment.",
+                correlations: { 'Hippocampus': 0.35, 'Amygdala': 0.15, 'PFC': 0.25, 'Reward': 0.4 }
+            },
+            neuroticism: {
+                title: "Neuroticism",
+                text: "Associated with a more bittersweet or even negative form of nostalgia. Individuals high in neuroticism show heightened co-activation of the amygdala (emotion) and hippocampus, suggesting that their memories are more emotionally intense and sometimes tinged with anxiety or regret.",
+                correlations: { 'Hippocampus': 0.5, 'Amygdala': 0.7, 'PFC': 0.3, 'Reward': 0.15 }
+            }
+        }
+    };
 
-            hamburger.addEventListener('click', toggleSidebar);
-            overlay.addEventListener('click', toggleSidebar);
+    let ageChart, personalityChart, genderChartFemale, genderChartMale;
 
-            // Close sidebar when clicking on navigation links
-            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (link.getAttribute('href').startsWith('#') || !link.getAttribute('href').includes('.html')) {
-                        // Only close sidebar for internal anchors or non-HTML links
-                        return;
-                    }
-                    toggleSidebar();
-                });
-            });
+    // Brain region interactions
+    const brainRegions = document.querySelectorAll('.brain-region');
+    const brainInfoPanel = document.getElementById('brain-info-panel');
+    const brainInfoText = document.getElementById('brain-info-text');
 
-            // Close sidebar on escape key
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-                    toggleSidebar();
+    brainRegions.forEach(region => {
+        region.addEventListener('click', () => {
+            brainRegions.forEach(r => r.classList.remove('active'));
+            region.classList.add('active');
+            const regionKey = region.dataset.region;
+            const regionData = data.brain[regionKey];
+            brainInfoPanel.innerHTML = `<div style="padding: 1rem;"><h4 style="font-weight: 700; font-size: 1.125rem; text-align: center; margin-bottom: 0.5rem; color: var(--primary);">${regionData.title}</h4><p style="color: var(--text-light); font-size: 0.875rem; text-align: center;">${regionData.text}</p></div>`;
+        });
+    });
+
+    // Filter functionality
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const filterContents = document.querySelectorAll('.filter-content');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const contentId = `content-${btn.id.split('-')[1]}`;
+            filterContents.forEach(content => {
+                if (content.id === contentId) {
+                    content.classList.remove('hidden');
+                } else {
+                    content.classList.add('hidden');
                 }
             });
-
-            // Add stagger animation to cards
-            const cards = document.querySelectorAll('.card-hover');
-            cards.forEach((card, index) => {
-                card.style.animationDelay = `${index * 0.2}s`;
-                card.classList.add('fade-in');
-            });
-
-            // Enhanced scroll animations
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observe elements for scroll animations
-            const animatedElements = document.querySelectorAll('.card-hover');
-            animatedElements.forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                observer.observe(el);
-            });
         });
-    </script>
+    });
+
+    // Personality trait functionality
+    const personalityTraitBtns = document.querySelectorAll('.trait-btn');
+    const personalityTitle = document.getElementById('personality-title');
+    const personalityText = document.getElementById('personality-text');
+
+    function updatePersonalityContent(traitKey) {
+        const traitData = data.personality[traitKey];
+        personalityTitle.textContent = traitData.title;
+        personalityText.textContent = traitData.text;
+
+        personalityTraitBtns.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.trait === traitKey) {
+                btn.classList.add('active');
+            }
+        });
+        createPersonalityChart(traitKey);
+    }
+    
+    personalityTraitBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            updatePersonalityContent(btn.dataset.trait);
+        });
+    });
+
+    // Chart creation functions
+    function createAgeChart() {
+        const ctx = document.getElementById('ageChart').getContext('2d');
+        if (ageChart) ageChart.destroy();
+        ageChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70'],
+                datasets: [{
+                    label: 'Memory Recall Frequency',
+                    data: [15, 45, 40, 20, 25, 30, 35],
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: (context) => `Age Range: ${context[0].label} yrs`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Relative Recall Count' }
+                    }
+                }
+            }
+        });
+    }
+
+    function createPersonalityChart(traitKey) {
+        const ctx = document.getElementById('personalityChart').getContext('2d');
+        const correlations = data.personality[traitKey].correlations;
+        if (personalityChart) personalityChart.destroy();
+        personalityChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(correlations),
+                datasets: [{
+                    label: 'Correlation with Brain Activity',
+                    data: Object.values(correlations),
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.6)', 
+                        'rgba(118, 75, 162, 0.6)', 
+                        'rgba(240, 147, 251, 0.6)', 
+                        'rgba(102, 126, 234, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(102, 126, 234, 1)', 
+                        'rgba(118, 75, 162, 1)', 
+                        'rgba(240, 147, 251, 1)', 
+                        'rgba(102, 126, 234, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: `Correlation for ${data.personality[traitKey].title}` }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Correlation Coefficient' }
+                    }
+                }
+            }
+        });
+    }
+
+    function createGenderCharts() {
+        const femaleCtx = document.getElementById('genderChartFemale').getContext('2d');
+        const maleCtx = document.getElementById('genderChartMale').getContext('2d');
+
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += context.parsed + '%';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+        if(genderChartFemale) genderChartFemale.destroy();
+        genderChartFemale = new Chart(femaleCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Relational Themes', 'Agentic Themes'],
+                datasets: [{
+                    data: [72, 28],
+                    backgroundColor: ['#667eea', '#764ba2'],
+                    hoverOffset: 4
+                }]
+            },
+            options: options
+        });
+        
+        if(genderChartMale) genderChartMale.destroy();
+        genderChartMale = new Chart(maleCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Relational Themes', 'Agentic Themes'],
+                datasets: [{
+                    data: [45, 55],
+                    backgroundColor: ['#667eea', '#764ba2'],
+                    hoverOffset: 4
+                }]
+            },
+            options: options
+        });
+    }
+
+    // Animation and scroll effects
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                
+                const childElements = entry.target.querySelectorAll('.enhanced-card, .brain-region, .chart-container');
+                childElements.forEach((child, index) => {
+                    setTimeout(() => {
+                        child.style.opacity = '1';
+                        child.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }
+        });
+    }, observerOptions);
+
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+        section.classList.add('scroll-reveal');
+        observer.observe(section);
+    });
+
+    const enhancedCards = document.querySelectorAll('.enhanced-card');
+    enhancedCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    });
+
+    // Initialize everything
+    function init() {
+        createAgeChart();
+        updatePersonalityContent('openness');
+        createGenderCharts();
+    }
+
+    init();
+});
+</script>
+
+<script src="tooplate-inner-peace-scripts.js"></script>
 
 </body>
 </html>
