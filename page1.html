@@ -17,12 +17,13 @@ Free HTML CSS Template
 
 -->
     <style>
-        /* Use the exact Inner Peace theme styling from index.html */
+        /* Use the exact Inner Peace theme styling with pastel enhancements */
         body {
             font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #b8c6db 0%, #f5f7fa 50%, #c7d0db 100%);
         }
         
-        /* Chart container styling to match Inner Peace theme */
+        /* Chart container styling with pastel theme */
         .chart-container {
             position: relative;
             width: 100%;
@@ -32,15 +33,16 @@ Free HTML CSS Template
             height: 300px;
             max-height: 400px;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 100%);
+            border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .chart-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.18);
         }
         
         @media (min-width: 768px) {
@@ -49,7 +51,7 @@ Free HTML CSS Template
             }
         }
 
-        /* Brain region styling */
+        /* Brain region styling with pastel colors */
         .brain-region {
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -63,62 +65,68 @@ Free HTML CSS Template
             font-weight: 600;
             position: absolute;
             border: 2px solid transparent;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(5px);
-            color: var(--text);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+            backdrop-filter: blur(10px);
+            color: #2d3748;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .brain-region.active, .brain-region:hover {
             transform: scale(1.2);
-            border-color: var(--primary);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: #667eea;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.25);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
+            text-shadow: none;
         }
         
-        /* Filter and trait button styling */
+        /* Filter and trait button styling with pastels */
         .filter-btn, .trait-btn {
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
-            background: rgba(255, 255, 255, 0.8);
-            color: var(--text);
-            border: 2px solid transparent;
-            font-weight: 500;
-            backdrop-filter: blur(5px);
-            border-radius: 9999px;
-            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.95) 100%);
+            color: #2d3748;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 10px 18px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         
         .filter-btn.active, .trait-btn.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
-            color: white !important;
-            border-color: var(--primary);
+            background: linear-gradient(135deg, #a8b8e8, #c8a8e8) !important;
+            color: #2d3748 !important;
+            border-color: #667eea;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            font-weight: 700;
         }
         
         .filter-btn:hover, .trait-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(168, 184, 232, 0.3) 0%, rgba(200, 168, 232, 0.3) 100%);
         }
         
-        /* Enhanced card styling to match floating cards */
+        /* Enhanced card styling with pastel gradients */
         .enhanced-card {
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            border: 1px solid rgba(102, 126, 234, 0.1);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 50%, rgba(240, 245, 251, 0.95) 100%);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
             padding: 2rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.08);
         }
         
         .enhanced-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
-            border-color: var(--primary);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
         }
 
         /* Main content area styling */
@@ -128,7 +136,7 @@ Free HTML CSS Template
             padding: 2rem 5%;
         }
 
-        /* Section styling */
+        /* Section styling with better contrast */
         .nostalgia-section {
             margin-bottom: 4rem;
         }
@@ -141,40 +149,44 @@ Free HTML CSS Template
         .section-header h1 {
             font-size: 3.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .section-header h2 {
             font-size: 2rem;
-            color: var(--primary);
+            color: #4a5568;
             margin-bottom: 1.5rem;
+            font-weight: 600;
         }
 
         .section-header p {
             font-size: 1.1rem;
             line-height: 1.7;
-            color: var(--text-light);
+            color: #2d3748;
             max-width: 800px;
             margin: 0 auto;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
-        /* Filter buttons container */
+        /* Filter buttons container with pastel styling */
         .filter-container {
             display: flex;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
             margin-bottom: 2rem;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            padding: 0.5rem;
-            border-radius: 9999px;
-            max-width: 400px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(248, 250, 252, 0.4) 100%);
+            backdrop-filter: blur(15px);
+            padding: 0.75rem;
+            border-radius: 30px;
+            max-width: 450px;
             margin-left: auto;
             margin-right: auto;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         /* Content areas */
@@ -210,6 +222,40 @@ Free HTML CSS Template
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
+        }
+
+        /* Return home button styling */
+        .return-home-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #a8b8e8, #c8a8e8);
+            color: #2d3748;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .return-home-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .return-home-btn::before {
+            content: '🏠';
+            font-size: 1rem;
         }
 
         /* Animation utilities */
@@ -270,6 +316,13 @@ Free HTML CSS Template
             transform: translateY(0);
         }
 
+        /* Text color improvements for readability */
+        .section-title {
+            color: #2d3748 !important;
+            font-weight: 700;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
         /* Mobile responsive */
         @media (max-width: 768px) {
             .section-header h1 {
@@ -291,7 +344,14 @@ Free HTML CSS Template
             
             .trait-btn {
                 font-size: 0.875rem;
-                padding: 6px 12px;
+                padding: 8px 14px;
+            }
+
+            .return-home-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 18px;
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -316,7 +376,7 @@ Free HTML CSS Template
                     <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3"/>
                     <circle cx="20" cy="20" r="3" fill="url(#logoGradient)"/>
                 </svg>
-                <span class="logo-text">Inner Peace</span>
+                <span class="logo-text">InsideTheMind</span>
             </a>
             <div class="menu-toggle" onclick="toggleMenu()">
                 <span></span>
@@ -383,8 +443,8 @@ Free HTML CSS Template
 
             <div id="content-age" class="filter-content">
                 <div>
-                    <h3 class="section-title" style="color: var(--primary); margin-bottom: 1rem;">The Reminiscence Bump</h3>
-                    <p style="color: var(--text-light);">
+                    <h3 class="section-title" style="color: #2d3748; margin-bottom: 1rem; font-weight: 700;">The Reminiscence Bump</h3>
+                    <p style="color: #2d3748; font-weight: 500;">
                         Across the lifespan, memories are not recalled equally. We tend to remember a disproportionate number of events from our adolescence and early adulthood (roughly ages 10-30). This phenomenon, known as the "reminiscence bump," is often the source of our most potent nostalgic memories, as it's a period of identity formation and significant life firsts. Older adults show heightened hippocampal activity when recalling these memories, suggesting a deeper, more consolidated encoding of these formative experiences.
                     </p>
                 </div>
@@ -395,7 +455,7 @@ Free HTML CSS Template
 
             <div id="content-personality" class="filter-content hidden">
                 <div>
-                    <p style="color: var(--text-light); margin-bottom: 1rem; text-align: center;">The Big Five personality traits influence the emotional flavor of our nostalgia. Select a trait to see its correlation with nostalgia-related brain activity.</p>
+                    <p style="color: #2d3748; margin-bottom: 1rem; text-align: center; font-weight: 500;">The Big Five personality traits influence the emotional flavor of our nostalgia. Select a trait to see its correlation with nostalgia-related brain activity.</p>
                     <div class="trait-buttons">
                         <button class="trait-btn active" data-trait="openness">Openness</button>
                         <button class="trait-btn" data-trait="conscientiousness">Conscientiousness</button>
@@ -404,8 +464,8 @@ Free HTML CSS Template
                         <button class="trait-btn" data-trait="neuroticism">Neuroticism</button>
                     </div>
                     <div>
-                        <h3 id="personality-title" class="section-title" style="color: var(--primary); margin-bottom: 1rem;"></h3>
-                        <p id="personality-text" style="color: var(--text-light);"></p>
+                        <h3 id="personality-title" class="section-title" style="color: #2d3748; margin-bottom: 1rem; font-weight: 700;"></h3>
+                        <p id="personality-text" style="color: #2d3748; font-weight: 500;"></p>
                     </div>
                 </div>
                 <div class="chart-container">
@@ -416,16 +476,16 @@ Free HTML CSS Template
             <div id="content-gender" class="filter-content hidden">
                 <div style="grid-column: 1 / -1;">
                     <div class="section-header">
-                        <h3 class="section-title" style="color: var(--primary); margin-bottom: 0.5rem;">Thematic Content of Nostalgic Memories</h3>
-                        <p style="color: var(--text-light);">While the intensity of nostalgia is similar across genders, research suggests subtle differences in the content. Men's nostalgic memories more often center on agentic themes (personal achievements, overcoming challenges), while women's memories tend to focus more on relational themes (social bonds, family moments).</p>
+                        <h3 class="section-title" style="color: #2d3748; margin-bottom: 0.5rem; font-weight: 700;">Thematic Content of Nostalgic Memories</h3>
+                        <p style="color: #2d3748; font-weight: 500;">While the intensity of nostalgia is similar across genders, research suggests subtle differences in the content. Men's nostalgic memories more often center on agentic themes (personal achievements, overcoming challenges), while women's memories tend to focus more on relational themes (social bonds, family moments).</p>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
                         <div class="chart-container">
-                            <h4 style="text-align: center; font-weight: 600; margin-bottom: 1rem;">Female Participants</h4>
+                            <h4 style="text-align: center; font-weight: 600; margin-bottom: 1rem; color: #2d3748;">Female Participants</h4>
                             <canvas id="genderChartFemale"></canvas>
                         </div>
                         <div class="chart-container">
-                            <h4 style="text-align: center; font-weight: 600; margin-bottom: 1rem;">Male Participants</h4>
+                            <h4 style="text-align: center; font-weight: 600; margin-bottom: 1rem; color: #2d3748;">Male Participants</h4>
                             <canvas id="genderChartMale"></canvas>
                         </div>
                     </div>
@@ -436,28 +496,33 @@ Free HTML CSS Template
         <!-- Key Findings Section -->
         <section id="findings" class="nostalgia-section" style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border-radius: 20px; padding: 3rem 2rem;">
             <div class="section-header">
-                <h2 class="section-title">Key Findings & Conclusion</h2>
+                <h2 class="section-title" style="color: #2d3748; font-weight: 700;">Key Findings & Conclusion</h2>
             </div>
             <div class="findings-grid">
                 <div class="enhanced-card">
-                    <h3 style="font-weight: 600; font-size: 1.125rem; color: var(--primary); margin-bottom: 0.5rem;">Brain Network is Universal</h3>
-                    <p style="font-size: 0.875rem; color: var(--text-light);">The core network for nostalgia—linking memory, emotion, and reward circuits—is largely consistent across all individuals.</p>
+                    <h3 style="font-weight: 600; font-size: 1.125rem; color: #2d3748; margin-bottom: 0.5rem;">Brain Network is Universal</h3>
+                    <p style="font-size: 0.875rem; color: #2d3748; font-weight: 500;">The core network for nostalgia—linking memory, emotion, and reward circuits—is largely consistent across all individuals.</p>
                 </div>
                 <div class="enhanced-card">
-                    <h3 style="font-weight: 600; font-size: 1.125rem; color: var(--primary); margin-bottom: 0.5rem;">Personality Colors the Past</h3>
-                    <p style="font-size: 0.875rem; color: var(--text-light);">Traits like neuroticism are linked to more bittersweet nostalgia with higher amygdala (emotion) activity, while extraversion correlates with positive social memories and stronger reward circuit activation.</p>
+                    <h3 style="font-weight: 600; font-size: 1.125rem; color: #2d3748; margin-bottom: 0.5rem;">Personality Colors the Past</h3>
+                    <p style="font-size: 0.875rem; color: #2d3748; font-weight: 500;">Traits like neuroticism are linked to more bittersweet nostalgia with higher amygdala (emotion) activity, while extraversion correlates with positive social memories and stronger reward circuit activation.</p>
                 </div>
                 <div class="enhanced-card">
-                    <h3 style="font-weight: 600; font-size: 1.125rem; color: var(--primary); margin-bottom: 0.5rem;">Life Stage Matters</h3>
-                    <p style="font-size: 0.875rem; color: var(--text-light);">Age significantly impacts nostalgia, with memories from the "reminiscence bump" (ages 10-30) being particularly vivid and neurally pronounced, especially in older adults.</p>
+                    <h3 style="font-weight: 600; font-size: 1.125rem; color: #2d3748; margin-bottom: 0.5rem;">Life Stage Matters</h3>
+                    <p style="font-size: 0.875rem; color: #2d3748; font-weight: 500;">Age significantly impacts nostalgia, with memories from the "reminiscence bump" (ages 10-30) being particularly vivid and neurally pronounced, especially in older adults.</p>
                 </div>
             </div>
             <div style="margin-top: 2rem; text-align: center;">
-                <p style="max-width: 800px; margin: 0 auto; color: var(--text-light);">In conclusion, while we all experience nostalgia, the way we do so is as unique as our own life stories. These individual differences create a rich and varied internal landscape of memory, demonstrating that our past is not a static record but a dynamic, personal experience constantly being reshaped by who we are today.</p>
+                <p style="max-width: 800px; margin: 0 auto; color: #2d3748; font-weight: 500;">In conclusion, while we all experience nostalgia, the way we do so is as unique as our own life stories. These individual differences create a rich and varied internal landscape of memory, demonstrating that our past is not a static record but a dynamic, personal experience constantly being reshaped by who we are today.</p>
             </div>
         </section>
 
     </main>
+
+    <!-- Return to Home Button -->
+    <a href="index.html" class="return-home-btn" title="Return to Home">
+        Return Home
+    </a>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
