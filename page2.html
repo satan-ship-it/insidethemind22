@@ -3,90 +3,416 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mindfulness Awareness - Inner Peace</title>
-    <link href="tooplate-inner-peace.css" rel="stylesheet">
+    <title>An Introduction to Psychology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Sage -->
+    <!-- Application Structure Plan: A thematic, single-page application with a sticky top navigation bar for easy access to different sections. This non-linear structure is chosen over a simple document layout to encourage user exploration and learning at their own pace. The sections are logically divided into: 1) Core Concepts (interactive cards for active learning), 2) Dual Perspectives (side-by-side comparison), 3) Evolution of Thought (tabbed interface to prevent information overload), 4) Branches of Psychology (a visual chart combined with clickable elements for engagement), and 5) Psychology in India (an interactive timeline for historical context). This design prioritizes user interaction and clarity to make a dense topic more digestible. -->
+    <!-- Visualization & Content Choices: 1. Core Concepts: Report Info -> 3 Components of Psych. Goal -> Organize/Inform. Viz -> Interactive Cards. Interaction -> Click to reveal details. Justification -> Breaks down a foundational concept into digestible, user-initiated pieces. Method -> HTML/CSS/JS. 2. Evolution of Thought: Report Info -> Schools of Psych. Goal -> Organize. Viz -> Tabbed Content. Interaction -> Click tab to show content. Justification -> Manages multiple distinct descriptions in a clean, space-efficient UI. Method -> HTML/CSS/JS. 3. Branches of Psychology: Report Info -> List of branches. Goal -> Inform/Organize. Viz -> Doughnut Chart + Clickable List. Interaction -> Click list item to update text display. Justification -> Chart provides a visual metaphor for the field's diversity, while the list allows for detailed exploration. Library -> Chart.js (Canvas). 4. Psychology in India: Report Info -> Four historical phases. Goal -> Show Change/History. Viz -> Interactive Timeline. Interaction -> Click phase to see description. Justification -> Timeline is the most intuitive representation of historical progression. Method -> HTML/CSS/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #3A6B6F;
+            border-bottom-color: #3A6B6F;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .tab-btn.active {
+            background-color: #3A6B6F;
+            color: #FFFFFF;
+        }
+        .phase.active .phase-dot {
+            background-color: #3A6B6F;
+            transform: scale(1.5);
+        }
+        .phase.active .phase-label {
+            color: #3A6B6F;
+            font-weight: 700;
+        }
+        .branch-btn.active {
+            background-color: #E0EBEA;
+            border-left-color: #3A6B6F;
+            color: #3A6B6F;
+        }
+        .chart-container {
+            position: relative; 
+            width: 100%; 
+            max-width: 450px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px; 
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
 </head>
-<body>
-    <div class="geometric-bg"></div>
+<body class="antialiased">
 
-    <!-- Header -->
-    <header>
-        <nav>
-            <a href="index.html" class="logo">
-                <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="20" cy="20" r="18" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
-                    <circle cx="20" cy="20" r="14" fill="none" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.7"/>
-                    <circle cx="20" cy="20" r="10" fill="none" stroke="url(#logoGradient)" stroke-width="1" opacity="0.5"/>
-                    <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3"/>
-                    <circle cx="20" cy="20" r="3" fill="url(#logoGradient)"/>
-                </svg>
-                <span class="logo-text">Inner Peace</span>
-            </a>
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-[#3A6B6F]">Psychology Explained</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-link pb-1 active">Home</a>
+                <a href="#concepts" class="nav-link pb-1">Core Concepts</a>
+                <a href="#perspectives" class="nav-link pb-1">Perspectives</a>
+                <a href="#evolution" class="nav-link pb-1">Evolution</a>
+                <a href="#branches" class="nav-link pb-1">Branches</a>
+                <a href="#india" class="nav-link pb-1">In India</a>
             </div>
-            <ul class="nav-links">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="index.html#about" class="nav-link">About</a></li>
-                <li><a href="index.html#practices" class="nav-link">Practices</a></li>
-                <li><a href="index.html#resources" class="nav-link">Resources</a></li>
-            </ul>
+            <button id="mobile-menu-button" class="md:hidden text-2xl">☰</button>
         </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 flex flex-col space-y-4">
+            <a href="#home" class="nav-link pb-1 active">Home</a>
+            <a href="#concepts" class="nav-link pb-1">Core Concepts</a>
+            <a href="#perspectives" class="nav-link pb-1">Perspectives</a>
+            <a href="#evolution" class="nav-link pb-1">Evolution</a>
+            <a href="#branches" class="nav-link pb-1">Branches</a>
+            <a href="#india" class="nav-link pb-1">In India</a>
+        </div>
     </header>
 
-    <!-- Main Content -->
-    <main style="padding: 8rem 5% 4rem; max-width: 1200px; margin: 0 auto;">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">📝</div>
-            <h1 class="section-title">Mindfulness Awareness</h1>
-            <p class="section-subtitle">Develop deep self-understanding through mindful observation</p>
-        </div>
+    <main class="container mx-auto px-6 py-12">
+        <section id="home" class="py-8 flex items-center"> <!-- Removed min-h-[70vh] -->
+            <div class="w-full">
+                <h2 class="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4">Understanding the <br><span class="text-[#3A6B6F]">Science of the Mind</span></h2>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl">
+                    Psychology is a fascinating, ever-evolving field that dives deep into our mental processes, behaviours, and experiences. It's not just about mental health; it’s about understanding the very essence of how we think, feel, act, and interact with the world around us. This guide provides an interactive exploration of its core principles.
+                </p>
+            </div>
+        </section>
 
-        <div style="background: white; border-radius: 25px; padding: 3rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); margin-bottom: 2rem;">
-            <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Welcome to Mindfulness Awareness</h2>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                This is a placeholder page for the Mindfulness Awareness practice. Here you can add detailed information about awareness techniques, 
-                journaling exercises, body scan practices, or any other resources related to developing mindful awareness.
-            </p>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                Some topics you might want to include:
-            </p>
-            <ul style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem; padding-left: 2rem;">
-                <li>Body scan meditation</li>
-                <li>Mindful journaling techniques</li>
-                <li>Emotion regulation practices</li>
-                <li>Gratitude exercises</li>
-                <li>Self-compassion practices</li>
-            </ul>
+        <section id="concepts" class="py-16 hidden">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">The Three Core Components</h2>
+                <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">Psychology systematically studies three intertwined components. Click on each card to learn more about how they shape our existence.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="concept-card bg-white p-8 rounded-lg shadow-lg cursor-pointer transition-transform transform hover:scale-105" data-concept="mental">
+                    <h3 class="text-2xl font-bold text-[#3A6B6F] mb-3">🧠 Mental Processes</h3>
+                    <p class="text-gray-600">The internal activities of our mind, like thinking, remembering, and problem-solving. These are the unseen mechanisms that drive our actions.</p>
+                </div>
+                <div class="concept-card bg-white p-8 rounded-lg shadow-lg cursor-pointer transition-transform transform hover:scale-105" data-concept="experience">
+                    <h3 class="text-2xl font-bold text-[#3A6B6F] mb-3">🌟 Experience</h3>
+                    <p class="text-gray-600">Our subjective, internal world of awareness. Experiences are personal and shaped by both internal states and external events.</p>
+                </div>
+                <div class="concept-card bg-white p-8 rounded-lg shadow-lg cursor-pointer transition-transform transform hover:scale-105" data-concept="behavior">
+                    <h3 class="text-2xl font-bold text-[#3A6B6F] mb-3">🏃‍♀️ Behavior</h3>
+                    <p class="text-gray-600">The observable responses and reactions we have to situations. Behavior can be overt (visible) or covert (internal).</p>
+                </div>
+            </div>
+            <div id="concept-details" class="mt-12 bg-white p-8 rounded-lg shadow-inner min-h-[150px] flex items-center justify-center">
+                <p class="text-gray-500 text-center text-lg">Click a component above to see its detailed description.</p>
+            </div>
+        </section>
+        
+        <section id="perspectives" class="py-16 hidden">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">A Discipline of Two Halves</h2>
+                <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">Psychology uniquely bridges two major domains of study: the natural sciences and the social sciences. This dual identity allows it to explore human nature from multiple, complementary angles.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-[#3A6B6F] mb-3">🔬 As a Natural Science</h3>
+                    <p class="text-gray-700">This perspective treats psychology like other scientific disciplines. It emphasizes empirical evidence, hypothesis testing, and controlled experiments to understand the biological and neurological underpinnings of the mind. Using tools like EEG and fMRI scans, it creates strong ties with neuroscience and biology to explain how brain activity supports mental functions.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-[#3A6B6F] mb-3">🤝 As a Social Science</h3>
+                    <p class="text-gray-700">This approach focuses on how our behavior is shaped by interactions with our social and cultural environments. It recognizes that who we are is influenced not just by our brain, but by our upbringing, social groups, culture, and societal context. It explores how factors like socioeconomic background can dramatically shape individual lives and opportunities.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="evolution" class="py-16 hidden">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Evolution of Psychological Thought</h2>
+                <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">Psychology has evolved through various schools of thought, each offering a unique lens to understand the mind. Click the tabs to explore these foundational perspectives.</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                <button class="tab-btn px-4 py-2 bg-white rounded-full shadow transition active" data-school="structuralism">Structuralism</button>
+                <button class="tab-btn px-4 py-2 bg-white rounded-full shadow transition" data-school="functionalism">Functionalism</button>
+                <button class="tab-btn px-4 py-2 bg-white rounded-full shadow transition" data-school="gestalt">Gestalt</button>
+                <button class="tab-btn px-4 py-2 bg-white rounded-full shadow transition" data-school="behaviourism">Behaviourism</button>
+                <button class="tab-btn px-4 py-2 bg-white rounded-full shadow transition" data-school="psychoanalysis">Psychoanalysis</button>
+                <button class="tab-btn px-4 py-2 bg-white rounded-full shadow transition" data-school="humanistic">Humanistic</button>
+                <button class="tab-btn px-4 py-2 bg-white rounded-full shadow transition" data-school="cognitive">Cognitive</button>
+                <button class="tab-btn px-4 py-2 bg-white rounded-full shadow transition" data-school="constructivism">Constructivism</button>
+            </div>
+            <div id="school-details" class="bg-white p-8 rounded-lg shadow-inner min-h-[150px]">
+            </div>
+        </section>
+        
+        <section id="branches" class="py-16 hidden">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Major Branches of Psychology</h2>
+                <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">The field of psychology is vast, encompassing numerous specializations. The chart below visualizes some of these key areas. Select a branch from the list to learn more about its focus.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="chart-container">
+                    <canvas id="branches-chart"></canvas>
+                </div>
+                <div>
+                    <div class="flex flex-col space-y-2">
+                        <button class="branch-btn text-left p-4 bg-white rounded-lg shadow-sm border-l-4 border-transparent transition active" data-branch="cognitive">Cognitive Psychology</button>
+                        <button class="branch-btn text-left p-4 bg-white rounded-lg shadow-sm border-l-4 border-transparent transition" data-branch="biological">Biological Psychology</button>
+                        <button class="branch-btn text-left p-4 bg-white rounded-lg shadow-sm border-l-4 border-transparent transition" data-branch="developmental">Developmental Psychology</button>
+                        <button class="branch-btn text-left p-4 bg-white rounded-lg shadow-sm border-l-4 border-transparent transition" data-branch="social">Social Psychology</button>
+                        <button class="branch-btn text-left p-4 bg-white rounded-lg shadow-sm border-l-4 border-transparent transition" data-branch="clinical">Clinical & Counselling Psychology</button>
+                        <button class="branch-btn text-left p-4 bg-white rounded-lg shadow-sm border-l-4 border-transparent transition" data-branch="educational">Educational Psychology</button>
+                        <button class="branch-btn text-left p-4 bg-white rounded-lg shadow-sm border-l-4 border-transparent transition" data-branch="industrial">Industrial/Organisational Psychology</button>
+                    </div>
+                     <div id="branch-details" class="mt-6 bg-white p-6 rounded-lg shadow-inner min-h-[100px]"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="india" class="py-16 hidden">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Psychology in India: A Brief History</h2>
+                <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">Modern psychology in India began in the early 20th century and has evolved through distinct phases, increasingly incorporating local context and indigenous knowledge. Explore this journey through the timeline below.</p>
+            </div>
             
-            <a href="index.html" style="display: inline-block; background: var(--gradient-1); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.3s ease; margin-top: 1rem;">
-                ← Back to Homepage
-            </a>
-        </div>
+            <div class="relative w-full max-w-4xl mx-auto mt-12">
+                <div class="absolute left-1/2 top-0 h-full w-0.5 bg-gray-300"></div>
+                <div class="space-y-16">
+                    <div class="phase relative flex items-center justify-start active" data-phase="phase1">
+                        <div class="w-1/2 pr-8 text-right">
+                            <div class="phase-label text-lg font-semibold text-gray-700">Phase 1: Pre-Independence</div>
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-gray-300 rounded-full phase-dot transition-all duration-300"></div>
+                    </div>
+                    
+                    <div class="phase relative flex items-center justify-end" data-phase="phase2">
+                        <div class="absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-gray-300 rounded-full phase-dot transition-all duration-300"></div>
+                        <div class="w-1/2 pl-8 text-left">
+                            <div class="phase-label text-lg font-semibold text-gray-700">Phase 2: Post-Independence to 1960s</div>
+                        </div>
+                    </div>
+
+                    <div class="phase relative flex items-center justify-start" data-phase="phase3">
+                        <div class="w-1/2 pr-8 text-right">
+                            <div class="phase-label text-lg font-semibold text-gray-700">Phase 3: Post-1960s</div>
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-gray-300 rounded-full phase-dot transition-all duration-300"></div>
+                    </div>
+                    
+                    <div class="phase relative flex items-center justify-end" data-phase="phase4">
+                        <div class="absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-gray-300 rounded-full phase-dot transition-all duration-300"></div>
+                        <div class="w-1/2 pl-8 text-left">
+                           <div class="phase-label text-lg font-semibold text-gray-700">Phase 4: Late 1970s Onward</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="phase-details" class="mt-12 bg-white p-8 rounded-lg shadow-inner max-w-3xl mx-auto text-center min-h-[100px]">
+            </div>
+        </section>
+        
+        <section id="goals" class="py-16 hidden"> <!-- Hidden by default, only shown if navigated to -->
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">The Core Goals of Psychology</h2>
+                <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">Psychology strives to achieve several key objectives to improve our understanding of human nature and enhance well-being.</p>
+            </div>
+             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md"><p class="text-gray-700"><strong>Describe and Explain:</strong> Use research to systematically observe and explain behavior and mental processes.</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md"><p class="text-gray-700"><strong>Understand and Change:</strong> Move beyond explanation to predict and influence behavior in positive ways.</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md"><p class="text-gray-700"><strong>Explore Interactions:</strong> Analyze the complex interplay between a person and their environment.</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md"><p class="text-gray-700"><strong>Recognize Multiple Causes:</strong> Acknowledge that behavior rarely has a single cause but results from many interconnected factors.</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md"><p class="text-gray-700"><strong>Adapt Theories:</strong> Ensure that psychological theories are relevant and sensitive to different cultural and social contexts.</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md"><p class="text-gray-700"><strong>Apply Knowledge:</strong> Use psychological insights to help people live better, more fulfilling lives.</p></div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Service</a>
-                <a href="#support">Support</a>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Inner Peace. All rights reserved. Nurturing minds, one breath at a time.</p>
-            </div>
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Psychology Explained. An interactive guide.</p>
+            <p class="text-sm text-gray-400 mt-2">Content based on "Psychology and Education: Indian Perspectives" by NCERT, 2010.</p>
         </div>
     </footer>
 
-    <script src="tooplate-inner-peace-scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('main > section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const contentData = {
+                concepts: {
+                    mental: "<strong>Mental Processes:</strong> These are all the things our minds do — like thinking, solving problems, perceiving, remembering, feeling, and even dreaming. These processes are tied to the brain, but the mind itself is an emergent property of our interactions and awareness. Mental activity continues even when we are asleep, constantly learning and processing.",
+                    experience: "<strong>Experience:</strong> Experiences are subjective and internal. Psychologists study a wide range of experiences, from physical pain to emotional grief or meditative states. They are shaped by both internal and external factors; for example, a crowded bus feels different if you're with friends versus alone. Psychology seeks to understand these subjective differences.",
+                    behavior: "<strong>Behavior:</strong> Behavior refers to how we respond or react to situations. It can be overt (visible actions like running) or covert (internal processes like thinking a scary thought). Importantly, behavior is linked to both external stimuli (a loud noise) and internal stimuli (an anxious feeling), and psychologists study it from both objective and subjective viewpoints."
+                },
+                schools: {
+                    structuralism: { title: "Structuralism (Wundt)", content: "Focused on breaking down mental experiences into their most basic components or 'structures.' The primary method used was introspection, where individuals would report on their own conscious experiences in detail." },
+                    functionalism: { title: "Functionalism (James)", content: "Shifted focus from the structure of consciousness to its purpose or function. It asked what the mind does and how mental processes help individuals adapt to their environment." },
+                    gestalt: { title: "Gestalt Psychology", content: "Argued that we perceive things as unified wholes, not as a collection of separate parts. It is famously summarized by the phrase, 'the whole is greater than the sum of its parts.'" },
+                    behaviourism: { title: "Behaviourism (Watson, Skinner)", content: "Proposed that psychology should only study observable, measurable behavior and dismissed the study of the mind (thoughts, feelings) as unscientific. It focused on how behavior is learned through conditioning." },
+                    psychoanalysis: { title: "Psychoanalysis (Freud)", content: "Explored the role of the unconscious mind, including hidden desires, fears, and internal conflicts, in shaping behavior. It emphasized early childhood experiences and developed techniques like dream analysis." },
+                    humanistic: { title: "Humanistic Psychology (Maslow, Rogers)", content: "Emphasized human potential, free will, and the drive for self-actualization. It took a more positive view of human nature, focusing on personal growth and the freedom to choose one's own path." },
+                    cognitive: { title: "Cognitive Psychology", content: "Returned the focus to mental processes, studying how we think, perceive, remember, reason, and solve problems. It often uses the analogy of the brain as an information processor, similar to a computer." },
+                    constructivism: { title: "Constructivism (Piaget, Vygotsky)", content: "Believed that humans actively construct their own knowledge and understanding through their experiences. This learning can happen through personal exploration or through social interaction with others." }
+                },
+                 branches: {
+                    cognitive: "Investigates mental processes such as attention, language use, memory, perception, problem solving, creativity, and thinking.",
+                    biological: "Focuses on the biological basis of behavior and mental states, looking at the brain, genetics, hormones, and the immune and nervous systems.",
+                    developmental: "Studies the systematic psychological changes that a person experiences over the life span, often referred to as human development.",
+                    social: "Looks at how people's thoughts, feelings, and behaviors are influenced by the actual, imagined, or implied presence of others.",
+                    clinical: "Deals with the diagnosis and treatment of mental, emotional, and behavioral disorders. Counselling psychology focuses more on everyday life issues.",
+                    educational: "Studies how people learn in educational settings, the effectiveness of educational interventions, the psychology of teaching, and social psychology of schools.",
+                    industrial: "Applies psychological principles to workplace issues such as productivity, employee morale, occupational stress, and organizational change."
+                },
+                indiaPhases: {
+                    phase1: "<strong>Pre-Independence:</strong> In its early stages, Indian psychology was heavily influenced by Western traditions, with a primary focus on experimental, psychoanalytic, and intelligence testing research, largely reflecting the dominant schools of thought in Europe and North America.",
+                    phase2: "<strong>Post-Independence to 1960s:</strong> Following independence, there was a significant expansion of the discipline into various branches of psychology. It was a period of growth and diversification, as psychologists in India began to establish a unique identity separate from Western traditions.",
+                    phase3: "<strong>Post-1960s:</strong> A problem-oriented approach began to emerge, with a greater focus on applying psychological principles to address India-specific social issues. Research started to become more relevant to the unique challenges and context of Indian society.",
+                    phase4: "<strong>Late 1970s Onward:</strong> This phase marked a significant shift toward 'Indigenization.' Scholars began to develop psychological theories and methods that were rooted in Indian cultural and philosophical traditions, aiming to create a more context-sensitive and culturally relevant psychology."
+                }
+            };
+            
+            function updateActiveLink(targetId) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if(link.getAttribute('href') === `#${targetId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            function showSection(targetId) {
+                sections.forEach(section => {
+                    if(section.id === targetId) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+                updateActiveLink(targetId);
+                window.scrollTo(0, 0);
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    showSection(targetId);
+                });
+            });
+
+            document.getElementById('mobile-menu-button').addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.toggle('hidden');
+            });
+            
+            showSection('home');
+            document.querySelector('.nav-link[href="#home"]').classList.add('active');
+
+
+            const conceptCards = document.querySelectorAll('.concept-card');
+            const conceptDetails = document.getElementById('concept-details');
+            conceptCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const conceptKey = card.dataset.concept;
+                    conceptDetails.innerHTML = `<p class="text-gray-700 text-left">${contentData.concepts[conceptKey]}</p>`;
+                });
+            });
+
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const schoolDetails = document.getElementById('school-details');
+            function updateSchoolContent(schoolKey) {
+                const school = contentData.schools[schoolKey];
+                schoolDetails.innerHTML = `<h3 class="text-2xl font-bold text-[#3A6B6F] mb-3">${school.title}</h3><p class="text-gray-700">${school.content}</p>`;
+            }
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    updateSchoolContent(btn.dataset.school);
+                });
+            });
+            updateSchoolContent('structuralism');
+
+            const branchBtns = document.querySelectorAll('.branch-btn');
+            const branchDetails = document.getElementById('branch-details');
+            function updateBranchContent(branchKey) {
+                branchDetails.innerHTML = `<p class="text-gray-700">${contentData.branches[branchKey]}</p>`;
+            }
+            branchBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    branchBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    updateBranchContent(btn.dataset.branch);
+                });
+            });
+            updateBranchContent('cognitive');
+            
+            const phases = document.querySelectorAll('.phase');
+            const phaseDetails = document.getElementById('phase-details');
+            function updatePhaseContent(phaseKey) {
+                phaseDetails.innerHTML = `<p class="text-gray-700">${contentData.indiaPhases[phaseKey]}</p>`;
+            }
+            phases.forEach(phase => {
+                phase.addEventListener('click', () => {
+                    phases.forEach(p => p.classList.remove('active'));
+                    phase.classList.add('active');
+                    updatePhaseContent(phase.dataset.phase);
+                });
+            });
+            updatePhaseContent('phase1');
+
+            const ctx = document.getElementById('branches-chart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(contentData.branches).map(key => key.charAt(0).toUpperCase() + key.slice(1)),
+                        datasets: [{
+                            label: 'Branches of Psychology',
+                            data: [1, 1, 1, 1, 1, 1, 1],
+                            backgroundColor: [
+                                '#6E9E95', '#8AB6AC', '#A6CDC3', '#3A6B6F', '#568A8E', '#72A9AD', '#8EC8CD'
+                            ],
+                            borderColor: '#FDFBF8',
+                            borderWidth: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                             tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
