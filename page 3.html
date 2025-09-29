@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,479 +9,519 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals -->
-    <!-- Application Structure Plan: A multi-section single-page application (SPA) with a fixed top navigation. The structure is designed to guide the user from foundational concepts to specific applications. It starts with an 'Introduction' covering goals and the research process. The core is the 'Research Methods' section, using an interactive card layout to allow users to select and view details of each method on demand, preventing information overload. A unique 'Method Comparison' tool with a dynamic chart allows for active learning and synthesis, a key improvement over the static text. Finally, 'Data & Ethics' provides crucial context. This thematic, non-linear structure is chosen for better usability and engagement than a simple linear document, allowing users to explore topics based on interest and reinforcing learning through comparison. -->
+    <!-- Chosen Palette: Blue Gradient Theme (matching index.html) -->
+    <!-- Application Structure Plan: The application uses a continuous vertical scroll structure, presenting all five major thematic sections (Introduction, Goals, Process, Methods, Ethics) sequentially. This structure was chosen to convert the document into a linear reading experience, much like a textbook chapter, while retaining interactivity. Large vertical padding and bold, distinct headers are used to clearly separate each theme. All internal interactions (like the Goals selection and Methods tabs) remain within their respective sections, ensuring the user is not distracted by global navigation and can focus on the content flow. -->
     <!-- Visualization & Content Choices: 
-    - Research Goals: Presented as interactive cards to break down text and add engagement. Goal: Inform. Method: HTML/CSS with JS toggle. Justification: More dynamic than a simple list.
-    - Research Steps: Visualized as a numbered horizontal process flow. Goal: Organize. Method: HTML/CSS (Flexbox). Justification: Clearly illustrates the sequence of research.
-    - Research Methods: Detailed in a modal-like view triggered by clicking method cards. Goal: Inform/Organize. Method: HTML/CSS/JS. Justification: Focuses user attention on one method at a time.
-    - Method Comparison: An interactive horizontal bar chart. Goal: Compare/Analyze. Viz: Chart.js Canvas. Interaction: A dropdown lets users change the comparison metric (e.g., Causality, Control), dynamically updating the chart. Justification: Actively engages the user in comparing methods, which is more effective for learning than reading descriptions.
-    - Ethical Issues: An interactive accordion list. Goal: Inform. Method: HTML/CSS/JS. Justification: Keeps the section clean and allows users to explore principles they are interested in.
+    - Report Info: Goals of Enquiry -> Goal: Inform & Organize -> Viz: Interactive cards -> Interaction: Click to reveal details. Justification: More engaging than a list, focuses user attention. Method: HTML/CSS/JS.
+    - Report Info: Steps in Research -> Goal: Show Process -> Viz: Interactive flowchart diagram -> Interaction: Click on a step to see details. Justification: Visually represents the sequence, making it more intuitive than text. Method: HTML/Tailwind CSS/JS.
+    - Report Info: Comparison of Methods -> Goal: Compare -> Viz: Radar Chart -> Interaction: Visual comparison of multiple criteria. Justification: Provides a quick, multi-dimensional comparison. Library: Chart.js.
+    - Report Info: Correlational Research Types -> Goal: Explain Relationships -> Viz: Scatter Plot -> Interaction: Buttons to switch between correlation examples. Justification: Visually demonstrates abstract statistical concepts. Library: Chart.js.
+    - Report Info: Ethical Issues -> Goal: Organize & Inform -> Viz: Accordion component -> Interaction: Click to expand/collapse. Justification: Prevents information overload and keeps the UI clean. Method: HTML/CSS/JS.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
+        :root {
+            --primary: #2D5A87;
+            --secondary: #4A7C8A;
+            --accent: #6B9B7A;
+            --light: #F7F7F7;
+            --dark: #2A2A3E;
+            --gradient-1: linear-gradient(135deg, #2D5A87 0%, #4A7C8A 100%);
+            --gradient-2: linear-gradient(135deg, #F1E5AC 0%, #4a90e2 100%);
+        }
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FDFBF8;
-            color: #4A4A4A;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
         }
-        .nav-link {
-            transition: color 0.3s, border-bottom-color 0.3s;
-            border-bottom: 2px solid transparent;
+        .method-link {
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-        .nav-link.active, .nav-link:hover {
-            color: #C084FC;
-            border-bottom-color: #C084FC;
+        .method-link:hover, .method-link.active {
+            background-color: var(--primary);
+            color: #ffffff;
         }
         .card {
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .method-card.active {
-            background-color: #E9D5FF;
-            border-color: #C084FC;
+            background-color: #ffffff;
+            border: 1px solid rgba(45, 90, 135, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
         }
         .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 400px;
+            position: relative; 
+            width: 100%; 
+            max-width: 500px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px;
+            max-height: 400px;
         }
         @media (min-width: 768px) {
             .chart-container {
-                height: 500px;
+                height: 400px;
             }
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <nav class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="text-2xl font-bold text-purple-600">Psychological Enquiry</div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#introduction" class="nav-link active">Introduction</a>
-                    <a href="#methods" class="nav-link">Research Methods</a>
-                    <a href="#comparison" class="nav-link">Comparison</a>
-                    <a href="#ethics" class="nav-link">Data & Ethics</a>
-                </div>
-                <div class="md:hidden">
-                    <select id="mobile-nav" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5">
-                        <option value="#introduction">Introduction</option>
-                        <option value="#methods">Research Methods</option>
-                        <option value="#comparison">Comparison</option>
-                        <option value="#ethics">Data & Ethics</option>
-                    </select>
-                </div>
-            </div>
-        </nav>
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-6 py-6 text-center">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-[var(--primary)]">The Science of Mind: Psychological Enquiry</h1>
+            <p class="text-md text-gray-500 mt-1">A Comprehensive Guide to Research Methods and Ethics</p>
+        </div>
     </header>
 
-    <main class="container mx-auto px-6 py-12">
+    <main class="container mx-auto px-6 py-8 md:py-12">
 
-        <section id="introduction" class="mb-24 scroll-mt-20">
-            <h1 class="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">The Science of Mind and Behavior</h1>
-            <p class="text-lg text-center max-w-3xl mx-auto mb-12">Psychology is a science dedicated to understanding how we think, feel, and behave. This guide explores the systematic methods psychologists use for scientific enquiry, from forming questions to ensuring ethical research. The goal is to provide a clear framework for understanding the core principles of psychological investigation.</p>
-
-            <div class="bg-white p-8 rounded-xl shadow-md mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8 text-purple-700">The Five Goals of Psychological Enquiry</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 text-center">
-                    <div class="card bg-purple-50 p-6 rounded-lg">
-                        <div class="text-4xl mb-3">📝</div>
-                        <h3 class="text-xl font-semibold mb-2 text-purple-800">Description</h3>
-                        <p class="text-sm">Accurately documenting behaviors and mental processes to distinguish between them. For example, observing and noting student study habits.</p>
+        <!-- Introduction Section -->
+        <section id="intro" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-[var(--primary)] mb-4">Introduction to Psychological Enquiry</h2>
+                <p class="max-w-4xl mx-auto text-lg text-gray-600">Psychology is more than treating mental illness; it's a rigorous scientific discipline for understanding human thought, feeling, and behavior. This section outlines the foundations of **psychological enquiry**, a systematic process that uses empirical research methods to study experience and mental processes.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
+                <div class="space-y-6">
+                    <div class="card p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold text-[var(--secondary)] mb-2">A Scientific Approach</h3>
+                        <p class="text-gray-600">Psychology earns its place as a science through its use of **systematic observations**, controlled conditions, and **empirical research methods** to study behavior, experience, and mental processes.</p>
                     </div>
-                    <div class="card bg-blue-50 p-6 rounded-lg">
-                        <div class="text-4xl mb-3">🔮</div>
-                        <h3 class="text-xl font-semibold mb-2 text-blue-800">Prediction</h3>
-                        <p class="text-sm">Forecasting future behavior based on past observations. For example, predicting better grades for students who study more.</p>
-                    </div>
-                    <div class="card bg-green-50 p-6 rounded-lg">
-                        <div class="text-4xl mb-3">💡</div>
-                        <h3 class="text-xl font-semibold mb-2 text-green-800">Explanation</h3>
-                        <p class="text-sm">Identifying the underlying causes of behavior to understand why it occurs. For example, determining why study time affects performance.</p>
-                    </div>
-                    <div class="card bg-yellow-50 p-6 rounded-lg">
-                        <div class="text-4xl mb-3">⚙️</div>
-                        <h3 class="text-xl font-semibold mb-2 text-yellow-800">Change</h3>
-                        <p class="text-sm">Influencing or modifying behavior to achieve desired outcomes. For example, creating interventions to improve study habits.</p>
-                    </div>
-                    <div class="card bg-red-50 p-6 rounded-lg">
-                        <div class="text-4xl mb-3">🌍</div>
-                        <h3 class="text-xl font-semibold mb-2 text-red-800">Application</h3>
-                        <p class="text-sm">Solving real-world problems and improving quality of life through psychological insights and interventions.</p>
+                    <div class="card p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold text-[var(--secondary)] mb-2">Nature of Psychological Data</h3>
+                        <p class="text-gray-600">Data encompasses covert and overt behaviors, mental processes, subjective experiences, and contextual factors (physical, cultural, genetic). Crucially, data must always be **interpreted within context**.</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="bg-white p-8 rounded-xl shadow-md">
-                <h2 class="text-3xl font-bold text-center mb-8 text-purple-700">The Scientific Research Process</h2>
-                <p class="text-center max-w-2xl mx-auto mb-10">Scientific research in psychology follows a structured, iterative process to ensure findings are reliable and valid. Each step builds upon the last, contributing to a continuous cycle of discovery and refinement.</p>
-                <div class="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0 md:space-x-4">
-                    <div class="flex-1 text-center">
-                        <div class="bg-gray-200 text-purple-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto text-2xl font-bold mb-3">1</div>
-                        <h4 class="font-semibold text-lg">Conceptualise a Problem</h4>
-                        <p class="text-sm">Select a topic, define research questions, and formulate a testable hypothesis.</p>
-                    </div>
-                    <div class="hidden md:block text-gray-300 text-4xl">→</div>
-                    <div class="flex-1 text-center">
-                        <div class="bg-gray-200 text-purple-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto text-2xl font-bold mb-3">2</div>
-                        <h4 class="font-semibold text-lg">Collect Data</h4>
-                        <p class="text-sm">Design the study, select participants, and gather information using appropriate methods and tools.</p>
-                    </div>
-                    <div class="hidden md:block text-gray-300 text-4xl">→</div>
-                    <div class="flex-1 text-center">
-                        <div class="bg-gray-200 text-purple-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto text-2xl font-bold mb-3">3</div>
-                        <h4 class="font-semibold text-lg">Draw Conclusions</h4>
-                        <p class="text-sm">Analyse the collected data using statistical methods to validate or refute the hypothesis.</p>
-                    </div>
-                    <div class="hidden md:block text-gray-300 text-4xl">→</div>
-                    <div class="flex-1 text-center">
-                        <div class="bg-gray-200 text-purple-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto text-2xl font-bold mb-3">4</div>
-                        <h4 class="font-semibold text-lg">Revise & Theorise</h4>
-                        <p class="text-sm">Refine conclusions, revise the hypothesis, or propose new theories based on the findings.</p>
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold text-[var(--secondary)] mb-4">Paradigms of Research</h3>
+                     <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Scientific Tradition</h4>
+                            <p class="text-gray-600">Assumes behavior is observable, measurable, and predictable. Relies on controlled, empirical methods for objective conclusions.</p>
+                        </div>
+                        <div class="border-t border-gray-200 my-4"></div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700">Interpretive Tradition</h4>
+                            <p class="text-gray-600">Focuses on **meaning-making**. Views behavior as complex and context-bound, emphasizing subjective understanding within a social context.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="methods" class="mb-24 scroll-mt-20">
-            <h2 class="text-4xl font-bold text-center mb-4 text-gray-800">Exploring Research Methods</h2>
-            <p class="text-lg text-center max-w-3xl mx-auto mb-12">Psychologists use a variety of research methods to study behavior and mental processes. Each method has unique strengths and weaknesses, making it suitable for different types of research questions. Select a method below to learn more about its process, applications, advantages, and limitations.</p>
-            
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-                <button data-method="observational" class="method-card text-center p-4 border-2 border-gray-200 rounded-lg bg-white">
-                    <div class="text-4xl mb-2">👀</div><span class="font-semibold">Observational</span>
-                </button>
-                <button data-method="experimental" class="method-card text-center p-4 border-2 border-gray-200 rounded-lg bg-white">
-                    <div class="text-4xl mb-2">🔬</div><span class="font-semibold">Experimental</span>
-                </button>
-                <button data-method="correlational" class="method-card text-center p-4 border-2 border-gray-200 rounded-lg bg-white">
-                    <div class="text-4xl mb-2">🔗</div><span class="font-semibold">Correlational</span>
-                </button>
-                <button data-method="survey" class="method-card text-center p-4 border-2 border-gray-200 rounded-lg bg-white">
-                    <div class="text-4xl mb-2">📊</div><span class="font-semibold">Survey</span>
-                </button>
-                 <button data-method="testing" class="method-card text-center p-4 border-2 border-gray-200 rounded-lg bg-white">
-                    <div class="text-4xl mb-2">📜</div><span class="font-semibold">Testing</span>
-                </button>
-                 <button data-method="case_study" class="method-card text-center p-4 border-2 border-gray-200 rounded-lg bg-white">
-                    <div class="text-4xl mb-2">👤</div><span class="font-semibold">Case Study</span>
-                </button>
+        <!-- Goals Section -->
+        <section id="goals" class="py-12 mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-[var(--primary)] mb-4">The Five Goals of Psychological Enquiry</h2>
+                <p class="max-w-4xl mx-auto text-lg text-gray-600">Psychologists pursue five key objectives in their research, forming the foundational aims of the discipline. **Click on each goal** below to reveal its precise definition and an illustrative example.</p>
             </div>
-
-            <div id="method-details-container" class="bg-white p-8 rounded-xl shadow-inner min-h-[400px] flex items-center justify-center bg-gray-50">
-                <div id="method-placeholder" class="text-center text-gray-500">
-                    <p class="text-xl">Select a method above to view its details.</p>
-                </div>
-                <div id="method-details" class="hidden">
-                </div>
+            <div id="goals-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mb-8 max-w-6xl mx-auto"></div>
+            <div id="goal-details" class="card p-6 md:p-8 rounded-lg min-h-[150px] flex items-center justify-center transition-all duration-300 max-w-4xl mx-auto">
+                <p class="text-center text-gray-500">Select a goal above to see its description and application example.</p>
+            </div>
+        </section>
+        
+        <!-- Process Section -->
+        <section id="process" class="py-12 mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-[var(--primary)] mb-4">Steps in Scientific Research</h2>
+                <p class="max-w-4xl mx-auto text-lg text-gray-600">Scientific research is a structured and often iterative process. This flow diagram illustrates the four main steps, from initial conceptualization to theory revision. **Click on any step** to expand on its specific activities.</p>
+            </div>
+            <div id="process-container" class="relative flex flex-col md:flex-row justify-between items-center w-full max-w-5xl mx-auto mb-8 p-4 space-y-8 md:space-y-0"></div>
+            <div id="process-details" class="card p-6 md:p-8 rounded-lg min-h-[150px] transition-all duration-300 max-w-4xl mx-auto">
+                 <p class="text-center text-gray-500">Select a step in the research cycle to see its requirements and procedures.</p>
             </div>
         </section>
 
-        <section id="comparison" class="mb-24 scroll-mt-20">
-            <h2 class="text-4xl font-bold text-center mb-4 text-gray-800">Interactive Method Comparison</h2>
-            <p class="text-lg text-center max-w-3xl mx-auto mb-12">Choosing the right research method depends on the research question. Some methods are better for establishing cause-and-effect, while others excel at describing behavior in natural settings. Use the selector below to compare the methods across different key characteristics and see their relative strengths.</p>
-            
-            <div class="bg-white p-8 rounded-xl shadow-md">
-                <div class="flex justify-center mb-6">
-                    <div class="flex items-center space-x-3">
-                        <label for="comparison-metric" class="font-semibold">Compare by:</label>
-                        <select id="comparison-metric" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5">
-                            <option value="causality">Establishes Causality</option>
-                            <option value="control">Control over Variables</option>
-                            <option value="validity">Real-world Validity</option>
-                            <option value="cost">Time & Cost Efficiency</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="comparisonChart"></canvas>
-                </div>
+        <!-- Methods Section -->
+        <section id="methods" class="py-12 mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-[var(--primary)] mb-4">Important Research Methods</h2>
+                <p class="max-w-4xl mx-auto text-lg text-gray-600">The study of behavior requires diverse tools. This section offers a comprehensive overview of the six primary methods, including their pros, cons, and unique applications. Use the horizontal menu below to explore each method in detail.</p>
+            </div>
+            <div class="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto">
+                <aside class="w-full md:w-1/4">
+                    <!-- Methods Sub-Navigation -->
+                    <div id="methods-nav" class="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 card p-3 rounded-lg"></div>
+                </aside>
+                <!-- Method Content Area -->
+                <div id="method-content" class="w-full md:w-3/4"></div>
             </div>
         </section>
-
-        <section id="ethics" class="scroll-mt-20">
-            <h2 class="text-4xl font-bold text-center mb-4 text-gray-800">Data, Paradigms, and Ethics</h2>
-            <p class="text-lg text-center max-w-3xl mx-auto mb-12">Beyond methods, understanding the nature of psychological data and adhering to strict ethical guidelines are paramount. This section covers the different types of data collected, the philosophical paradigms that guide research, and the ethical principles that protect participants.</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-xl shadow-md">
-                    <h3 class="text-2xl font-bold text-purple-700 mb-4">Nature of Psychological Data</h3>
-                    <p class="mb-4">Psychological data is diverse, ranging from observable actions to internal experiences. It is always interpreted within a specific context.</p>
-                    <ul class="space-y-2 list-disc list-inside">
-                        <li><strong>Demographic:</strong> Age, education, income.</li>
-                        <li><strong>Physical:</strong> Housing conditions, environment.</li>
-                        <li><strong>Physiological:</strong> Heart rate, brain activity (EEG).</li>
-                        <li><strong>Psychological:</strong> Intelligence, emotions, personality traits.</li>
-                    </ul>
-                    <p class="mt-4 text-sm italic bg-yellow-100 p-3 rounded-md">Data is meaningless without context. Its interpretation is shaped by the theoretical framework and the conditions under which it was gathered.</p>
-                </div>
-                <div class="bg-white p-8 rounded-xl shadow-md">
-                    <h3 class="text-2xl font-bold text-purple-700 mb-4">Ethical Principles in Research</h3>
-                    <p class="mb-4">Ethical research practices ensure the dignity, rights, and welfare of all participants. These principles are non-negotiable.</p>
-                    <div class="space-y-3">
-                        <details class="bg-gray-50 p-3 rounded-lg cursor-pointer">
-                            <summary class="font-semibold">Voluntary Participation</summary>
-                            <p class="text-sm mt-2">Participants must freely choose to take part in research without any form of coercion or pressure.</p>
-                        </details>
-                         <details class="bg-gray-50 p-3 rounded-lg cursor-pointer">
-                            <summary class="font-semibold">Informed Consent</summary>
-                            <p class="text-sm mt-2">Participants must be fully informed about the study's purpose, procedures, risks, and benefits before agreeing to participate.</p>
-                        </details>
-                         <details class="bg-gray-50 p-3 rounded-lg cursor-pointer">
-                            <summary class="font-semibold">Debriefing</summary>
-                            <p class="text-sm mt-2">After the study, researchers must provide participants with a full explanation, especially if deception was used.</p>
-                        </details>
-                         <details class="bg-gray-50 p-3 rounded-lg cursor-pointer">
-                            <summary class="font-semibold">Confidentiality</summary>
-                            <p class="text-sm mt-2">The identity of participants and their data must be protected and kept private.</p>
-                        </details>
-                    </div>
-                </div>
+        
+        <!-- Ethics Section -->
+        <section id="ethics" class="py-12 mb-12">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-[var(--primary)] mb-4">Ethical Issues in Psychological Research</h2>
+                <p class="max-w-4xl mx-auto text-lg text-gray-600">All research must uphold the dignity and welfare of participants. These are the core ethical principles that researchers must follow. **Click on each principle** to understand its requirements in practice.</p>
             </div>
+            <div id="ethics-container" class="max-w-3xl mx-auto space-y-4"></div>
         </section>
 
     </main>
 
-    <footer class="bg-gray-800 text-white mt-20">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p>An Interactive Guide to Methods of Enquiry in Psychology.</p>
-        </div>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            const methodsData = {
-                observational: {
-                    title: 'Observational Method',
-                    icon: '👀',
-                    description: 'Systematically watching and recording behavior in its natural context without manipulating any variables. It is often used in the early stages of research to generate hypotheses.',
-                    types: [
-                        { name: 'Naturalistic', desc: 'Conducted in real-world settings (e.g., a classroom, playground).' },
-                        { name: 'Controlled', desc: 'Carried out in structured environments like labs.' },
-                        { name: 'Participant vs. Non-participant', desc: 'The observer is either part of the group or remains separate.' },
-                    ],
-                    advantages: ['Captures realistic, natural behavior', 'Useful for subjects who can’t give verbal responses (infants, animals)', 'Generates new research ideas'],
-                    limitations: ['Cannot establish cause-and-effect', 'Observer effect may alter behavior', 'Can be time-consuming and subjective']
-                },
-                experimental: {
-                    title: 'Experimental Method',
-                    icon: '🔬',
-                    description: 'The most scientific method used to establish cause-and-effect relationships by manipulating an Independent Variable (IV) and observing its effect on a Dependent Variable (DV).',
-                    types: [
-                        { name: 'Laboratory Experiments', desc: 'Highly controlled in artificial settings.' },
-                        { name: 'Field Experiments', desc: 'Conducted in real-world settings with higher ecological validity.' },
-                        { name: 'Quasi-Experiments', desc: 'Use naturally occurring groups without random assignment.' },
-                    ],
-                    advantages: ['Establishes cause-and-effect', 'Allows for precise control over variables', 'Results are replicable'],
-                    limitations: ['May lack real-world validity (artificiality)', 'Ethical concerns in manipulating certain variables', 'Can be expensive and time-consuming']
-                },
-                correlational: {
-                    title: 'Correlational Research',
-                    icon: '🔗',
-                    description: 'Used to determine the strength and direction of the relationship between two or more variables without any manipulation. It indicates association, not causation.',
-                    types: [
-                        { name: 'Positive Correlation', desc: 'Both variables increase or decrease together (e.g., study time and test scores).' },
-                        { name: 'Negative Correlation', desc: 'One variable increases as the other decreases (e.g., stress and sleep).' },
-                        { name: 'Zero Correlation', desc: 'No relationship exists between the variables.' },
-                    ],
-                    advantages: ['Identifies trends and associations', 'Useful when experiments are unethical or impractical', 'Can be used to make predictions'],
-                    limitations: ['Cannot establish causation', 'The "third variable problem" (confounding variables)', 'Direction of the relationship is unclear']
-                },
-                survey: {
-                    title: 'Survey Research',
-                    icon: '📊',
-                    description: 'Uses questionnaires or interviews to collect self-reported data on beliefs, attitudes, or behaviors from a large sample of people.',
-                    types: [
-                        { name: 'Questionnaires', desc: 'Written format, administered in person or online.' },
-                        { name: 'Interviews', desc: 'Can be structured (fixed questions) or unstructured (conversational).' },
-                    ],
-                    advantages: ['Can gather data from large samples quickly and cheaply', 'Allows for anonymity, potentially reducing social desirability bias', 'Versatile and can cover many topics'],
-                    limitations: ['Responses may be inaccurate or dishonest', 'Limited depth, especially with closed-ended questions', 'Vulnerable to sampling bias']
-                },
-                testing: {
-                    title: 'Psychological Testing',
-                    icon: '📜',
-                    description: 'Involves using standardised and objective tests to assess psychological constructs like intelligence, personality, aptitude, or interests.',
-                    types: [
-                        { name: 'Intelligence Tests', desc: 'e.g., Stanford-Binet, WAIS' },
-                        { name: 'Personality Tests', desc: 'e.g., MMPI, Big Five Inventory' },
-                        { name: 'Aptitude Tests', desc: 'e.g., DAT' },
-                    ],
-                    advantages: ['Provides precise, quantifiable data', 'Allows for comparisons across individuals or groups', 'High utility in clinical and organizational settings'],
-                    limitations: ['Can be culturally biased', 'May not capture the full complexity of human traits', 'Requires trained professionals to administer and interpret']
-                },
-                case_study: {
-                    title: 'Case Study Method',
-                    icon: '👤',
-                    description: 'An in-depth, intensive analysis of a single individual, group, or situation. It is used to uncover unique psychological phenomena and provide rich, detailed insights.',
-                    types: [
-                        { name: 'Data Sources', desc: 'Personal interviews, observations, psychological tests, and historical records.' },
-                    ],
-                    advantages: ['Provides rich, qualitative, in-depth data', 'Ideal for studying rare or unusual conditions', 'Allows for a holistic understanding of the subject'],
-                    limitations: ['Lacks generalizability to the wider population', 'Highly subjective and prone to researcher bias', 'Time-consuming and difficult to replicate']
-                }
-            };
-            
-            const methodDetailsContainer = document.getElementById('method-details-container');
-            const methodPlaceholder = document.getElementById('method-placeholder');
-            const methodDetails = document.getElementById('method-details');
-            const methodButtons = document.querySelectorAll('.method-card');
-
-            methodButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const methodKey = button.dataset.method;
-                    const data = methodsData[methodKey];
-
-                    methodButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-
-                    let typesHtml = data.types.map(t => `<li class="mb-2"><strong class="text-purple-700">${t.name}:</strong> ${t.desc}</li>`).join('');
-                    let advantagesHtml = data.advantages.map(adv => `<li class="flex items-start"><span class="text-green-500 mr-2">✓</span><span>${adv}</span></li>`).join('');
-                    let limitationsHtml = data.limitations.map(lim => `<li class="flex items-start"><span class="text-red-500 mr-2">✗</span><span>${lim}</span></li>`).join('');
-
-                    methodDetails.innerHTML = `
-                        <div class="w-full">
-                            <div class="flex items-center mb-4">
-                                <span class="text-5xl mr-4">${data.icon}</span>
-                                <h3 class="text-3xl font-bold text-gray-800">${data.title}</h3>
-                            </div>
-                            <p class="mb-6">${data.description}</p>
-                            <div class="mb-6">
-                                <h4 class="font-semibold text-lg mb-2 text-purple-800">Types & Variations</h4>
-                                <ul class="list-none pl-0 text-sm">${typesHtml}</ul>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <h4 class="font-semibold text-lg mb-2 text-green-700">Advantages</h4>
-                                    <ul class="space-y-1 text-sm">${advantagesHtml}</ul>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-lg mb-2 text-red-700">Limitations</h4>
-                                    <ul class="space-y-1 text-sm">${limitationsHtml}</ul>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-
-                    methodPlaceholder.classList.add('hidden');
-                    methodDetails.classList.remove('hidden');
-                });
-            });
-
-            const comparisonData = {
-                labels: ['Experimental', 'Correlational', 'Survey', 'Observational', 'Case Study', 'Testing'],
-                metrics: {
-                    causality: { data: [5, 1, 1, 1, 2, 1], label: 'Ability to Establish Causality (Higher is better)' },
-                    control: { data: [5, 1, 2, 2, 1, 4], label: 'Control over Variables (Higher is better)' },
-                    validity: { data: [2, 4, 3, 5, 5, 2], label: 'Real-world Validity (Higher is better)' },
-                    cost: { data: [1, 4, 5, 3, 1, 3], label: 'Time & Cost Efficiency (Higher is better)' }
-                }
-            };
-            
-            const ctx = document.getElementById('comparisonChart').getContext('2d');
-            let comparisonChart;
-
-            function createOrUpdateChart(metric) {
-                const metricData = comparisonData.metrics[metric];
-
-                if (comparisonChart) {
-                    comparisonChart.data.datasets[0].data = metricData.data;
-                    comparisonChart.data.datasets[0].label = metricData.label;
-                    comparisonChart.update();
-                } else {
-                    comparisonChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: comparisonData.labels,
-                            datasets: [{
-                                label: metricData.label,
-                                data: metricData.data,
-                                backgroundColor: [
-                                    'rgba(192, 132, 252, 0.6)',
-                                    'rgba(129, 140, 248, 0.6)',
-                                    'rgba(96, 165, 250, 0.6)',
-                                    'rgba(52, 211, 153, 0.6)',
-                                    'rgba(251, 191, 36, 0.6)',
-                                    'rgba(248, 113, 113, 0.6)'
-                                ],
-                                borderColor: [
-                                    'rgba(192, 132, 252, 1)',
-                                    'rgba(129, 140, 248, 1)',
-                                    'rgba(96, 165, 250, 1)',
-                                    'rgba(52, 211, 153, 1)',
-                                    'rgba(251, 191, 36, 1)',
-                                    'rgba(248, 113, 113, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            indexAxis: 'y',
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    beginAtZero: true,
-                                    max: 5,
-                                    ticks: {
-                                        stepSize: 1,
-                                        callback: function(value) {
-                                            const labels = ['N/A', 'Very Low', 'Low', 'Moderate', 'High', 'Very High'];
-                                            return labels[value];
-                                        }
-                                    }
-                                }
-                            },
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top',
-                                },
-                                tooltip: {
-                                    enabled: true
-                                }
-                            }
-                        }
-                    });
-                }
+<script>
+const APP_DATA = {
+    goals: [
+        { id: 'description', title: 'Description', icon: '🔍', content: 'The first step is to accurately describe a behavior or mental process. This includes documenting specific characteristics to distinguish one behavior from another.', example: 'For example, observing and documenting the specific study habits of successful vs. unsuccessful students.' },
+        { id: 'prediction', title: 'Prediction', icon: '🔮', content: 'Once behavior is described, psychologists seek to predict future behavior based on prior observations and identified relationships.', example: 'For example, predicting better academic performance in students who consistently devote more time to organized studying.' },
+        { id: 'explanation', title: 'Explanation', icon: '💡', content: 'Psychologists aim to identify the underlying causes of behavior. They explore causal factors to understand why certain behaviors occur, often attempting to establish cause-and-effect relationships.', example: 'For example, explaining why more study time leads to better performance by linking it to memory consolidation.' },
+        { id: 'change', title: 'Change', icon: '🔧', content: 'The goal here is to influence behavior by modifying conditions. This can mean reducing problematic behaviors or enhancing positive ones.', example: 'For example, designing an intervention to help students change their study habits to improve academic performance.' },
+        { id: 'application', title: 'Application', icon: '🌍', content: 'The ultimate aim is to solve real-world problems and bring about positive change. This includes improving quality of life through interventions and developing theoretical insights.', example: 'For example, applying research findings to create effective school-wide study programs.' },
+    ],
+    process: [
+        { id: 'conceptualising', title: 'Conceptualising a Problem', details: 'This step involves selecting a research topic, defining specific research questions, and formulating a hypothesis, which is a tentative, testable explanation.' },
+        { id: 'collecting', title: 'Collecting Data', details: 'This involves designing the study and making decisions about participants, data collection methods (e.g., observation, interviews), tools (e.g., questionnaires), and standardized procedures.' },
+        { id: 'drawing', title: 'Drawing Conclusions', details: 'The collected data is analysed using statistical tools to validate or refute the hypothesis. This step translates raw data into meaningful findings.' },
+        { id: 'revising', title: 'Revising & Reporting', details: 'Based on the findings, researchers revise their conclusions or theory. The research is a continuous, iterative process where results lead to new questions. Findings are shared with the scientific community.' },
+    ],
+    methods: {
+        observational: {
+            title: 'Observational Method',
+            description: 'Observation involves systematically watching and recording behavior in its natural setting without manipulating any variables. It is often used in the early stages of research to understand behaviors and generate hypotheses.',
+            advantages: ['Captures realistic, natural behavior.', 'Useful for studying populations who can’t give verbal responses (e.g., infants, animals).'],
+            limitations: ['Cannot infer causality.', 'Behavior may change if participants know they are being watched (observer effect).', 'Can be time-consuming and subjective.'],
+            types: {
+                'Naturalistic vs. Controlled': 'Naturalistic observation occurs in real-world settings (e.g., a classroom), while controlled observation happens in structured environments like labs.',
+                'Participant vs. Non-participant': 'In non-participant observation, the observer remains separate. In participant observation, the observer becomes part of the group being studied.'
             }
+        },
+        experimental: {
+            title: 'Experimental Method',
+            description: 'The most scientific method, used to establish cause-and-effect relationships by manipulating an Independent Variable (IV) and observing its effect on a Dependent Variable (DV), while controlling other variables.',
+            advantages: ['Allows for precise control over variables.', 'Can demonstrate and determine causality.', 'Replicable by other researchers.'],
+            limitations: ['Results may lack real-world validity (artificial settings).', 'Ethical concerns can limit manipulation of certain behaviors.', 'Can be expensive and time-consuming.'],
+            types: {
+                'Key Components': 'Independent Variable (IV): Manipulated variable. Dependent Variable (DV): Measured variable. Control Group: Receives no treatment. Experimental Group: Receives treatment.',
+                'Types of Experiments': 'Laboratory experiments are highly controlled. Field experiments are conducted in real-world settings. Quasi-experiments use pre-existing groups (no random assignment).'
+            }
+        },
+        correlational: {
+            title: 'Correlational Research',
+            description: 'This design measures the relationship between two or more variables without manipulation. It shows how strongly variables are related but does not establish a cause-and-effect link.',
+            advantages: ['Helps identify trends and associations.', 'Useful when manipulating variables is unethical or impractical.'],
+            limitations: ['Cannot establish causation (correlation is not causation).', 'A third, unmeasured variable may be responsible for the relationship.', 'Direction of the relationship is unclear (does A cause B, or B cause A?).'],
+            types: {
+                'Positive Correlation': 'Both variables increase or decrease together (e.g., study time and test scores).',
+                'Negative Correlation': 'As one variable increases, the other decreases (e.g., stress levels and hours of sleep).',
+                'Zero Correlation': 'No relationship exists between the variables (e.g., shoe size and intelligence).'
+            }
+        },
+        survey: {
+            title: 'Survey Research',
+            description: 'Uses questionnaires or interviews to collect self-reported data on beliefs, attitudes, or behaviors from a large sample of people. This method is efficient for gathering a breadth of information quickly.',
+            advantages: ['Can gather data from large samples quickly and cheaply.', 'Anonymity can reduce social desirability bias.'],
+            limitations: ['Responses may be inaccurate due to memory errors or dishonesty.', 'Limited depth, especially with closed-ended questions.', 'Prone to sampling bias if the sample isn\'t representative.'],
+            types: {
+                'Formats': 'Questionnaires (written) and Interviews (verbal). Interviews can be structured (fixed questions), unstructured (conversational), or semi-structured (a mix of both).',
+                'Sampling': 'Random sampling gives everyone an equal chance of being selected. Stratified sampling ensures representation from specific subgroups.'
+            }
+        },
+        testing: {
+            title: 'Psychological Testing',
+            description: 'This method uses standardised and objective instruments to assess psychological constructs like intelligence, personality, aptitude, or interests. These tests provide quantifiable data.',
+            advantages: ['Provides precise and quantifiable data.', 'Allows for comparisons across individuals or groups.', 'Useful in clinical, educational, and organizational settings.'],
+            limitations: ['May be culturally biased.', 'Cannot fully capture the complexity of human traits.', 'Requires trained professionals to administer and interpret correctly.'],
+            types: {
+                'Key Characteristics': 'Reliability: Consistency of results. Validity: The test measures what it claims to measure. Standardization: Uniform procedures for administration and scoring.',
+                'Examples': 'Intelligence Tests (WAIS), Personality Tests (MMPI, Big Five), Aptitude Tests (DAT).'
+            }
+        },
+        case_study: {
+            title: 'Case Study Method',
+            description: 'An in-depth, intensive analysis of a single individual, group, or event. It provides a rich, holistic understanding by drawing data from multiple sources like interviews, observations, and records.',
+            advantages: ['Provides rich, detailed qualitative data.', 'Ideal for studying rare or unusual conditions (e.g., unique brain injuries).', 'Allows for a holistic understanding of a complex issue.'],
+            limitations: ['Findings lack generalizability to the wider population.', 'Highly subject to researcher bias in interpretation.', 'Time-consuming and difficult to replicate.'],
+            types: {
+                'Famous Examples': 'The case of Phineas Gage helped understand the role of the frontal lobe in personality. The study of "Genie" provided insights into language acquisition.',
+                'Data Sources': 'Personal interviews, behavioral observations, psychological testing, historical records.'
+            }
+        },
+    },
+    ethics: [
+        { title: 'Voluntary Participation', content: 'Participants must not be coerced, forced, or bribed into taking part in a study. They must freely choose to participate and should be able to withdraw at any time without penalty.' },
+        { title: 'Informed Consent', content: 'Participants must be fully informed about the purpose, procedures, potential risks, and benefits of the research before agreeing to participate. For minors or vulnerable populations, consent must be obtained from a legal guardian.' },
+        { title: 'Debriefing', content: 'After the study is complete, participants should be provided with a full explanation of the research. This is especially important if any deception was used. The researcher must address any misconceptions and minimize any harm.' },
+        { title: 'Confidentiality', content: 'All information obtained about a participant during a study must be kept confidential. Data should be anonymized and stored securely to protect the participant\'s identity and privacy.' },
+        { title: 'Sharing Results', content: 'Researchers have an ethical responsibility to share their findings with the scientific community. When doing so, they must report their data honestly and accurately, without fabrication or plagiarism.' },
+    ]
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    
+    let methodCharts = {};
+
+    function initGoals() {
+        const container = document.getElementById('goals-container');
+        const details = document.getElementById('goal-details');
+        container.innerHTML = APP_DATA.goals.map(goal => `
+            <div data-id="${goal.id}" class="card p-4 rounded-lg text-center cursor-pointer transform hover:-translate-y-1 transition-transform duration-300">
+                <div class="text-4xl mb-2">${goal.icon}</div>
+                <h3 class="font-semibold text-lg">${goal.title}</h3>
+            </div>
+        `).join('');
+
+        container.addEventListener('click', (e) => {
+            const card = e.target.closest('[data-id]');
+            if (!card) return;
+
+            document.querySelectorAll('#goals-container [data-id]').forEach(c => c.classList.remove('ring-2', 'ring-[var(--primary)]'));
+            card.classList.add('ring-2', 'ring-[var(--primary)]');
+
+            const goal = APP_DATA.goals.find(g => g.id === card.dataset.id);
+            details.innerHTML = `
+                <div class="text-left">
+                    <h3 class="text-xl font-bold text-[var(--primary)] mb-2">${goal.title}</h3>
+                    <p class="text-gray-600 mb-4">${goal.content}</p>
+                    <p class="text-sm text-gray-500 bg-gray-50 p-3 rounded-md">${goal.example}</p>
+                </div>
+            `;
+        });
+    }
+
+    function initProcess() {
+        const container = document.getElementById('process-container');
+        const details = document.getElementById('process-details');
+        container.innerHTML = APP_DATA.process.map((step, index) => `
+            <div class="flex flex-col md:flex-1 items-center w-full">
+                <div data-id="${step.id}" class="w-24 h-24 md:w-32 md:h-32 bg-white border-2 border-[var(--secondary)] rounded-full flex items-center justify-center text-center p-2 cursor-pointer font-semibold shadow-sm hover:shadow-lg hover:border-[var(--primary)] transition-all duration-300">
+                    ${step.title}
+                </div>
+            </div>
+            ${index < APP_DATA.process.length - 1 ? '<div class="hidden md:block text-3xl text-[var(--secondary)] font-light self-center pb-8">→</div><div class="md:hidden w-1 h-8 bg-[var(--secondary)] my-2"></div>' : ''}
+        `).join('');
+
+        container.addEventListener('click', e => {
+            const stepEl = e.target.closest('[data-id]');
+            if (!stepEl) return;
+
+            document.querySelectorAll('#process-container [data-id]').forEach(el => el.classList.remove('bg-[var(--light)]', 'border-[var(--primary)]'));
+            stepEl.classList.add('bg-[var(--light)]', 'border-[var(--primary)]');
             
-            const metricSelector = document.getElementById('comparison-metric');
-            metricSelector.addEventListener('change', (e) => {
-                createOrUpdateChart(e.target.value);
-            });
-            createOrUpdateChart('causality');
+            const step = APP_DATA.process.find(s => s.id === stepEl.dataset.id);
+            details.innerHTML = `
+                 <div class="text-left">
+                    <h3 class="text-xl font-bold text-[var(--primary)] mb-2">${step.title}</h3>
+                    <p class="text-gray-600">${step.details}</p>
+                </div>
+            `;
+        });
+    }
 
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('main section');
+    function renderMethodContent(methodKey) {
+        const method = APP_DATA.methods[methodKey];
+        const container = document.getElementById('method-content');
+        
+        const typesHtml = method.types ? Object.entries(method.types).map(([key, value]) => `
+            <div class="border-t border-gray-200 pt-4 mt-4">
+                <h5 class="font-semibold text-gray-700">${key}</h5>
+                <p class="text-gray-600">${value}</p>
+            </div>
+        `).join('') : '';
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
-                        });
-                    }
+        let chartHtml = '';
+        if (methodKey === 'correlational') {
+            chartHtml = `
+                <div class="mt-8">
+                     <h4 class="text-lg font-semibold text-[var(--secondary)] mb-4">Visualizing Correlation</h4>
+                     <p class="text-gray-600 mb-4">Correlation describes the relationship between two variables. Use the buttons below to see what different types of correlations look like on a scatter plot.</p>
+                     <div class="chart-container"><canvas id="correlationChart"></canvas></div>
+                     <div class="flex justify-center space-x-2 mt-4">
+                        <button data-corr="positive" class="corr-btn bg-[var(--primary)] text-white px-4 py-2 rounded-md font-medium">Positive</button>
+                        <button data-corr="negative" class="corr-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-md font-medium">Negative</button>
+                        <button data-corr="zero" class="corr-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-md font-medium">Zero</button>
+                     </div>
+                </div>`;
+        } else if (methodKey === 'experimental') {
+             chartHtml = `
+                <div class="mt-8">
+                     <h4 class="text-lg font-semibold text-[var(--secondary)] mb-4">Method Comparison Radar</h4>
+                     <p class="text-gray-600 mb-4">This chart visually compares different research methods across key criteria like **Control**, ability to determine **Causality**, and **Ecological Realism**.</p>
+                     <div class="chart-container"><canvas id="methodComparisonChart"></canvas></div>
+                </div>`;
+        }
+
+        container.innerHTML = `
+            <div class="card p-6 md:p-8 rounded-lg">
+                <h3 class="text-2xl font-bold text-[var(--primary)] mb-4">${method.title}</h3>
+                <p class="text-gray-600 mb-6">${method.description}</p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-semibold text-green-700 mb-2">Advantages</h4>
+                        <ul class="list-disc list-inside space-y-1 text-gray-600">${method.advantages.map(adv => `<li>${adv}</li>`).join('')}</ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-red-700 mb-2">Limitations</h4>
+                        <ul class="list-disc list-inside space-y-1 text-gray-600">${method.limitations.map(lim => `<li>${lim}</li>`).join('')}</ul>
+                    </div>
+                </div>
+                
+                <div class="mt-6">${typesHtml}</div>
+                ${chartHtml}
+            </div>
+        `;
+
+        if (methodKey === 'correlational') {
+            renderCorrelationChart();
+        } else if (methodKey === 'experimental') {
+            renderMethodComparisonChart();
+        }
+    }
+    
+    function initMethods() {
+        const navContainer = document.getElementById('methods-nav');
+        navContainer.innerHTML = Object.keys(APP_DATA.methods).map(key => `
+            <a data-method="${key}" class="method-link text-left whitespace-nowrap text-gray-700 px-4 py-2 rounded-md mb-1 md:mr-0 mr-1">${APP_DATA.methods[key].title}</a>
+        `).join('');
+        
+        navContainer.addEventListener('click', e => {
+            if (e.target.matches('.method-link')) {
+                const methodKey = e.target.dataset.method;
+                document.querySelectorAll('.method-link').forEach(link => link.classList.remove('active', 'bg-[var(--primary)]', 'text-white'));
+                e.target.classList.add('active', 'bg-[var(--primary)]', 'text-white');
+                renderMethodContent(methodKey);
+            }
+        });
+        
+        document.querySelector('.method-link').click();
+    }
+    
+    function renderMethodComparisonChart() {
+        const ctx = document.getElementById('methodComparisonChart');
+        if (!ctx) return;
+        if (methodCharts.comparison) methodCharts.comparison.destroy();
+        
+        methodCharts.comparison = new Chart(ctx.getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['Control over Variables', 'Establishes Causality', 'Ecological Realism', 'Cost Efficiency'],
+                datasets: [
+                    { label: 'Experiment', data: [5, 5, 2, 2], borderColor: '#2D5A87', backgroundColor: 'rgba(45, 90, 135, 0.2)' },
+                    { label: 'Observation', data: [1, 1, 5, 4], borderColor: '#4A7C8A', backgroundColor: 'rgba(74, 124, 138, 0.2)' },
+                    { label: 'Correlational', data: [2, 1, 4, 5], borderColor: '#6B9B7A', backgroundColor: 'rgba(107, 155, 122, 0.2)' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 5, pointLabels: { font: { size: 12 } } } },
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+    }
+
+    function renderCorrelationChart() {
+        const ctx = document.getElementById('correlationChart');
+        if (!ctx) return;
+
+        const generateData = (type) => {
+            const data = [];
+            for (let i = 0; i < 50; i++) {
+                let x = Math.random() * 10;
+                let y;
+                if (type === 'positive') {
+                    y = x * 0.8 + (Math.random() - 0.5) * 2;
+                } else if (type === 'negative') {
+                    y = 10 - (x * 0.8) + (Math.random() - 0.5) * 2;
+                } else {
+                    y = Math.random() * 10;
+                }
+                data.push({ x, y });
+            }
+            return data;
+        };
+
+        if (methodCharts.correlation) methodCharts.correlation.destroy();
+        
+        methodCharts.correlation = new Chart(ctx.getContext('2d'), {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Relationship Between Two Variables',
+                    data: generateData('positive'),
+                    backgroundColor: 'rgba(45, 90, 135, 0.7)',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { x: { title: { display: true, text: 'Variable A (e.g., Study Time)' } }, y: { title: { display: true, text: 'Variable B (e.g., Test Scores)' } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+        
+        document.getElementById('correlationChart').setAttribute('data-current-corr', 'positive');
+
+        document.querySelectorAll('.corr-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const type = e.target.dataset.corr;
+                methodCharts.correlation.data.datasets[0].data = generateData(type);
+                
+                let labelText = '';
+                if (type === 'positive') labelText = 'Positive Correlation: Variables move together';
+                else if (type === 'negative') labelText = 'Negative Correlation: Variables move in opposite directions';
+                else labelText = 'Zero Correlation: No predictable relationship';
+
+                methodCharts.correlation.options.scales.x.title.text = `Variable A (e.g., ${type === 'positive' ? 'Study Time' : (type === 'negative' ? 'Stress' : 'Shoe Size')})`;
+                methodCharts.correlation.options.scales.y.title.text = `Variable B (e.g., ${type === 'positive' ? 'Test Scores' : (type === 'negative' ? 'Sleep' : 'Intelligence')})`;
+                
+                methodCharts.correlation.data.datasets[0].label = labelText;
+                methodCharts.correlation.update();
+                document.getElementById('correlationChart').setAttribute('data-current-corr', type);
+
+                document.querySelectorAll('.corr-btn').forEach(b => {
+                    b.classList.remove('bg-[var(--primary)]', 'text-white');
+                    b.classList.add('bg-gray-200', 'text-gray-700');
                 });
-            }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
-
-            sections.forEach(section => observer.observe(section));
-            
-            const mobileNav = document.getElementById('mobile-nav');
-            mobileNav.addEventListener('change', (e) => {
-                window.location.hash = e.target.value;
+                e.target.classList.add('bg-[var(--primary)]', 'text-white');
+                e.target.classList.remove('bg-gray-200', 'text-gray-700');
             });
         });
-    </script>
+    }
+
+    function initEthics() {
+        const container = document.getElementById('ethics-container');
+        container.innerHTML = APP_DATA.ethics.map((ethic, index) => `
+            <div class="card rounded-lg overflow-hidden">
+                <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center bg-white hover:bg-gray-50 border-b border-gray-100">
+                    <span>${ethic.title}</span>
+                    <span class="transform transition-transform duration-300 text-gray-400">▼</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="p-4 pt-3 text-gray-600">${ethic.content}</div>
+                </div>
+            </div>
+        `).join('');
+
+        container.addEventListener('click', e => {
+            const header = e.target.closest('.accordion-header');
+            if (!header) return;
+
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('span:last-child');
+            const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+            if (isOpen) {
+                content.style.maxHeight = '0px';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        });
+    }
+
+    initGoals();
+    initProcess();
+    initMethods();
+    initEthics();
+});
+
+</script>
 </body>
 </html>
-
