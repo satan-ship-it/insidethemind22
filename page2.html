@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutrals & Sage -->
-    <!-- Application Structure Plan: A thematic, single-page application with a sticky top navigation bar for easy access to different sections. This non-linear structure is chosen over a simple document layout to encourage user exploration and learning at their own pace. The sections are logically divided into: 1) Core Concepts (interactive cards for active learning), 2) Dual Perspectives (side-by-side comparison), 3) Evolution of Thought (tabbed interface to prevent information overload), 4) Branches of Psychology (a visual chart combined with clickable elements for engagement), and 5) Psychology in India (an interactive timeline for historical context). This design prioritizes user interaction and clarity to make a dense topic more digestible. -->
+    <!-- Application Structure Plan: A thematic, single, long-scrolling page (LSP) with a sticky top navigation bar for smooth scrolling to different sections. This structure is chosen to allow continuous consumption of content while still providing quick jump navigation. Content is logically divided into: 1) Core Concepts (interactive cards), 2) Dual Perspectives (side-by-side comparison), 3) Evolution of Thought (tabbed interface), 4) Branches of Psychology (Doughnut Chart + Clickable List), and 5) Psychology in India (interactive timeline). This LSP design prioritizes flow and simple access to all information. -->
     <!-- Visualization & Content Choices: 1. Core Concepts: Report Info -> 3 Components of Psych. Goal -> Organize/Inform. Viz -> Interactive Cards. Interaction -> Click to reveal details. Justification -> Breaks down a foundational concept into digestible, user-initiated pieces. Method -> HTML/CSS/JS. 2. Evolution of Thought: Report Info -> Schools of Psych. Goal -> Organize. Viz -> Tabbed Content. Interaction -> Click tab to show content. Justification -> Manages multiple distinct descriptions in a clean, space-efficient UI. Method -> HTML/CSS/JS. 3. Branches of Psychology: Report Info -> List of branches. Goal -> Inform/Organize. Viz -> Doughnut Chart + Clickable List. Interaction -> Click list item to update text display. Justification -> Chart provides a visual metaphor for the field's diversity, while the list allows for detailed exploration. Library -> Chart.js (Canvas). 4. Psychology in India: Report Info -> Four historical phases. Goal -> Show Change/History. Viz -> Interactive Timeline. Interaction -> Click phase to see description. Justification -> Timeline is the most intuitive representation of historical progression. Method -> HTML/CSS/JS. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -27,12 +27,8 @@
             color: #3A6B6F;
             border-bottom-color: #3A6B6F;
         }
-        .content-section {
-            display: none;
-        }
-        .content-section.active {
-            display: block;
-        }
+        /* No more .content-section.active or hidden logic for main sections */
+        
         .tab-btn.active {
             background-color: #3A6B6F;
             color: #FFFFFF;
@@ -78,6 +74,7 @@
                 <a href="#evolution" class="nav-link pb-1">Evolution</a>
                 <a href="#branches" class="nav-link pb-1">Branches</a>
                 <a href="#india" class="nav-link pb-1">In India</a>
+                <a href="#goals" class="nav-link pb-1">Goals</a>
             </div>
             <button id="mobile-menu-button" class="md:hidden text-2xl">☰</button>
         </nav>
@@ -88,11 +85,14 @@
             <a href="#evolution" class="nav-link pb-1">Evolution</a>
             <a href="#branches" class="nav-link pb-1">Branches</a>
             <a href="#india" class="nav-link pb-1">In India</a>
+            <a href="#goals" class="nav-link pb-1">Goals</a>
         </div>
     </header>
 
     <main class="container mx-auto px-6 py-12">
-        <section id="home" class="py-8 flex items-center"> <!-- Removed min-h-[70vh] -->
+        
+        <!-- HOME SECTION - Anchor point for the top of the page -->
+        <section id="home" class="py-8 pt-0">
             <div class="w-full">
                 <h2 class="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4">Understanding the <br><span class="text-[#3A6B6F]">Science of the Mind</span></h2>
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl">
@@ -101,7 +101,8 @@
             </div>
         </section>
 
-        <section id="concepts" class="py-16 hidden">
+        <!-- CONCEPTS SECTION -->
+        <section id="concepts" class="py-16 border-t border-gray-200">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800">The Three Core Components</h2>
                 <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">Psychology systematically studies three intertwined components. Click on each card to learn more about how they shape our existence.</p>
@@ -125,7 +126,8 @@
             </div>
         </section>
         
-        <section id="perspectives" class="py-16 hidden">
+        <!-- PERSPECTIVES SECTION -->
+        <section id="perspectives" class="py-16 border-t border-gray-200">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800">A Discipline of Two Halves</h2>
                 <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">Psychology uniquely bridges two major domains of study: the natural sciences and the social sciences. This dual identity allows it to explore human nature from multiple, complementary angles.</p>
@@ -142,7 +144,8 @@
             </div>
         </section>
 
-        <section id="evolution" class="py-16 hidden">
+        <!-- EVOLUTION SECTION -->
+        <section id="evolution" class="py-16 border-t border-gray-200">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Evolution of Psychological Thought</h2>
                 <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">Psychology has evolved through various schools of thought, each offering a unique lens to understand the mind. Click the tabs to explore these foundational perspectives.</p>
@@ -161,7 +164,8 @@
             </div>
         </section>
         
-        <section id="branches" class="py-16 hidden">
+        <!-- BRANCHES SECTION -->
+        <section id="branches" class="py-16 border-t border-gray-200">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Major Branches of Psychology</h2>
                 <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">The field of psychology is vast, encompassing numerous specializations. The chart below visualizes some of these key areas. Select a branch from the list to learn more about its focus.</p>
@@ -185,7 +189,8 @@
             </div>
         </section>
 
-        <section id="india" class="py-16 hidden">
+        <!-- INDIA SECTION -->
+        <section id="india" class="py-16 border-t border-gray-200">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Psychology in India: A Brief History</h2>
                 <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">Modern psychology in India began in the early 20th century and has evolved through distinct phases, increasingly incorporating local context and indigenous knowledge. Explore this journey through the timeline below.</p>
@@ -227,7 +232,8 @@
             </div>
         </section>
         
-        <section id="goals" class="py-16 hidden"> <!-- Hidden by default, only shown if navigated to -->
+        <!-- GOALS SECTION -->
+        <section id="goals" class="py-16 border-t border-gray-200">
              <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800">The Core Goals of Psychology</h2>
                 <p class="text-lg text-gray-600 mt-2 max-w-3xl mx-auto">Psychology strives to achieve several key objectives to improve our understanding of human nature and enhance well-being.</p>
@@ -298,23 +304,19 @@
                 });
             }
 
-            function showSection(targetId) {
-                sections.forEach(section => {
-                    if(section.id === targetId) {
-                        section.classList.remove('hidden');
-                    } else {
-                        section.classList.add('hidden');
-                    }
-                });
+            function scrollToSection(targetId) {
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
                 updateActiveLink(targetId);
-                window.scrollTo(0, 0);
             }
 
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('href').substring(1);
-                    showSection(targetId);
+                    scrollToSection(targetId);
                 });
             });
 
@@ -322,8 +324,27 @@
                 document.getElementById('mobile-menu').classList.toggle('hidden');
             });
             
-            showSection('home');
-            document.querySelector('.nav-link[href="#home"]').classList.add('active');
+            // Set up initial content/state and active link
+            updateActiveLink('home');
+
+            // Logic to update active navigation link while scrolling
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.3 // 30% of the section must be visible to be considered active
+            };
+
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        updateActiveLink(entry.target.id);
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
 
 
             const conceptCards = document.querySelectorAll('.concept-card');
