@@ -3,90 +3,408 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Living Mindfully - Inner Peace</title>
-    <link href="tooplate-inner-peace.css" rel="stylesheet">
+    <title>Understanding Human Behavior: Continuous Scroll</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is now structured as a single, long-scrolling page with three major thematic sections: Evolutionary Foundation, Biological Engine, and Cultural Blueprint. This structure was chosen to allow users to digest the content linearly and contextually, viewing the entire "Nature + Nurture" debate as a unified flow. Visual separators and large headers are used to clearly delineate the sections. The interactive elements within each section (e.g., Neuron click, Acculturation grid) are retained to prevent the experience from becoming a passive, overly lengthy reading assignment, encouraging active engagement as the user scrolls. The continuous flow prioritizes direct content consumption over non-linear exploration. -->
+    <!-- Visualization & Content Choices: Report Info: Neuron structure -> Goal: Organize/Explain -> Viz: Interactive HTML/CSS Diagram -> Interaction: Click parts to show descriptions -> Justification: Visualizes structure without complex imagery, promotes active learning. | Report Info: Nervous System Hierarchy -> Goal: Organize Hierarchy -> Viz: Nested Clickable HTML lists (Accordion) -> Interaction: Click to expand/collapse levels -> Justification: Simplifies a complex classification system into manageable chunks. | Report Info: Acculturation Strategies -> Goal: Compare concepts -> Viz: Interactive 2x2 HTML Grid -> Interaction: Click quadrant to see details -> Justification: Visually represents the two-axis model by Berry, making the abstract concept concrete and easy to compare. All visualizations use interactive HTML/CSS to avoid static content and the prohibited SVG/Mermaid libraries. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #333;
+        }
+        .section-header {
+            background-color: #E6A57E; /* Soft accent for section breaks */
+            color: white;
+            padding: 2.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .section-header h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+        }
+        .neuron-part, .brain-lobe, .acculturation-quadrant {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+        }
+        .neuron-part:hover, .brain-lobe:hover, .acculturation-quadrant:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .neuron-part.active {
+            background-color: #D55A44 !important; /* Darker accent for active state */
+            color: white;
+        }
+         .brain-lobe.active {
+            opacity: 1;
+            transform: scale(1.03);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-color: #D55A44 !important;
+        }
+         .acculturation-quadrant.active {
+            background-color: #6A8E7F !important;
+            color: white;
+            transform: scale(1.03);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+        .accordion-content.open {
+            max-height: 500px; /* Sufficiently large value */
+        }
+        .accordion-title {
+            cursor: pointer;
+        }
+    </style>
 </head>
-<body>
-    <div class="geometric-bg"></div>
+<body class="antialiased">
 
-    <!-- Header -->
-    <header>
-        <nav>
-            <a href="index.html" class="logo">
-                <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="20" cy="20" r="18" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
-                    <circle cx="20" cy="20" r="14" fill="none" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.7"/>
-                    <circle cx="20" cy="20" r="10" fill="none" stroke="url(#logoGradient)" stroke-width="1" opacity="0.5"/>
-                    <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3"/>
-                    <circle cx="20" cy="20" r="3" fill="url(#logoGradient)"/>
-                </svg>
-                <span class="logo-text">Inner Peace</span>
-            </a>
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-2">Understanding the Bases of Human Behavior</h1>
+            <p class="text-lg text-gray-600">The complex emergence of behavior from the dynamic interplay between nature (biology) and nurture (culture).</p>
+        </header>
+
+        <main class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+
+            <!-- Introduction Section -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Nature Combined with Nurture</h2>
+                <p class="text-gray-700">Human behavior is not shaped by a single factor but emerges from the dynamic interplay between biological dispositions and socio-cultural influences. The uniqueness of human beings lies in the interaction between what is famously known as the nature vs nurture debate, however studies have shown that it is not nature against nurture but **nature combined with nurture**. This document explores these foundational pillars in a unified, continuous flow.</p>
+            </section>
+
+
+            <!-- 1. Evolutionary Foundation Section -->
+            <div class="section-header">
+                <h2>1. The Evolutionary Foundation</h2>
+                <p class="text-lg font-light mt-2">How natural selection and deep biological change set the stage for modern humanity.</p>
             </div>
-            <ul class="nav-links">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="index.html#about" class="nav-link">About</a></li>
-                <li><a href="index.html#practices" class="nav-link">Practices</a></li>
-                <li><a href="index.html#resources" class="nav-link">Resources</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <!-- Main Content -->
-    <main style="padding: 8rem 5% 4rem; max-width: 1200px; margin: 0 auto;">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">🚶</div>
-            <h1 class="section-title">Living Mindfully</h1>
-            <p class="section-subtitle">Integrate mindfulness into every aspect of daily life</p>
-        </div>
+            <section id="evolution" class="py-4">
+                <p class="text-gray-600 mb-6">This section lays the groundwork by exploring how evolution, through mechanisms like natural selection, has shaped the fundamental characteristics of our species. It explains the long-term biological changes that have equipped modern humans with unique traits for survival and complex cognition, providing the essential "nature" context for our behavior.</p>
+                
+                <div class="space-y-6">
+                    <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
+                        <h3 class="text-xl font-bold text-[#D55A44] mb-2">What is Evolution?</h3>
+                        <p>Evolution refers to the gradual and systematic biological change within a species, occurring across hundreds or even thousands of generations. These changes occur in response to environmental pressures, ensuring species adapt to survive.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
+                            <h3 class="text-xl font-bold text-[#D55A44] mb-2">Natural Selection and Fitness</h3>
+                            <p>A key mechanism behind evolution is **natural selection**, which refers to the process through which traits that enhance survival and reproduction are more likely to be passed down. **Fitness**, in evolutionary terms, refers to an organism's ability to survive and pass its genes to the next generation. It is about adaptability to a given environment, which was coined by Darwin as Survival of the Fittest.</p>
+                        </div>
+                        <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
+                            <h3 class="text-xl font-bold text-[#D55A44] mb-2">Distinctive Features of Modern Humans</h3>
+                            <p>As the most developed species on Earth, Human beings (Homo sapiens) evolved around 200,000 years ago, developing traits that distinguish us from our ancestors:</p>
+                            <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                                <li><span class="font-semibold">Advanced brain development:</span> Our brain, particularly the cerebrum, allows for complex cognitive behaviors like memory, reasoning, problem-solving, and language.</li>
+                                <li><span class="font-semibold">Bipedalism:</span> Walking upright on two legs is a key evolutionary milestone that freed our hands for tool use.</li>
+                                <li><span class="font-semibold">Opposable thumbs:</span> These allow for precision in gripping and manipulating objects, crucial for tool-making and other skills.</li>
+                            </ul>
+                        </div>
+                    </div>
+                     <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
+                        <h3 class="text-xl font-bold text-[#D55A44] mb-2">Biological and Cultural Roots</h3>
+                        <p>Our biology shapes us from the inside (e.g., genetic disorders affecting personality), while culture molds our thinking, values, norms, and everyday behaviors from birth, providing the essential context for learning and growth.</p>
+                    </div>
+                </div>
+            </section>
 
-        <div style="background: white; border-radius: 25px; padding: 3rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); margin-bottom: 2rem;">
-            <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Welcome to Living Mindfully</h2>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                This is a placeholder page for the Living Mindfully practice. Here you can add detailed information about mindful living, 
-                daily mindfulness activities, mindful communication, or any other resources related to integrating mindfulness into everyday life.
-            </p>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                Some topics you might want to include:
-            </p>
-            <ul style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem; padding-left: 2rem;">
-                <li>Mindful eating practices</li>
-                <li>Walking meditation</li>
-                <li>Mindful communication skills</li>
-                <li>Present-moment awareness at work</li>
-                <li>Mindful parenting techniques</li>
-            </ul>
+
+            <!-- 2. Biological Engine Section -->
+             <div class="section-header">
+                <h2>2. The Biological Engine (Nature)</h2>
+                <p class="text-lg font-light mt-2">Exploring the nervous system, the endocrine system, and the role of genetics in shaping behavior.</p>
+            </div>
+
+            <section id="biology" class="py-4">
+                <p class="text-gray-600 mb-6">Here we delve into the internal systems that drive our behavior from the inside out. This section explores our "hardware"—the nervous system, endocrine system, and genetic makeup. Through interactive diagrams, you can explore how neurons communicate, how different brain regions function, and how hormones influence our moods and actions, revealing the intricate biological machinery behind who we are.</p>
+                
+                <div class="space-y-8">
+                    <!-- Neuron Interactive -->
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-center text-[#D55A44]">Interactive Neuron Structure</h3>
+                        <p class="text-center text-gray-600 mb-4">Neurons are the basic units of the nervous system. Click a part to see its function.</p>
+                        <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
+                            <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                                <div class="w-full md:w-2/3 flex items-center justify-center space-x-2">
+                                    <div id="soma-btn" class="neuron-part bg-stone-200 p-4 rounded-full text-center flex-shrink-0 active" data-part="soma">Soma<br>(Cell Body)</div>
+                                    <div class="h-1 bg-stone-300 w-8"></div>
+                                    <div id="axon-btn" class="neuron-part bg-stone-200 p-3 rounded-lg text-center flex-grow" data-part="axon">Axon</div>
+                                    <div class="h-1 bg-stone-300 w-8"></div>
+                                    <div id="terminal-btn" class="neuron-part bg-stone-200 p-4 rounded-full text-center flex-shrink-0" data-part="terminal">Terminal<br>Buttons</div>
+                                </div>
+                                <div class="hidden md:block w-1/3">
+                                    <div id="dendrites-btn" class="neuron-part bg-stone-200 p-3 rounded-lg text-center" data-part="dendrites">Dendrites</div>
+                                </div>
+                            </div>
+                            <div class="block md:hidden mt-4">
+                                 <div id="dendrites-btn-mobile" class="neuron-part bg-stone-200 p-3 rounded-lg text-center" data-part="dendrites">Dendrites</div>
+                            </div>
+                            <div id="neuron-info" class="mt-4 bg-white p-4 rounded-md border text-center min-h-[80px] text-gray-700">
+                                Click on a part of the neuron to learn about its function.
+                            </div>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-600 text-center">Neurons communicate via electrical impulses, passing messages through **synapses** using **neurotransmitters**.</p>
+                    </div>
+                    
+                    <!-- Nervous System Accordion -->
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-center text-[#D55A44]">The Nervous System Hierarchy</h3>
+                         <div class="bg-stone-50 p-6 rounded-lg border border-stone-200" id="nervous-system-accordion">
+                            
+                            <div class="accordion-item border-b">
+                                <div class="accordion-title font-bold p-3 flex justify-between items-center text-lg">Central Nervous System (CNS) <span>▼</span></div>
+                                <div class="accordion-content pl-6 pb-3 text-gray-700">
+                                    <p>The control center. Includes the brain and spinal cord.</p>
+                                    <div class="accordion-item mt-2">
+                                        <div class="accordion-title font-semibold p-2 bg-stone-200 rounded-md">Brain (Click to explore lobes) ▼</div>
+                                        <div class="accordion-content pl-4 pb-2">
+                                            <div class="bg-white rounded-lg p-4 mt-2 border">
+                                                <h4 class="text-lg font-bold text-center mb-4">Lobes of the Cerebrum (High-level Cognition)</h4>
+                                                <p class="text-center text-sm text-gray-500 mb-4">The cerebrum is responsible for high-level cognitive functioning. Click a lobe to see its primary role.</p>
+                                                <div class="grid grid-cols-2 gap-4">
+                                                    <div data-lobe="frontal" class="brain-lobe bg-blue-100 border-blue-300 border-2 text-blue-800 p-4 rounded-lg text-center">Frontal Lobe</div>
+                                                    <div data-lobe="parietal" class="brain-lobe bg-green-100 border-green-300 border-2 text-green-800 p-4 rounded-lg text-center">Parietal Lobe</div>
+                                                    <div data-lobe="temporal" class="brain-lobe bg-yellow-100 border-yellow-300 border-2 text-yellow-800 p-4 rounded-lg text-center">Temporal Lobe</div>
+                                                    <div data-lobe="occipital" class="brain-lobe bg-purple-100 border-purple-300 border-2 text-purple-800 p-4 rounded-lg text-center">Occipital Lobe</div>
+                                                </div>
+                                                <div id="brain-lobe-info" class="mt-4 bg-stone-50 p-3 rounded-md text-center min-h-[60px]">Select a lobe to learn more.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item mt-2">
+                                        <div class="accordion-title font-semibold p-2">Spinal Cord (Transmits signals & handles reflexes)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <div class="accordion-title font-bold p-3 flex justify-between items-center text-lg">Peripheral Nervous System (PNS) <span>▼</span></div>
+                                <div class="accordion-content pl-6 pb-3 text-gray-700">
+                                    <p>Connects the CNS to the rest of the body. Includes:</p>
+                                    <div class="accordion-item mt-2">
+                                        <div class="accordion-title font-semibold p-2">Somatic Nervous System (Controls voluntary movements)</div>
+                                    </div>
+                                    <div class="accordion-item mt-2">
+                                        <div class="accordion-title font-semibold p-2 bg-stone-200 rounded-md">Autonomic Nervous System (Involuntary functions) ▼</div>
+                                        <div class="accordion-content pl-4 text-sm">
+                                            <p class="py-1"><span class="font-bold">Sympathetic Division:</span> Prepares for 'fight-or-flight' response, releasing adrenaline.</p>
+                                            <p class="py-1"><span class="font-bold">Parasympathetic Division:</span> Calms the body down after stress.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+
+                    <!-- Endocrine System & Heredity -->
+                     <div>
+                        <h3 class="text-2xl font-bold mb-4 text-center text-[#D55A44]">The Endocrine System: Hormonal Control</h3>
+                         <p class="text-center text-gray-600 mb-4">A collection of ductless glands that secrete hormones—chemical messengers that influence development, mood, and behavior.</p>
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                             <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                 <h4 class="font-bold text-lg">Pituitary Gland</h4>
+                                 <p class="text-sm">The "master gland" controlling growth and regulating other glands.</p>
+                             </div>
+                              <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                 <h4 class="font-bold text-lg">Thyroid Gland</h4>
+                                 <p class="text-sm">Regulates metabolism via thyroxin.</p>
+                             </div>
+                              <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                 <h4 class="font-bold text-lg">Adrenal Glands</h4>
+                                 <p class="text-sm">Regulates minerals/metabolism (Cortex) and stress response (Medulla - adrenaline).</p>
+                             </div>
+                             <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                 <h4 class="font-bold text-lg">Pancreas</h4>
+                                 <p class="text-sm">Produces insulin; imbalance can lead to diabetes.</p>
+                             </div>
+                             <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                 <h4 class="font-bold text-lg">Gonads (Ovaries/Testes)</h4>
+                                 <p class="text-sm">Produce estrogen/progesterone (female) and testosterone (male, linked to development and aggression).</p>
+                             </div>
+                             <div class="bg-stone-50 p-4 rounded-lg border border-stone-200 col-span-1 sm:col-span-2 lg:col-span-1">
+                                 <h4 class="font-bold text-lg">Heredity and Genes</h4>
+                                 <p class="text-sm">Genes, made of DNA on 46 chromosomes, determine our **genotype** (inherited traits) and influence our **phenotype** (observable traits), providing the fundamental blueprint.</p>
+                             </div>
+                        </div>
+                     </div>
+                </div>
+            </section>
+
+
+            <!-- 3. Cultural Blueprint Section -->
+             <div class="section-header bg-[#6A8E7F]">
+                <h2>3. The Cultural Blueprint (Nurture)</h2>
+                <p class="text-lg font-light mt-2">The socio-cultural factors and processes that shape our values, norms, and adaptation.</p>
+            </div>
+
+            <section id="culture" class="py-4">
+                <p class="text-gray-600 mb-6">Moving beyond biology, this section examines the powerful role of "nurture." Culture is the man-made environment that shapes our values, beliefs, and behaviors from the moment we are born. Here, you'll learn about how culture is transmitted through various social agents and explore the different ways individuals adapt when encountering new cultures, illustrating how our social worlds write the rules for our daily lives.</p>
+
+                <div class="space-y-8">
+                     <!-- Socialization Agents -->
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-center text-[#6A8E7F]">Cultural Transmission: Enculturation & Agents of Socialization</h3>
+                        <p class="text-center text-gray-600 mb-4">**Enculturation** is the unintentional learning of behaviors and values through immersion. This occurs lifelong via **Socialization** agents:</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            <div class="bg-teal-50 p-4 rounded-lg border border-teal-200">
+                                <div class="text-4xl">👨‍👩‍👧‍👦</div>
+                                <h4 class="font-bold mt-2">Family</h4>
+                                <p class="text-sm text-gray-600">First and most influential teacher.</p>
+                            </div>
+                            <div class="bg-teal-50 p-4 rounded-lg border border-teal-200">
+                                <div class="text-4xl">🏫</div>
+                                <h4 class="font-bold mt-2">School</h4>
+                                <p class="text-sm text-gray-600">Teaches formal knowledge and social roles.</p>
+                            </div>
+                            <div class="bg-teal-50 p-4 rounded-lg border border-teal-200">
+                                <div class="text-4xl">🧑‍🤝‍🧑</div>
+                                <h4 class="font-bold mt-2">Peers</h4>
+                                <p class="text-sm text-gray-600">Helps form identity and social understanding.</p>
+                            </div>
+                             <div class="bg-teal-50 p-4 rounded-lg border border-teal-200">
+                                <div class="text-4xl">📺</div>
+                                <h4 class="font-bold mt-2">Media</h4>
+                                <p class="text-sm text-gray-600">Influences attitudes, language, and fashion.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Acculturation Interactive -->
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-center text-[#6A8E7F]">Strategies of Acculturation (John Berry)</h3>
+                        <p class="text-center text-gray-600 mb-4">Acculturation occurs when cultures meet. Click a quadrant to understand how individuals adapt (Success depends on psychological comfort and acceptance).</p>
+                        <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
+                            <div class="flex flex-col items-center justify-center">
+                                <div class="text-center -rotate-90 whitespace-nowrap font-semibold hidden md:block absolute left-4 xl:left-auto xl:relative">Maintain Original Culture?</div>
+                                <div class="flex flex-col">
+                                    <div class="text-center font-semibold mb-2">Engage with New Culture?</div>
+                                    <div class="flex flex-col md:flex-row items-center">
+                                        <div class="font-semibold text-center mr-2 hidden md:block">Yes</div>
+                                        <div class="grid grid-cols-2 w-full max-w-md">
+                                            <div data-strategy="integration" class="acculturation-quadrant bg-stone-200 p-4 md:p-6 text-center border">Integration</div>
+                                            <div data-strategy="assimilation" class="acculturation-quadrant bg-stone-200 p-4 md:p-6 text-center border">Assimilation</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col md:flex-row items-center mt-1">
+                                        <div class="font-semibold text-center mr-2 hidden md:block">No</div>
+                                        <div class="grid grid-cols-2 w-full max-w-md">
+                                            <div data-strategy="separation" class="acculturation-quadrant bg-stone-200 p-4 md:p-6 text-center border">Separation</div>
+                                            <div data-strategy="marginalisation" class="acculturation-quadrant bg-stone-200 p-4 md:p-6 text-center border">Marginalisation</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex mt-2 max-w-md mx-auto">
+                                        <div class="w-1/2 text-center font-semibold text-sm">Yes (Engage)</div>
+                                        <div class="w-1/2 text-center font-semibold text-sm">No (Engage)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="acculturation-info" class="mt-4 bg-white p-4 rounded-md border text-center min-h-[80px] text-gray-700">
+                                Select a strategy to see its definition.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-10 text-sm text-gray-500">
+            <p>Based on "Understanding the Bases of Human Behavior" from Psychology and Education: Indian Perspectives.</p>
+            <p>&copy; 2025 Interactive Learning Module. All rights reserved.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
             
-            <a href="index.html" style="display: inline-block; background: var(--gradient-1); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.3s ease; margin-top: 1rem;">
-                ← Back to Homepage
-            </a>
-        </div>
-    </main>
+            /* Data for Interactive Elements */
+            const neuronData = {
+                soma: "<strong>Soma (Cell Body):</strong> Contains the nucleus and genetic information. It maintains the neuron's structure.",
+                dendrites: "<strong>Dendrites:</strong> Branch-like structures that receive incoming signals from other neurons or sensory organs.",
+                axon: "<strong>Axon:</strong> A long projection that carries signals away from the cell body to other neurons, muscles, or glands.",
+                terminal: "<strong>Terminal Buttons:</strong> Located at the end of the axon, they pass the message to the next neuron via neurotransmitters."
+            };
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Service</a>
-                <a href="#support">Support</a>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Inner Peace. All rights reserved. Nurturing minds, one breath at a time.</p>
-            </div>
-        </div>
-    </footer>
+            const lobeData = {
+                frontal: "<strong>Frontal Lobe:</strong> Responsible for higher-level reasoning, problem-solving, planning, and personality.",
+                parietal: "<strong>Parietal Lobe:</strong> Processes sensory information like touch, temperature, and pain, as well as spatial awareness.",
+                temporal: "<strong>Temporal Lobe:</strong> Handles auditory processing, language comprehension, and memory.",
+                occipital: "<strong>Occipital Lobe:</strong> Primarily responsible for processing visual information from the eyes."
+            };
 
-    <script src="tooplate-inner-peace-scripts.js"></script>
+            const strategyData = {
+                integration: "<strong>Integration:</strong> Maintaining one's original culture while also engaging with and adopting aspects of the new culture.",
+                assimilation: "<strong>Assimilation:</strong> Fully adopting the new culture and discarding one's original cultural identity.",
+                separation: "<strong>Separation:</strong> Rejecting the new culture to preserve and maintain the original culture exclusively.",
+                marginalisation: "<strong>Marginalisation:</strong> Losing connection to both the original culture and the new host culture, leading to a sense of alienation."
+            };
+
+            /* Neuron Interactive Logic */
+            const neuronParts = document.querySelectorAll('.neuron-part');
+            const neuronInfo = document.getElementById('neuron-info');
+            neuronInfo.innerHTML = neuronData.soma; // Initialize info
+
+            neuronParts.forEach(part => {
+                part.addEventListener('click', () => {
+                    const partId = part.dataset.part;
+                    neuronInfo.innerHTML = neuronData[partId];
+                    neuronParts.forEach(p => p.classList.remove('active'));
+                    document.querySelectorAll(`[data-part="${partId}"]`).forEach(activePart => {
+                         activePart.classList.add('active');
+                    });
+                });
+            });
+
+            /* Nervous System Accordion Logic */
+            const accordionContainer = document.getElementById('nervous-system-accordion');
+            accordionContainer.addEventListener('click', (e) => {
+                const title = e.target.closest('.accordion-title');
+                if (title) {
+                    const content = title.nextElementSibling;
+                    if (content && content.classList.contains('accordion-content')) {
+                        content.classList.toggle('open');
+                    }
+                }
+            });
+            
+            /* Brain Lobes Interactive Logic */
+            const brainLobes = document.querySelectorAll('.brain-lobe');
+            const brainLobeInfo = document.getElementById('brain-lobe-info');
+            brainLobes.forEach(lobe => {
+                lobe.addEventListener('click', () => {
+                    const lobeId = lobe.dataset.lobe;
+                    brainLobeInfo.innerHTML = lobeData[lobeId];
+                    brainLobes.forEach(l => l.classList.remove('active'));
+                    lobe.classList.add('active');
+                });
+            });
+
+            /* Acculturation Interactive Logic */
+            const acculturationQuadrants = document.querySelectorAll('.acculturation-quadrant');
+            const acculturationInfo = document.getElementById('acculturation-info');
+            acculturationQuadrants.forEach(quadrant => {
+                quadrant.addEventListener('click', () => {
+                    const strategyId = quadrant.dataset.strategy;
+                    acculturationInfo.innerHTML = strategyData[strategyId];
+                    acculturationQuadrants.forEach(q => q.classList.remove('active'));
+                    quadrant.classList.add('active');
+                });
+            });
+
+        });
+    </script>
 </body>
 </html>
