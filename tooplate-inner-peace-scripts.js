@@ -10,35 +10,24 @@ Free HTML CSS Template
 
 // JavaScript Document
 
-// Mobile menu toggle
-        function toggleMenu() {
-            const menuToggle = document.querySelector('.menu-toggle');
-            const navLinks = document.querySelector('.nav-links');
-            if (menuToggle && navLinks) {
-                menuToggle.classList.toggle('active');
-                navLinks.classList.toggle('active');
+        // Sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (sidebar && overlay) {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('active');
             }
         }
 
-        // Close mobile menu when clicking a link
+        // Main functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const navLinks = document.querySelectorAll('.nav-links a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    const menuToggle = document.querySelector('.menu-toggle');
-                    const navLinksContainer = document.querySelector('.nav-links');
-                    if (menuToggle && navLinksContainer) {
-                        menuToggle.classList.remove('active');
-                        navLinksContainer.classList.remove('active');
-                    }
-                });
-            });
 
-            // Active menu highlighting
+            // Active menu highlighting for sidebar
             const sections = document.querySelectorAll('section');
-            const menuLinks = document.querySelectorAll('.nav-link');
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
 
-            if (sections.length && menuLinks.length) {
+            if (sections.length && sidebarLinks.length) {
                 window.addEventListener('scroll', () => {
                     let current = '';
                     sections.forEach(section => {
@@ -49,10 +38,10 @@ Free HTML CSS Template
                         }
                     });
 
-                    menuLinks.forEach(link => {
+                    sidebarLinks.forEach(link => {
                         link.classList.remove('active');
                         const href = link.getAttribute('href');
-                        if (href && href.slice(1) === current) {
+                        if (href && (href.slice(1) === current || href.includes('#' + current))) {
                             link.classList.add('active');
                         }
                     });
@@ -60,36 +49,38 @@ Free HTML CSS Template
             }
 
             // Smooth scrolling for anchor links
-            const anchorLinks = document.querySelectorAll('a[href^="#"]');
+            const anchorLinks = document.querySelectorAll('a[href^="#"], .sidebar-link');
             anchorLinks.forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     const href = this.getAttribute('href');
                     if (href && href !== '#') {
-                        e.preventDefault();
-                        const target = document.querySelector(href);
-                        if (target) {
-                            target.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
+                        // Close sidebar when clicking a link
+                        const sidebar = document.querySelector('.sidebar');
+                        const overlay = document.querySelector('.sidebar-overlay');
+                        if (sidebar && sidebar.classList.contains('open')) {
+                            sidebar.classList.remove('open');
+                            overlay.classList.remove('active');
+                        }
+                        
+                        // Handle external links
+                        if (href.includes('index.html#')) {
+                            return; // Let default behavior handle external page navigation
+                        }
+                        
+                        // Handle internal anchor links
+                        if (href.startsWith('#')) {
+                            e.preventDefault();
+                            const target = document.querySelector(href);
+                            if (target) {
+                                target.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+                            }
                         }
                     }
                 });
             });
-
-            // Header scroll effect
-            const header = document.querySelector('header');
-            if (header) {
-                window.addEventListener('scroll', () => {
-                    if (window.scrollY > 100) {
-                        header.style.background = 'rgba(255, 255, 255, 0.98)';
-                        header.style.boxShadow = '0 2px 30px rgba(0, 0, 0, 0.1)';
-                    } else {
-                        header.style.background = 'rgba(255, 255, 255, 0.95)';
-                        header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
-                    }
-                });
-            }
 
             // Tab functionality
             window.showTab = function(tabName) {
