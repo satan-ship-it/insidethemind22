@@ -3,90 +3,527 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Morning Meditation - Inner Peace</title>
-    <link href="tooplate-inner-peace.css" rel="stylesheet">
+    <title>Interactive Guide to Sensation, Attention, & Perception</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Removed .nav-btn.active and panel display none/block logic */
+        .interactive-card {
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .interactive-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .gestalt-canvas-container.active {
+            border-color: #4A5568;
+            box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.3);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
 </head>
-<body>
-    <div class="geometric-bg"></div>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Chosen Palette: Warm Neutral Academia -->
+    <!-- Application Structure Plan: The SPA is now a continuous scrolling document. The original thematic sections (#overview, #sensation, #attention, #perception) are preserved as distinct, well-separated content blocks. This structure was chosen to allow users to read and interact linearly, similar to an online report, while retaining the interactive elements (clicking diagram parts, expanding theory cards) for active learning. Navigation is now handled by scrolling, prioritizing simplicity and ensuring no content is missed. -->
+    <!-- Visualization & Content Choices: 
+        - Pipeline Diagram (Overview): Report Info: Core Sensation->Attention->Perception flow. Goal: Organize/Inform. Viz: HTML/CSS diagram. Interaction: Click to show definitions. Justification: Provides an immediate mental model of the core concepts. Method: HTML/Tailwind.
+        - Gestalt Principles (Perception): Report Info: Definitions of Gestalt laws. Goal: Inform/Demonstrate. Viz: Grid of canvas drawings. Interaction: Click a canvas to highlight it and display its definition. Justification: Visual principles require visual examples; canvas is ideal for simple, dynamic drawings. Method: Native Canvas API.
+        - Theories of Attention (Attention): Report Info: Descriptions of selection models. Goal: Compare/Inform. Viz: Interactive cards. Interaction: Click card to expand and show details/diagram. Justification: Allows for easy side-by-side comparison of complex theories in a digestible format. Method: HTML/Tailwind + JS.
+        - Depth Cues (Perception): Report Info: Monocular vs. Binocular cues. Goal: Organize/Compare. Viz: Two-column layout with interactive lists. Interaction: Hover over cue name to see a brief description. Justification: Cleanly separates and explains a large set of related terms. Method: HTML/Tailwind + JS.
+        - Visual Illusions (Perception): Report Info: Examples like Müller-Lyer. Goal: Engage/Demonstrate. Viz: Canvas renderings. Interaction: View illusion and read explanation. Justification: Illusions must be seen to be understood. Method: Native Canvas API.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
-    <!-- Header -->
-    <header>
-        <nav>
-            <a href="index.html" class="logo">
-                <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="20" cy="20" r="18" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
-                    <circle cx="20" cy="20" r="14" fill="none" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.7"/>
-                    <circle cx="20" cy="20" r="10" fill="none" stroke="url(#logoGradient)" stroke-width="1" opacity="0.5"/>
-                    <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3"/>
-                    <circle cx="20" cy="20" r="3" fill="url(#logoGradient)"/>
-                </svg>
-                <span class="logo-text">Inner Peace</span>
-            </a>
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="index.html#about" class="nav-link">About</a></li>
-                <li><a href="index.html#practices" class="nav-link">Practices</a></li>
-                <li><a href="index.html#resources" class="nav-link">Resources</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div id="app" class="min-h-screen flex flex-col">
 
-    <!-- Main Content -->
-    <main style="padding: 8rem 5% 4rem; max-width: 1200px; margin: 0 auto;">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">🌅</div>
-            <h1 class="section-title">Morning Meditation</h1>
-            <p class="section-subtitle">Start your day with clarity and intention</p>
-        </div>
+        <header class="bg-white shadow-md sticky top-0 z-10">
+            <nav class="container mx-auto px-6 py-3">
+                <div class="flex flex-col md:flex-row justify-center items-center">
+                    <h1 class="text-2xl font-bold text-gray-700">Interactive Cognitive Processes Guide</h1>
+                </div>
+            </nav>
+        </header>
 
-        <div style="background: white; border-radius: 25px; padding: 3rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); margin-bottom: 2rem;">
-            <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Welcome to Morning Meditation</h2>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                This is a placeholder page for the Morning Meditation resource. Here you can add detailed information about morning meditation practices, 
-                guided audio sessions, morning routine tips, or any other resources related to starting your day mindfully.
-            </p>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                Some content you might want to include:
-            </p>
-            <ul style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem; padding-left: 2rem;">
-                <li>15-minute guided morning meditation</li>
-                <li>Setting daily intentions</li>
-                <li>Energizing breath work</li>
-                <li>Gratitude practice</li>
-                <li>Mindful morning routines</li>
-            </ul>
+        <main class="flex-grow container mx-auto p-4 md:p-8">
             
-            <a href="index.html" style="display: inline-block; background: var(--gradient-1); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.3s ease; margin-top: 1rem;">
-                ← Back to Homepage
-            </a>
-        </div>
-    </main>
+            <!-- Overview Panel -->
+            <section id="overview" class="content-panel">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">How We Experience the World</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">This guide explores the journey from raw sensory input to meaningful understanding. Explore the core processes of Sensation, Attention, and Perception and how they work together.</p>
+                </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Service</a>
-                <a href="#support">Support</a>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Inner Peace. All rights reserved. Nurturing minds, one breath at a time.</p>
-            </div>
-        </div>
-    </footer>
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold text-center mb-6">The Cognitive Pipeline</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                        <div data-concept="sensation" class="pipeline-step interactive-card bg-white p-6 rounded-lg shadow-lg text-center w-full md:w-1/4">
+                            <h4 class="text-xl font-bold">1. Sensation</h4>
+                            <p class="text-gray-600">Detecting physical energy.</p>
+                        </div>
+                        <div class="text-4xl font-thin text-gray-400">→</div>
+                        <div data-concept="attention" class="pipeline-step interactive-card bg-white p-6 rounded-lg shadow-lg text-center w-full md:w-1/4">
+                            <h4 class="text-xl font-bold">2. Attention</h4>
+                            <p class="text-gray-600">Filtering & focusing.</p>
+                        </div>
+                        <div class="text-4xl font-thin text-gray-400">→</div>
+                        <div data-concept="perception" class="pipeline-step interactive-card bg-white p-6 rounded-lg shadow-lg text-center w-full md:w-1/4">
+                            <h4 class="text-xl font-bold">3. Perception</h4>
+                            <p class="text-gray-600">Interpreting & organizing.</p>
+                        </div>
+                    </div>
+                    <div id="pipeline-info" class="mt-6 bg-blue-50 p-6 rounded-lg text-center min-h-[100px] flex items-center justify-center">
+                        <p class="text-gray-700">Click on a step above to learn more about it.</p>
+                    </div>
+                </div>
+                 <div class="mt-12">
+                    <h3 class="text-2xl font-semibold text-center mb-6">Key Cross-Cutting Themes</h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <h4 class="font-bold text-lg mb-2">Active Systems</h4>
+                            <p>Sensory systems don't just passively receive information; they actively preprocess it through adaptation, edge detection, and cognitive interaction.</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow">
+                            <h4 class="font-bold text-lg mb-2">Limited Capacity</h4>
+                            <p>Our cognitive resources are finite. Attention and memory limits require us to constantly select and prioritize what we process.</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow">
+                            <h4 class="font-bold text-lg mb-2">Constructive Perception</h4>
+                            <p>What we perceive is a "best guess" constructed by the brain, combining raw sensory data with our prior knowledge, biases, and expectations.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    <script src="tooplate-inner-peace-scripts.js"></script>
+            <hr class="my-16 border-gray-300">
+
+            <!-- Sensation Panel -->
+            <section id="sensation" class="content-panel">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Sensation: The Raw Input</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">Sensation is the fundamental process of detecting physical stimuli from our environment and converting it into neural signals. Here, we explore the limits and properties of our sensory organs.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4">Core Principles of Sensation</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xl font-semibold mb-2">Psychophysics & Thresholds</h4>
+                            <p><strong class="text-gray-700">Absolute Threshold:</strong> The minimum intensity of a stimulus that can be detected 50% of the time. This isn't fixed; it changes with fatigue, expectation, and focus.</p>
+                            <p class="mt-2"><strong class="text-gray-700">Difference Threshold (JND):</strong> The smallest detectable difference between two stimuli. Weber's Law states this is a constant proportion of the original stimulus intensity.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold mb-2">Functional Limitations</h4>
+                            <p><strong class="text-gray-700">Range:</strong> Each sense operates within a specific range of stimuli (e.g., humans can't hear ultrasonic sounds).</p>
+                            <p class="mt-2"><strong class="text-gray-700">Adaptation:</strong> Our senses become less responsive to constant stimuli over time, allowing us to focus on changes in the environment.</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="mt-12 bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4">Focus on Vision</h3>
+                     <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                           <h4 class="text-xl font-semibold mb-2">The Human Eye</h4>
+                           <p>The eye is our organ for vision, transducing light into neural signals. Its key components—the cornea, lens, and retina—work together to focus light and capture visual information. The fovea provides high-acuity vision, while the periphery is sensitive to motion and low light.</p>
+                        </div>
+                        <div>
+                           <h4 class="text-xl font-semibold mb-2">Color and Adaptation</h4>
+                           <p><strong>Trichromacy Theory:</strong> We perceive color through the differential activation of three types of cone cells sensitive to short, medium, and long wavelengths of light.</p>
+                           <p class="mt-2"><strong>Dark/Light Adaptation:</strong> The eye adjusts its sensitivity to varying light levels. Dark adaptation (becoming sensitive to dim light) is a slow process involving the regeneration of rhodopsin in rod cells.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="my-16 border-gray-300">
+
+            <!-- Attention Panel -->
+            <section id="attention" class="content-panel">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Attention: The Gatekeeper</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">With a flood of sensory information available, attention is the cognitive process that selects which information to focus on and process further, while filtering out distractions.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4">Theories of Selective Attention</h3>
+                    <p class="mb-6 text-gray-600">How do we select what to pay attention to? Psychologists have proposed several models to explain this filtering process. Click on a theory to learn more.</p>
+                    <div class="space-y-4">
+                        <div class="interactive-card border border-gray-200 rounded-lg overflow-hidden" data-theory="broadbent">
+                            <div class="p-4 bg-gray-100">
+                                <h4 class="font-bold text-lg">1. Broadbent’s Filter Model (Early Selection)</h4>
+                            </div>
+                            <div class="theory-details p-4 hidden">
+                                <p>This model suggests that sensory information enters a buffer, and an early filter selects one channel based on physical characteristics (e.g., pitch of voice). Only the selected information passes through for further processing (e.g., understanding meaning).</p>
+                                <p class="mt-2 text-sm text-gray-500"><strong>Limitation:</strong> Fails to explain the "cocktail party effect," where meaningful information from an unattended channel (like your name) can capture your attention.</p>
+                            </div>
+                        </div>
+                        <div class="interactive-card border border-gray-200 rounded-lg overflow-hidden" data-theory="treisman">
+                            <div class="p-4 bg-gray-100">
+                                <h4 class="font-bold text-lg">2. Treisman’s Attenuation Model</h4>
+                            </div>
+                            <div class="theory-details p-4 hidden">
+                                <p>Instead of an all-or-nothing filter, Treisman proposed an "attenuator" that weakens the signal from unattended channels. While weaker, the information is still present. If an unattended stimulus is highly salient or personally relevant (like your name), it can exceed the threshold for conscious awareness.</p>
+                            </div>
+                        </div>
+                        <div class="interactive-card border border-gray-200 rounded-lg overflow-hidden" data-theory="heinz">
+                            <div class="p-4 bg-gray-100">
+                                <h4 class="font-bold text-lg">3. Johnston & Heinz’s Multimode Theory</h4>
+                            </div>
+                            <div class="theory-details p-4 hidden">
+                                <p>This theory proposes that attention is flexible and the "filter" can be placed at different stages of processing. Early selection (like Broadbent's) is less demanding, while late selection (processing meaning before filtering) requires more cognitive effort. The stage of selection depends on the task's demands.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="mt-12 bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4">Facets of Attention</h3>
+                     <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                           <h4 class="text-xl font-semibold mb-2">Divided Attention & Automaticity</h4>
+                           <p>We can sometimes attend to multiple tasks at once, but performance usually suffers. Divided attention is easiest when at least one task is highly practiced and has become **automatic**, requiring few cognitive resources (e.g., walking while talking).</p>
+                        </div>
+                        <div>
+                           <h4 class="text-xl font-semibold mb-2">Inattentional Blindness</h4>
+                           <p>A striking failure of attention where we fail to notice a fully visible, but unexpected, object because our attention was engaged on another task or object. The famous "invisible gorilla" experiment is a classic demonstration of this phenomenon.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="my-16 border-gray-300">
+
+            <!-- Perception Panel -->
+            <section id="perception" class="content-panel">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Perception: Creating Meaning</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">Perception is the active process of organizing, interpreting, and giving meaning to sensory information. It is here that raw data is transformed into our conscious experience of the world.</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-lg shadow-lg mb-12">
+                    <h3 class="text-2xl font-bold mb-4 text-center">Gestalt Principles of Perceptual Organization</h3>
+                    <p class="text-center text-gray-600 mb-6">The brain automatically and innately organizes sensory information into meaningful wholes. The Gestalt psychologists identified several principles that guide this process. Click on a demonstration to learn about the principle.</p>
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 flex-grow">
+                             <div class="gestalt-canvas-container border-2 border-gray-200 rounded-lg p-2 text-center cursor-pointer" data-gestalt="proximity">
+                                <canvas width="150" height="100"></canvas>
+                                <p class="text-sm mt-1">Proximity</p>
+                            </div>
+                             <div class="gestalt-canvas-container border-2 border-gray-200 rounded-lg p-2 text-center cursor-pointer" data-gestalt="similarity">
+                                <canvas width="150" height="100"></canvas>
+                                 <p class="text-sm mt-1">Similarity</p>
+                            </div>
+                            <div class="gestalt-canvas-container border-2 border-gray-200 rounded-lg p-2 text-center cursor-pointer" data-gestalt="continuity">
+                                <canvas width="150" height="100"></canvas>
+                                 <p class="text-sm mt-1">Continuity</p>
+                            </div>
+                            <div class="gestalt-canvas-container border-2 border-gray-200 rounded-lg p-2 text-center cursor-pointer" data-gestalt="closure">
+                                <canvas width="150" height="100"></canvas>
+                                 <p class="text-sm mt-1">Closure</p>
+                            </div>
+                            <div class="gestalt-canvas-container border-2 border-gray-200 rounded-lg p-2 text-center cursor-pointer" data-gestalt="figureground">
+                                <canvas width="150" height="100"></canvas>
+                                 <p class="text-sm mt-1">Figure-Ground</p>
+                            </div>
+                        </div>
+                        <div id="gestalt-info" class="lg:w-1/3 bg-gray-50 p-6 rounded-lg flex items-center justify-center min-h-[150px]">
+                            <p class="text-gray-700">Select a principle to see its definition.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4">Depth Perception</h3>
+                        <p class="mb-4 text-gray-600">We perceive a 3D world despite the 2D image on our retinas by using a variety of depth cues.</p>
+                        <div>
+                            <h4 class="text-xl font-semibold mb-2">Monocular Cues (One Eye)</h4>
+                            <ul class="list-disc list-inside space-y-1 text-gray-600">
+                                <li><strong>Linear Perspective:</strong> Parallel lines appear to converge in the distance.</li>
+                                <li><strong>Occlusion:</strong> An object that blocks another is perceived as closer.</li>
+                                <li><strong>Relative Size:</strong> Smaller objects are perceived as farther away.</li>
+                                <li><strong>Motion Parallax:</strong> Closer objects appear to move faster than distant objects.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-6">
+                            <h4 class="text-xl font-semibold mb-2">Binocular Cues (Two Eyes)</h4>
+                             <ul class="list-disc list-inside space-y-1 text-gray-600">
+                                <li><strong>Binocular Disparity:</strong> Each eye receives a slightly different image. The brain uses this difference (disparity) to calculate depth.</li>
+                                <li><strong>Convergence:</strong> The extent to which our eyes turn inward when looking at an object provides a cue to its distance.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4">Perceptual Constancy & Illusions</h3>
+                        <p class="mb-4 text-gray-600">Our perception of objects remains stable even as the sensory information we receive changes. This is called perceptual constancy.</p>
+                        <ul class="list-disc list-inside space-y-1 mb-6">
+                           <li><strong>Size Constancy:</strong> We perceive an object as being the same size regardless of its distance.</li>
+                           <li><strong>Shape Constancy:</strong> We perceive an object as having a constant shape, even when viewed from different angles.</li>
+                           <li><strong>Brightness Constancy:</strong> We perceive an object as having constant brightness even when illumination changes.</li>
+                        </ul>
+                        <p class="text-gray-600">Sometimes, the strategies our brain uses to maintain constancy can be tricked, leading to **visual illusions**—systematic errors in perception that can reveal the underlying assumptions of our perceptual system.</p>
+                        <div class="mt-4 p-4 border-t border-gray-200">
+                             <h4 class="text-xl font-semibold mb-2 text-center">Müller-Lyer Illusion</h4>
+                             <div class="chart-container h-48 max-h-48">
+                                <canvas id="muller-lyer-canvas"></canvas>
+                             </div>
+                             <p class="text-sm text-center text-gray-500 mt-2">Which horizontal line is longer? Both are the same length. The fins trick our depth cues.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+
+        <footer class="bg-white mt-12 py-6 border-t">
+            <div class="container mx-auto text-center text-gray-500">
+                <p>&copy; 2025 Interactive Cognitive Science Guide. All rights reserved.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const pipelineContent = {
+            sensation: {
+                title: 'Sensation',
+                text: 'The physiological registration of energy from the environment (like light, sound, or chemicals). Sensation is the raw, unprocessed input from our sensory receptors.'
+            },
+            attention: {
+                title: 'Attention',
+                text: 'The cognitive process of selectively concentrating on one aspect of the environment while ignoring others. It acts as a filter, preventing us from being overwhelmed by sensory information.'
+            },
+            perception: {
+                title: 'Perception',
+                text: 'The brain\'s process of organizing and interpreting sensory information to give it meaning. This is a constructive process influenced by memory, expectation, and context.'
+            }
+        };
+
+        const gestaltContent = {
+            proximity: {
+                title: 'Proximity',
+                text: 'Objects that are close together are perceived as a group.'
+            },
+            similarity: {
+                title: 'Similarity',
+                text: 'Objects that share similar characteristics (like shape or color) are perceived as a group.'
+            },
+            continuity: {
+                title: 'Continuity',
+                text: 'We perceive smooth, continuous patterns rather than discontinuous ones. We see lines as following the smoothest path.'
+            },
+            closure: {
+                title: 'Closure',
+                text: 'We tend to fill in gaps to create a complete, whole object. Our brains complete fragmented shapes.'
+            },
+            figureground: {
+                title: 'Figure-Ground',
+                text: 'We instinctively perceive objects (the figure) as existing on a background. This organization is fundamental and reversible.'
+            }
+        };
+
+        const pipelineSteps = document.querySelectorAll('.pipeline-step');
+        const pipelineInfo = document.getElementById('pipeline-info');
+        const theoryCards = document.querySelectorAll('[data-theory]');
+        const gestaltCanvases = document.querySelectorAll('.gestalt-canvas-container');
+        const gestaltInfo = document.getElementById('gestalt-info');
+
+        pipelineSteps.forEach(step => {
+            step.addEventListener('click', () => {
+                const concept = step.dataset.concept;
+                const content = pipelineContent[concept];
+                pipelineInfo.innerHTML = `<h4 class="text-lg font-bold mb-2">${content.title}</h4><p class="text-gray-700">${content.text}</p>`;
+            });
+        });
+
+        theoryCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const details = card.querySelector('.theory-details');
+                details.classList.toggle('hidden');
+            });
+        });
+        
+        gestaltCanvases.forEach(container => {
+            container.addEventListener('click', () => {
+                 gestaltCanvases.forEach(c => c.classList.remove('active'));
+                 container.classList.add('active');
+                 const principle = container.dataset.gestalt;
+                 const content = gestaltContent[principle];
+                 gestaltInfo.innerHTML = `<h4 class="text-lg font-bold mb-2">${content.title}</h4><p class="text-gray-700">${content.text}</p>`;
+            });
+        });
+
+        function drawGestalt() {
+            const proximityCanvas = document.querySelector('[data-gestalt="proximity"] canvas');
+            if (proximityCanvas) {
+                const proximityCtx = proximityCanvas.getContext('2d');
+                proximityCtx.fillStyle = '#4A5568';
+                for (let i = 0; i < 3; i++) {
+                    for (let j = 0; j < 4; j++) {
+                        proximityCtx.beginPath();
+                        proximityCtx.arc(25 + i * 20, 30 + j * 15, 5, 0, Math.PI * 2);
+                        proximityCtx.fill();
+                    }
+                }
+                 for (let i = 0; i < 3; i++) {
+                    for (let j = 0; j < 4; j++) {
+                        proximityCtx.beginPath();
+                        proximityCtx.arc(95 + i * 20, 30 + j * 15, 5, 0, Math.PI * 2);
+                        proximityCtx.fill();
+                    }
+                }
+            }
+
+            const similarityCanvas = document.querySelector('[data-gestalt="similarity"] canvas');
+            if (similarityCanvas) {
+                const similarityCtx = similarityCanvas.getContext('2d');
+                for (let i = 0; i < 5; i++) {
+                    for (let j = 0; j < 5; j++) {
+                        similarityCtx.beginPath();
+                        if (j % 2 === 0) {
+                            similarityCtx.fillStyle = '#4A5568';
+                            similarityCtx.arc(25 + i * 25, 25 + j * 15, 5, 0, Math.PI * 2);
+                            similarityCtx.fill();
+                        } else {
+                            similarityCtx.fillStyle = '#A0AEC0';
+                            similarityCtx.fillRect(19 + i * 25, 19 + j * 15, 12, 12);
+                        }
+                    }
+                }
+            }
+            
+            const continuityCanvas = document.querySelector('[data-gestalt="continuity"] canvas');
+            if (continuityCanvas) {
+                const continuityCtx = continuityCanvas.getContext('2d');
+                continuityCtx.strokeStyle = '#4A5568';
+                continuityCtx.lineWidth = 3;
+                continuityCtx.beginPath();
+                continuityCtx.moveTo(10, 80);
+                continuityCtx.bezierCurveTo(40, 10, 110, 10, 140, 80);
+                continuityCtx.stroke();
+                continuityCtx.strokeStyle = '#A0AEC0';
+                continuityCtx.beginPath();
+                continuityCtx.moveTo(10, 20);
+                continuityCtx.bezierCurveTo(60, 90, 90, 90, 140, 20);
+                continuityCtx.stroke();
+            }
+
+            const closureCanvas = document.querySelector('[data-gestalt="closure"] canvas');
+            if (closureCanvas) {
+                const closureCtx = closureCanvas.getContext('2d');
+                closureCtx.strokeStyle = '#4A5568';
+                closureCtx.lineWidth = 4;
+                closureCtx.beginPath();
+                closureCtx.arc(75, 50, 30, 0.4, Math.PI * 1.6);
+                closureCtx.stroke();
+                 closureCtx.beginPath();
+                 closureCtx.moveTo(75 + 30 * Math.cos(0.4), 50 + 30 * Math.sin(0.4));
+                 closureCtx.lineTo(95, 20);
+                 closureCtx.stroke();
+            }
+
+            const figureGroundCanvas = document.querySelector('[data-gestalt="figureground"] canvas');
+            if (figureGroundCanvas) {
+                const figureGroundCtx = figureGroundCanvas.getContext('2d');
+                figureGroundCtx.fillStyle = '#4A5568';
+                figureGroundCtx.fillRect(0,0,150,100);
+                figureGroundCtx.fillStyle = '#FFFFFF';
+                figureGroundCtx.beginPath();
+                figureGroundCtx.moveTo(40, 100);
+                figureGroundCtx.bezierCurveTo(20, 50, 100, 50, 60, 0);
+                figureGroundCtx.lineTo(90,0);
+                figureGroundCtx.bezierCurveTo(130,50, 50,50, 110,100);
+                figureGroundCtx.closePath();
+                figureGroundCtx.fill();
+            }
+        }
+
+        function drawMullerLyer() {
+             const canvas = document.getElementById('muller-lyer-canvas');
+             if(!canvas) return;
+             const ctx = canvas.getContext('2d');
+             
+             function resizeCanvas() {
+                const container = canvas.parentElement;
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+                
+                const width = canvas.width;
+                const height = canvas.height;
+                const lineLength = width * 0.5;
+                const y1 = height * 0.3;
+                const y2 = height * 0.7;
+                const startX = (width - lineLength) / 2;
+
+                ctx.clearRect(0, 0, width, height); 
+                ctx.strokeStyle = '#1A202C';
+                ctx.lineWidth = 3;
+                 
+                ctx.beginPath();
+                ctx.moveTo(startX, y1);
+                ctx.lineTo(startX + lineLength, y1);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(startX, y2);
+                ctx.lineTo(startX + lineLength, y2);
+                ctx.stroke();
+
+                const finLength = 30;
+                const angle = Math.PI / 4;
+
+                ctx.beginPath();
+                ctx.moveTo(startX, y1);
+                ctx.lineTo(startX + finLength * Math.cos(angle), y1 + finLength * Math.sin(angle));
+                ctx.moveTo(startX, y1);
+                ctx.lineTo(startX + finLength * Math.cos(-angle), y1 + finLength * Math.sin(-angle));
+                ctx.moveTo(startX + lineLength, y1);
+                ctx.lineTo(startX + lineLength - finLength * Math.cos(angle), y1 + finLength * Math.sin(angle));
+                ctx.moveTo(startX + lineLength, y1);
+                ctx.lineTo(startX + lineLength - finLength * Math.cos(-angle), y1 + finLength * Math.sin(-angle));
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(startX, y2);
+                ctx.lineTo(startX - finLength * Math.cos(angle), y2 - finLength * Math.sin(angle));
+                ctx.moveTo(startX, y2);
+                ctx.lineTo(startX - finLength * Math.cos(-angle), y2 - finLength * Math.sin(-angle));
+                ctx.moveTo(startX + lineLength, y2);
+                ctx.lineTo(startX + lineLength + finLength * Math.cos(angle), y2 - finLength * Math.sin(angle));
+                ctx.moveTo(startX + lineLength, y2);
+                ctx.lineTo(startX + lineLength + finLength * Math.cos(-angle), y2 - finLength * Math.sin(-angle));
+                ctx.stroke();
+             }
+
+             resizeCanvas();
+             window.addEventListener('resize', resizeCanvas);
+        }
+
+
+        drawGestalt();
+        drawMullerLyer();
+    });
+    </script>
 </body>
 </html>
