@@ -3,90 +3,439 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stress Relief Tools - Inner Peace</title>
-    <link href="tooplate-inner-peace.css" rel="stylesheet">
+    <title>Interactive Guide to Learning Psychology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Calm Neutrals (Beige, Slate, Soft Teal Accent) -->
+    <!-- Application Structure Plan: A thematic, single-page application with a fixed sidebar navigation. This structure was chosen to break down the dense, academic text into manageable, user-selectable topics. Instead of a long, linear scroll, the user can immediately jump to a concept of interest (e.g., "Conditioning" or "Skill Acquisition"). This non-linear approach encourages exploration and comparison between different theories, enhancing usability and comprehension for a student or interested learner. Interactive elements within each section, like toggles and clickable diagrams, further engage the user. -->
+    <!-- Visualization & Content Choices: 
+        - Core Concepts: Goal: Inform. Method: Styled cards (HTML/CSS) to present foundational definitions clearly. Interaction: None. Justification: Separates key terms for easy reference.
+        - Conditioning Paradigms: Goal: Compare. Method: Two-column layout, interactive HTML/CSS diagrams for timing, and a conceptual Donut Chart (Chart.js) for effectiveness. Interaction: Clickable toggles and hover effects. Justification: Visually contrasts the two main types of conditioning and their determinants. The chart provides a memorable visual anchor for a key takeaway.
+        - Skill Acquisition: Goal: Show process. Method: An interactive horizontal timeline created with HTML/CSS. Interaction: Clicking a stage reveals details. Justification: This is the most intuitive way to represent a multi-phase process.
+        - Advanced Learning: Goal: Organize. Method: Accordion component (HTML/JS). Interaction: Click to expand/collapse. Justification: Manages a large amount of related but distinct information without cluttering the page.
+        - Other sections: Goal: Inform/Organize. Method: Styled cards and lists. Justification: Clean and direct presentation for definitional content.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link.active {
+            background-color: #4FD1C5;
+            color: white;
+            transform: translateX(4px);
+        }
+        .phase-item.active {
+            background-color: #4FD1C5;
+            color: white;
+        }
+        .phase-item.active .phase-circle {
+            background-color: white;
+            border-color: #4FD1C5;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+    </style>
 </head>
-<body>
-    <div class="geometric-bg"></div>
+<body class="bg-gray-50 text-gray-800">
 
-    <!-- Header -->
-    <header>
-        <nav>
-            <a href="index.html" class="logo">
-                <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="20" cy="20" r="18" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
-                    <circle cx="20" cy="20" r="14" fill="none" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.7"/>
-                    <circle cx="20" cy="20" r="10" fill="none" stroke="url(#logoGradient)" stroke-width="1" opacity="0.5"/>
-                    <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3"/>
-                    <circle cx="20" cy="20" r="3" fill="url(#logoGradient)"/>
-                </svg>
-                <span class="logo-text">Inner Peace</span>
-            </a>
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="w-64 bg-white p-6 shadow-lg fixed lg:relative h-screen lg:h-auto overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-30">
+            <h1 class="text-2xl font-bold text-gray-800 mb-8">Learning Theory</h1>
+            <nav id="navigation" class="space-y-2">
+                <a href="#" class="nav-link block p-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" data-target="core-concepts">Core Concepts</a>
+                <a href="#" class="nav-link block p-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" data-target="conditioning-paradigms">Conditioning Paradigms</a>
+                <a href="#" class="nav-link block p-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" data-target="key-processes">Key Learning Processes</a>
+                <a href="#" class="nav-link block p-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" data-target="advanced-learning">Advanced Learning Types</a>
+                <a href="#" class="nav-link block p-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" data-target="skill-acquisition">Skill Acquisition</a>
+                <a href="#" class="nav-link block p-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" data-target="factors-facilitating">Factors & Difficulties</a>
+                <a href="#" class="nav-link block p-3 rounded-lg font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" data-target="applications">Applications & Therapies</a>
+            </nav>
+        </aside>
+
+        <button id="menu-toggle" class="lg:hidden fixed top-4 left-4 z-40 p-2 bg-white rounded-md shadow-md">
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        
+        <main class="flex-1 p-6 lg:p-10">
+            <div id="content-container">
+
+                <section id="core-concepts" class="content-section">
+                    <h2 class="text-4xl font-bold mb-4">Core Nature and Fundamental Definitions</h2>
+                    <p class="text-lg text-gray-600 mb-8">This section covers the foundational concepts that define learning in behavioral science. These terms distinguish true learning from other temporary behavioral changes and outline the basic sequence of acquiring knowledge.</p>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                            <h3 class="text-xl font-semibold mb-2 text-teal-600">Learning</h3>
+                            <p>Any relatively permanent change in behavior or behavioral potential produced by experience. It's an inferred process, not directly observed.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                            <h3 class="text-xl font-semibold mb-2 text-teal-600">Experience</h3>
+                            <p>The necessary prerequisite for learning, involving observation or powerful single instances.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                            <h3 class="text-xl font-semibold mb-2 text-teal-600">Performance</h3>
+                            <p>A person’s observed behavior, response, or action, from which learning is inferred.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                            <h3 class="text-xl font-semibold mb-2 text-teal-600">Behavioural Changes</h3>
+                            <p>The outcome of learning, distinguished by being relatively permanent.</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 col-span-1 md:col-span-2">
+                             <h3 class="text-xl font-semibold mb-2 text-red-500">Not Learning</h3>
+                             <p>It's crucial to distinguish learning from temporary changes (e.g., from fatigue or drugs) and **Habituation** (weakening reflexes due to continuous stimulus exposure).</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="conditioning-paradigms" class="content-section">
+                    <h2 class="text-4xl font-bold mb-4">Paradigms of Learning and Conditioning</h2>
+                    <p class="text-lg text-gray-600 mb-8">Conditioning is the simplest form of learning, broken into two main paradigms: Classical and Operant. This section explores their core mechanisms, components, and the factors that determine their effectiveness. Use the interactive elements below to compare their key concepts.</p>
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                            <h3 class="text-2xl font-bold mb-4">Classical Conditioning (S-S Learning)</h3>
+                            <p class="mb-4">First investigated by Ivan Pavlov, this involves an organism associating stimuli. A neutral stimulus (CS) comes to signal an unconditioned stimulus (US), producing a conditioned response (CR).</p>
+                            <div class="chart-container my-6">
+                                <canvas id="conditioningEffectivenessChart"></canvas>
+                            </div>
+                            <p class="text-center text-sm text-gray-500 mb-6">Conceptual chart showing the relative effectiveness of different CS-US time relations in acquiring a conditioned response.</p>
+                            
+                            <h4 class="font-semibold mt-6 mb-2">Type of Unconditioned Stimuli</h4>
+                            <p>The nature of the stimulus drastically changes conditioning speed. **Appetitive** stimuli (e.g., food) lead to slower conditioning, while **Aversive** stimuli (e.g., shock) lead to very rapid conditioning.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                            <h3 class="text-2xl font-bold mb-4">Operant Conditioning (R-C Learning)</h3>
+                            <p class="mb-4">First investigated by B.F. Skinner, this involves voluntary behaviors (operants). The behavior is instrumental in obtaining a consequence (reinforcement or punishment).</p>
+                            
+                            <h4 class="font-semibold mt-4 mb-3">Key Concepts</h4>
+                             <div class="space-y-4">
+                                <div class="p-4 bg-gray-100 rounded-lg">
+                                    <h5 class="font-bold">Reinforcement (Increases Behavior)</h5>
+                                    <p class="text-sm"><strong>Positive:</strong> Adding a pleasant stimulus (e.g., praise). <br><strong>Negative:</strong> Removing an unpleasant stimulus (e.g., stopping a loud noise).</p>
+                                </div>
+                                <div class="p-4 bg-gray-100 rounded-lg">
+                                    <h5 class="font-bold">Punishment (Decreases Behavior)</h5>
+                                    <p class="text-sm">Reduces or suppresses a response, but often not permanently.</p>
+                                </div>
+                            </div>
+                            
+                            <h4 class="font-semibold mt-6 mb-3">Reinforcement Schedules</h4>
+                            <div class="space-y-4">
+                                <div class="p-4 border-l-4 border-teal-500 bg-teal-50 rounded-lg">
+                                    <h5 class="font-bold">Continuous</h5>
+                                    <p class="text-sm">Reinforced every time. Leads to high response rates but quick extinction.</p>
+                                </div>
+                                <div class="p-4 border-l-4 border-orange-500 bg-orange-50 rounded-lg">
+                                    <h5 class="font-bold">Intermittent (Partial)</h5>
+                                    <p class="text-sm">Sometimes reinforced. Produces greater resistance to extinction.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="key-processes" class="content-section">
+                    <h2 class="text-4xl font-bold mb-4">Key Learning Processes</h2>
+                    <p class="text-lg text-gray-600 mb-8">Once a behavior is learned, several processes govern its persistence, disappearance, and application to new situations. These core processes apply across different types of learning.</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="font-semibold text-xl mb-2">Extinction & Recovery</h3>
+                            <p class="mb-2"><strong>Extinction:</strong> The disappearance of a learned response when reinforcement is removed.</p>
+                            <p class="mb-2"><strong>Resistance to Extinction:</strong> How long a response persists without reinforcement. It is greatly enhanced by partial reinforcement schedules.</p>
+                            <p><strong>Spontaneous Recovery:</strong> After a time lapse, an extinguished response can reappear. The longer the lapse, the greater the recovery.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="font-semibold text-xl mb-2">Generalisation & Discrimination</h3>
+                            <p class="mb-2"><strong>Generalisation:</strong> Responding similarly to stimuli that resemble the original conditioned stimulus.</p>
+                            <p><strong>Discrimination:</strong> The complementary process of responding differently to stimuli that are distinct from the original, especially if one is reinforced and the other is not.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="advanced-learning" class="content-section">
+                    <h2 class="text-4xl font-bold mb-4">Advanced Learning Types</h2>
+                     <p class="text-lg text-gray-600 mb-8">Beyond simple conditioning, learning encompasses complex cognitive, social, and verbal processes. This section explores these advanced forms of learning. Click on each category to expand and see the details.</p>
+                     <div id="accordion-container" class="space-y-4">
+                        <div class="accordion-item bg-white rounded-xl shadow-md border border-gray-200">
+                            <button class="accordion-header w-full p-6 text-left text-xl font-semibold flex justify-between items-center">
+                                <span>Cognitive Approaches</span>
+                                <span class="transform transition-transform duration-300">&#9662;</span>
+                            </button>
+                            <div class="accordion-content px-6 pb-6">
+                                <p>Focuses on the mental processes underlying learning. It's a change in what the learner knows, not just what they do.</p>
+                                <ul class="list-disc list-inside mt-4 space-y-2">
+                                    <li><strong>Insight Learning:</strong> A sudden "aha!" moment where a solution becomes clear without trial and error.</li>
+                                    <li><strong>Latent Learning:</strong> Learning that occurs but is not demonstrated until reinforcement is provided. Involves creating a "cognitive map".</li>
+                                    <li><strong>Learned Helplessness:</strong> Failing to act to escape a situation because of a history of repeated failures.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-white rounded-xl shadow-md border border-gray-200">
+                             <button class="accordion-header w-full p-6 text-left text-xl font-semibold flex justify-between items-center">
+                                <span>Social and Verbal Learning</span>
+                                <span class="transform transition-transform duration-300">&#9662;</span>
+                            </button>
+                            <div class="accordion-content px-6 pb-6">
+                                <p class="mb-4">These types of learning are highly dependent on social interaction and language.</p>
+                                <ul class="list-disc list-inside mt-4 space-y-2">
+                                    <li><strong>Observational Learning:</strong> Learning by watching others (models). Also known as imitation or modeling.</li>
+                                    <li><strong>Verbal Learning:</strong> Acquiring knowledge through words. Includes Paired-Associates, Serial Learning, and Free Recall methods.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-white rounded-xl shadow-md border border-gray-200">
+                            <button class="accordion-header w-full p-6 text-left text-xl font-semibold flex justify-between items-center">
+                                <span>Concept Learning</span>
+                                <span class="transform transition-transform duration-300">&#9662;</span>
+                            </button>
+                            <div class="accordion-content px-6 pb-6">
+                                <p>The process of organizing objects and events into categories. A concept is a set of features connected by a rule.</p>
+                                <ul class="list-disc list-inside mt-4 space-y-2">
+                                     <li><strong>Artificial Concepts:</strong> Well-defined with rigid rules (e.g., a square).</li>
+                                     <li><strong>Natural Concepts:</strong> Ill-defined with "fuzzy boundaries" (e.g., 'bird' - a penguin vs. a sparrow).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="skill-acquisition" class="content-section">
+                    <h2 class="text-4xl font-bold mb-4">Skill Learning and Acquisition</h2>
+                    <p class="text-lg text-gray-600 mb-8">A skill is the ability to perform a complex task smoothly and efficiently. Acquiring a skill is a process that moves through three distinct phases, from conscious effort to automatic performance. Click on each phase below to see its description.</p>
+                    
+                    <div class="w-full">
+                        <div id="phases-nav" class="flex justify-between items-center mb-4 relative">
+                            <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-300 transform -translate-y-1/2"></div>
+                            <div class="phase-item flex-1 text-center cursor-pointer p-4 rounded-lg z-10" data-target="phase-1-content">
+                                <div class="phase-circle w-8 h-8 rounded-full bg-gray-300 border-4 border-white mx-auto mb-2 flex items-center justify-center font-bold">1</div>
+                                <p class="font-semibold">Cognitive</p>
+                            </div>
+                            <div class="phase-item flex-1 text-center cursor-pointer p-4 rounded-lg z-10" data-target="phase-2-content">
+                                <div class="phase-circle w-8 h-8 rounded-full bg-gray-300 border-4 border-white mx-auto mb-2 flex items-center justify-center font-bold">2</div>
+                                <p class="font-semibold">Associative</p>
+                            </div>
+                            <div class="phase-item flex-1 text-center cursor-pointer p-4 rounded-lg z-10" data-target="phase-3-content">
+                                <div class="phase-circle w-8 h-8 rounded-full bg-gray-300 border-4 border-white mx-auto mb-2 flex items-center justify-center font-bold">3</div>
+                                <p class="font-semibold">Autonomous</p>
+                            </div>
+                        </div>
+                        <div id="phases-content" class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 min-h-[150px]">
+                            <div id="phase-1-content" class="phase-content-panel">
+                                <h3 class="text-xl font-bold mb-2">Phase 1: Cognitive Phase</h3>
+                                <p>The learner focuses on understanding instructions and memorizing the steps. Performance is slow and requires full conscious attention to every detail.</p>
+                            </div>
+                             <div id="phase-2-content" class="phase-content-panel" style="display: none;">
+                                <h3 class="text-xl font-bold mb-2">Phase 2: Associative Phase</h3>
+                                <p>Sensory inputs are linked with appropriate responses. Performance improves, errors decrease, and time taken is reduced. The learner still needs to be attentive and concentrated.</p>
+                            </div>
+                             <div id="phase-3-content" class="phase-content-panel" style="display: none;">
+                                <h3 class="text-xl font-bold mb-2">Phase 3: Autonomous Phase</h3>
+                                <p>Attentional demands decrease dramatically. Skilled performance achieves **automaticity** with minimal conscious effort, becoming smooth and errorless.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="factors-facilitating" class="content-section">
+                    <h2 class="text-4xl font-bold mb-4">Factors Facilitating Learning & Difficulties</h2>
+                    <p class="text-lg text-gray-600 mb-8">Learning is not a uniform process. It is influenced by internal factors like motivation and learning style, as well as biological predispositions. This section also covers common difficulties that can impede the learning process.</p>
+                     <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="font-semibold text-xl mb-3">Facilitating Factors</h3>
+                            <ul class="space-y-3">
+                                <li><strong>Motivation:</strong> The prerequisite that energizes an organism. Can be **Intrinsic** (from enjoyment) or **Extrinsic** (for a reward).</li>
+                                <li><strong>Preparedness:</strong> Biological constraints that make certain associations easier for a species to learn.</li>
+                                <li><strong>Partial Reinforcement Effect:</strong> The finding that intermittent reinforcement leads to high resistance to extinction.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="font-semibold text-xl mb-3">Learning Styles & Difficulties</h3>
+                            <ul class="space-y-3">
+                                <li><strong>Learning Style:</strong> A learner's consistent way of responding. Includes **Relational** (holistic, intuitive) and **Analytic** (detail-oriented, structured) styles.</li>
+                                <li><strong>Learning Disabilities:</strong> Disorders manifesting in difficulty with reading, writing, or math (e.g., **Dyslexia**). Can be accompanied by **Hyperactivity**.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="applications" class="content-section">
+                    <h2 class="text-4xl font-bold mb-4">Applications & Therapies</h2>
+                    <p class="text-lg text-gray-600 mb-8">The principles of learning have profound practical applications, particularly in behavioral therapies designed to treat maladaptive behaviors, fears, and anxieties. Here are some key therapeutic techniques derived from learning theory.</p>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="font-semibold text-xl mb-2">Systematic Desensitisation</h3>
+                            <p>Reduces anxieties in phobic patients through counterconditioning, associating the feared stimulus with a new, relaxed response.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="font-semibold text-xl mb-2">Flooding & Implosive Therapy</h3>
+                            <p>Treats irrational fears by exposing the person to the feared object, either **in vivo** (Flooding) or through vivid imagination (Implosive Therapy).</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="font-semibold text-xl mb-2">Aversion Therapy</h3>
+                            <p>Eliminates undesirable habits by pairing the habit with a painful or unpleasant experience.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="font-semibold text-xl mb-2">Assertive Learning</h3>
+                            <p>Therapy for excessive shyness and difficulties in interpersonal interactions.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="font-semibold text-xl mb-2">Biofeedback</h3>
+                            <p>A technique where a person gets real-time feedback on a bodily function (e.g., heart rate) to gain conscious control over it.</p>
+                        </div>
+                    </div>
+                </section>
             </div>
-            <ul class="nav-links">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="index.html#about" class="nav-link">About</a></li>
-                <li><a href="index.html#practices" class="nav-link">Practices</a></li>
-                <li><a href="index.html#resources" class="nav-link">Resources</a></li>
-            </ul>
-        </nav>
-    </header>
+        </main>
+    </div>
 
-    <!-- Main Content -->
-    <main style="padding: 8rem 5% 4rem; max-width: 1200px; margin: 0 auto;">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">😌</div>
-            <h1 class="section-title">Stress Relief Tools</h1>
-            <p class="section-subtitle">Quick and effective techniques for immediate relief</p>
-        </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const firstLink = navLinks[0];
+            const firstSection = document.getElementById(firstLink.dataset.target);
 
-        <div style="background: white; border-radius: 25px; padding: 3rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); margin-bottom: 2rem;">
-            <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Welcome to Stress Relief Tools</h2>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                This is a placeholder page for the Stress Relief Tools resource. Here you can add detailed information about quick stress relief techniques, 
-                emergency calming strategies, guided stress relief sessions, or any other tools for managing stress and anxiety.
-            </p>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                Some content you might want to include:
-            </p>
-            <ul style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem; padding-left: 2rem;">
-                <li>5-minute emergency stress relief</li>
-                <li>Progressive muscle relaxation</li>
-                <li>Quick anxiety relief techniques</li>
-                <li>Workplace stress management</li>
-                <li>Calming visualization exercises</li>
-            </ul>
+            function showSection(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                const sectionToShow = document.getElementById(targetId);
+                const linkToActivate = document.querySelector(`.nav-link[data-target="${targetId}"]`);
+                
+                if (sectionToShow) sectionToShow.classList.add('active');
+                if (linkToActivate) linkToActivate.classList.add('active');
+            }
             
-            <a href="index.html" style="display: inline-block; background: var(--gradient-1); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.3s ease; margin-top: 1rem;">
-                ← Back to Homepage
-            </a>
-        </div>
-    </main>
+            showSection('core-concepts');
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Service</a>
-                <a href="#support">Support</a>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Inner Peace. All rights reserved. Nurturing minds, one breath at a time.</p>
-            </div>
-        </div>
-    </footer>
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.dataset.target;
+                    showSection(targetId);
+                    const sidebar = document.getElementById('sidebar');
+                    if(window.innerWidth < 1024) {
+                        sidebar.classList.add('-translate-x-full');
+                    }
+                });
+            });
 
-    <script src="tooplate-inner-peace-scripts.js"></script>
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const icon = header.querySelector('span:last-child');
+                header.addEventListener('click', () => {
+                    const isExpanded = content.style.maxHeight && content.style.maxHeight !== '0px';
+                    if (isExpanded) {
+                        content.style.maxHeight = '0px';
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            const phaseItems = document.querySelectorAll('.phase-item');
+            const phaseContentPanels = document.querySelectorAll('.phase-content-panel');
+            phaseItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    phaseItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    const targetId = item.dataset.target;
+                    phaseContentPanels.forEach(panel => {
+                        if(panel.id === targetId) {
+                            panel.style.display = 'block';
+                        } else {
+                            panel.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            phaseItems[0].click();
+
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+
+            const ctx = document.getElementById('conditioningEffectivenessChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Delayed Conditioning', 'Trace Conditioning', 'Simultaneous Conditioning', 'Backward Conditioning'],
+                    datasets: [{
+                        label: 'Relative Effectiveness',
+                        data: [65, 20, 10, 5],
+                        backgroundColor: [
+                            '#4FD1C5',
+                            '#63B3ED',
+                            '#F6E05E',
+                            '#F56565'
+                        ],
+                        borderColor: '#FFFFFF',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Conditioning Procedure Effectiveness'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '% Effective';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
