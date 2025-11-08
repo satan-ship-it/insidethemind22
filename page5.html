@@ -286,7 +286,7 @@
                              <div class="chart-container h-48 max-h-48">
                                 <canvas id="muller-lyer-canvas"></canvas>
                              </div>
-                             <p class="text-sm text-center text-gray-500 mt-2">Which horizontal line is longer? Both are the same length. The fins trick our depth cues.</p>
+                             <p class="text-sm text-center text-gray-500 mt-2">Which horizontal line is longer? Both are exactly the same length. The inward or outward-facing fins trick our depth perception.</p>
                         </div>
                     </div>
                 </div>
@@ -432,30 +432,58 @@
             const closureCanvas = document.querySelector('[data-gestalt="closure"] canvas');
             if (closureCanvas) {
                 const closureCtx = closureCanvas.getContext('2d');
+                closureCtx.clearRect(0, 0, 150, 100);
                 closureCtx.strokeStyle = '#4A5568';
                 closureCtx.lineWidth = 4;
                 closureCtx.beginPath();
-                closureCtx.arc(75, 50, 30, 0.4, Math.PI * 1.6);
+                const centerX = 75;
+                const centerY = 50;
+                const radius = 40;
+                // Draw an arc that leaves a gap from 0.2*PI to 1.8*PI
+                closureCtx.arc(centerX, centerY, radius, Math.PI * 0.2, Math.PI * 1.8);
                 closureCtx.stroke();
-                 closureCtx.beginPath();
-                 closureCtx.moveTo(75 + 30 * Math.cos(0.4), 50 + 30 * Math.sin(0.4));
-                 closureCtx.lineTo(95, 20);
-                 closureCtx.stroke();
             }
 
             const figureGroundCanvas = document.querySelector('[data-gestalt="figureground"] canvas');
             if (figureGroundCanvas) {
                 const figureGroundCtx = figureGroundCanvas.getContext('2d');
-                figureGroundCtx.fillStyle = '#4A5568';
-                figureGroundCtx.fillRect(0,0,150,100);
-                figureGroundCtx.fillStyle = '#FFFFFF';
+                figureGroundCtx.clearRect(0, 0, 150, 100);
+                
+                const w = 150, h = 100;
+                const midX = w / 2;
+                
+                figureGroundCtx.fillStyle = '#1A202C'; // Dark gray/black for the faces/figure
+
+                // Draw the right face profile (filling the right half of the canvas)
                 figureGroundCtx.beginPath();
-                figureGroundCtx.moveTo(40, 100);
-                figureGroundCtx.bezierCurveTo(20, 50, 100, 50, 60, 0);
-                figureGroundCtx.lineTo(90,0);
-                figureGroundCtx.bezierCurveTo(130,50, 50,50, 110,100);
+                figureGroundCtx.moveTo(midX, 0);
+                // Top curve (forehead)
+                figureGroundCtx.bezierCurveTo(midX + 20, 10, midX + 20, 30, midX + 15, 40);
+                // Nose curve
+                figureGroundCtx.bezierCurveTo(midX + 20, 50, midX + 15, 60, midX + 15, 70);
+                // Chin curve
+                figureGroundCtx.bezierCurveTo(midX + 10, 80, midX + 20, 90, midX, 90);
+                figureGroundCtx.lineTo(midX, h);
+                figureGroundCtx.lineTo(w, h);
+                figureGroundCtx.lineTo(w, 0);
                 figureGroundCtx.closePath();
                 figureGroundCtx.fill();
+                
+                // Draw the left face profile (filling the left half of the canvas)
+                figureGroundCtx.beginPath();
+                figureGroundCtx.moveTo(midX, 0);
+                // Top curve (forehead) - mirrored
+                figureGroundCtx.bezierCurveTo(midX - 20, 10, midX - 20, 30, midX - 15, 40);
+                // Nose curve - mirrored
+                figureGroundCtx.bezierCurveTo(midX - 20, 50, midX - 15, 60, midX - 15, 70);
+                // Chin curve - mirrored
+                figureGroundCtx.bezierCurveTo(midX - 10, 80, midX - 20, 90, midX, 90);
+                figureGroundCtx.lineTo(midX, h);
+                figureGroundCtx.lineTo(0, h);
+                figureGroundCtx.lineTo(0, 0);
+                figureGroundCtx.closePath();
+                figureGroundCtx.fill();
+                // The white vase shape is formed by the negative space in the center
             }
         }
 
@@ -471,7 +499,7 @@
                 
                 const width = canvas.width;
                 const height = canvas.height;
-                const lineLength = width * 0.5;
+                const lineLength = width * 0.5; 
                 const y1 = height * 0.3;
                 const y2 = height * 0.7;
                 const startX = (width - lineLength) / 2;
@@ -480,19 +508,22 @@
                 ctx.strokeStyle = '#1A202C';
                 ctx.lineWidth = 3;
                  
+                // Top line (Line 1)
                 ctx.beginPath();
                 ctx.moveTo(startX, y1);
                 ctx.lineTo(startX + lineLength, y1);
                 ctx.stroke();
 
+                // Bottom line (Line 2)
                 ctx.beginPath();
                 ctx.moveTo(startX, y2);
                 ctx.lineTo(startX + lineLength, y2);
                 ctx.stroke();
 
-                const finLength = 30;
+                const finLength = 30; // Fin length proportional to the canvas size
                 const angle = Math.PI / 4;
 
+                // Fins on Line 1 (Inward)
                 ctx.beginPath();
                 ctx.moveTo(startX, y1);
                 ctx.lineTo(startX + finLength * Math.cos(angle), y1 + finLength * Math.sin(angle));
@@ -504,6 +535,7 @@
                 ctx.lineTo(startX + lineLength - finLength * Math.cos(-angle), y1 + finLength * Math.sin(-angle));
                 ctx.stroke();
 
+                // Fins on Line 2 (Outward)
                 ctx.beginPath();
                 ctx.moveTo(startX, y2);
                 ctx.lineTo(startX - finLength * Math.cos(angle), y2 - finLength * Math.sin(angle));
