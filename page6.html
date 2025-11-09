@@ -1,928 +1,801 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Psychology of Learning: A Deep Dive</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- 
-    REMOVED sidebar as requested.
-    CHANGED theme to a warm palette (amber, orange, red) as requested.
-    REPLACED sidebar with a sticky top navigation bar for usability.
-    UPDATED all interactive elements and charts to use the new warm color palette.
-    -->
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to Human Memory</title>
+    <!-- Chosen Palette: Warm Neutrals (Stone, Amber) -->
+    <!-- Application Structure Plan: Changed from tabbed SPA to a single-page continuous scroll application. This structure allows users to flow through the content naturally, from foundation to application, while the sticky scroll-spy navigation bar provides context and allows for quick jumps. This is more exploratory than the previous segmented approach. -->
+    <!-- Visualization & Content Choices: 1. (New) Working Memory: HTML/Tailwind diagram replacing a bullet list. Goal: Organize. Interaction: None (static diagram). Justification: Visually shows the central role of the Executive. 2. (New) Levels of Processing: HTML/Tailwind vertical step diagram. Goal: Show Change. Interaction: None. Justification: Clearly visualizes the concept of "depth". 3. (New) Interference: HTML/Tailwind side-by-side flow diagram. Goal: Compare. Interaction: None. Justification: Makes the abstract proactive/retroactive concept concrete. 4. (New) Keyword Method: HTML/Tailwind step diagram. Goal: Inform. Justification: Visualizes the mnemonic process. All other visualizations (3-col, hierarchy, chart) remain as they are highly effective. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-btn {
+            @apply px-4 py-2 rounded-md text-sm font-medium text-stone-600 hover:bg-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all cursor-pointer;
+        }
+        .nav-btn.active {
+            @apply bg-amber-100 text-amber-800 shadow-inner;
+        }
+        .sub-nav-btn {
+            @apply px-4 py-2 rounded-lg text-sm font-medium text-stone-700 bg-white shadow-sm hover:bg-stone-50 border border-stone-200 transition-all cursor-pointer;
+        }
+        .sub-nav-btn.active {
+            @apply bg-amber-600 text-white border-amber-600 shadow-md;
+        }
+        .memory-node {
+            @apply cursor-pointer p-3 rounded-lg hover:bg-stone-50 font-medium bg-white border border-stone-200 shadow-sm hover:shadow-md transition-all mb-2;
+        }
+        .memory-node.active {
+            @apply bg-amber-100 text-amber-800 border-amber-400 shadow-lg ring-2 ring-amber-300/50;
+        }
+        .memory-children {
+            @apply pl-4 border-l-2 border-stone-200 ml-2;
+        }
+        .mnemonic-btn {
+            @apply w-full text-left p-4 rounded-lg bg-white shadow-md hover:shadow-lg border border-stone-200 hover:border-amber-400 transition-all cursor-pointer font-medium;
+        }
+        .mnemonic-btn.active {
+            @apply bg-amber-600 text-white border-amber-700 shadow-lg ring-2 ring-amber-300/50;
+        }
+        .diagram-box {
+            @apply border-2 border-amber-500 rounded-lg p-4 shadow-sm text-center;
+        }
+        .diagram-arrow {
+            @apply text-2xl font-bold text-amber-600 text-center;
         }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 350px;
+        .pill-btn {
+            @apply inline-block px-6 py-3 rounded-full text-sm font-semibold transition-all cursor-pointer border-2 shadow-sm hover:shadow-md;
         }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
+        .pill-btn-primary {
+            @apply bg-amber-100 text-amber-800 border-amber-400 hover:bg-amber-200 hover:border-amber-500;
         }
-        .nav-link {
-            display: block;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            color: #4B5563; /* text-gray-600 */
-            transition: all 0.2s ease-in-out;
+        .pill-btn-primary.active {
+            @apply bg-amber-600 text-white border-amber-700 shadow-lg ring-2 ring-amber-300/50 transform scale-105;
         }
-        .nav-link:hover {
-            background-color: #FEF3C7; /* amber-100 */
-            color: #78350F; /* amber-900 */
+        .pill-btn-secondary {
+            @apply bg-stone-100 text-stone-700 border-stone-300 hover:bg-stone-200 hover:border-stone-400;
         }
-        .nav-link.active-nav {
-            background-color: #FDE68A; /* amber-200 */
-            color: #92400E; /* amber-800 */
-            font-weight: 600;
+        .pill-btn-secondary.active {
+            @apply bg-stone-700 text-white border-stone-800 shadow-lg ring-2 ring-stone-300/50 transform scale-105;
         }
-        .operant-grid-cell {
-            border: 2px solid #E5E7EB;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            background-color: #F9FAFB;
+        .pill-btn-tertiary {
+            @apply bg-blue-100 text-blue-800 border-blue-400 hover:bg-blue-200 hover:border-blue-500;
         }
-        .operant-grid-cell:hover {
-            background-color: #FEF3C7; /* amber-100 */
-            border-color: #FCD34D; /* amber-300 */
-        }
-        .operant-grid-cell.active-operant {
-            background-color: #FEF3C7; /* amber-100 */
-            border-color: #D97706; /* amber-600 */
-            color: #92400E; /* amber-800 */
+        .pill-btn-tertiary.active {
+            @apply bg-blue-600 text-white border-blue-700 shadow-lg ring-2 ring-blue-300/50 transform scale-105;
         }
     </style>
 </head>
-<body class="bg-amber-50"> <!-- Changed background to warm color -->
+<body class="bg-stone-50 text-stone-800 antialiased">    <header id="main-header" class="bg-white shadow-sm sticky top-0 z-10">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-xl font-bold text-amber-700">The Architecture of Memory</h1>
+                <div class="hidden sm:flex sm:space-x-2">
+                    <button class="nav-btn active" data-scroll-to="home-content">Home</button>
+                    <button class="nav-btn" data-scroll-to="models-content">Models of Memory</button>
+                    <button class="nav-btn" data-scroll-to="types-content">Types of Memory</button>
+                    <button class="nav-btn" data-scroll-to="forgetting-content">Forgetting & Flaws</button>
+                    <button class="nav-btn" data-scroll-to="enhancement-content">Enhancement</button>
+                </div>
+                <div class="sm:hidden">
+                    <select id="mobile-nav" class="rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                        <option value="home-content">Home</option>
+                        <option value="models-content">Models of Memory</option>
+                        <option value="types-content">Types of Memory</option>
+                        <option value="forgetting-content">Forgetting & Flaws</option>
+                        <option value="enhancement-content">Enhancement</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-    <!-- New Top Navigation Bar (Replaces Sidebar) -->
-    <nav class="sticky top-0 z-30 bg-white shadow-md p-4 w-full">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-amber-700">Psychology of Learning</h1>
-            <!-- Desktop Nav Links -->
-            <ul class="hidden md:flex space-x-2">
-                <li><a href="#intro" class="nav-link active-nav">Introduction</a></li>
-                <li><a href="#classical" class="nav-link">Classical</a></li>
-                <li><a href="#operant" class="nav-link">Operant</a></li>
-                <li><a href="#processes" class="nav-link">Processes</a></li>
-                <li><a href="#complex" class="nav-link">Complex</a></li>
-                <li><a href="#learner" class="nav-link">Learner</a></li>
-                <li><a href="#applications" class="nav-link">Apps</a></li>
-            </ul>
-            <!-- Mobile Menu Button -->
-            <button id="menu-btn" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-        </div>
-        <!-- Mobile Menu Dropdown -->
-        <div id="mobile-menu" class="hidden md:hidden mt-2 space-y-1">
-            <a href="#intro" class="nav-link mobile-link active-nav">Introduction</a>
-            <a href="#classical" class="nav-link mobile-link">Classical Conditioning</a>
-            <a href="#operant" class="nav-link mobile-link">Operant Conditioning</a>
-            <a href="#processes" class="nav-link mobile-link">Key Processes</a>
-            <a href="#complex" class="nav-link mobile-link">Complex Learning</a>
-            <a href="#transfer" class="nav-link mobile-link">Transfer of Learning</a>
-            <a href="#learner" class="nav-link mobile-link">The Learner</a>
-            <a href="#applications" class="nav-link mobile-link">Applications</a>
-        </div>
-    </nav>
+    <main id="content-area" class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
 
-    <!-- Main Content Area (Removed ml-64) -->
-    <main class="flex-1 p-6 md:p-10">
-        
-        <!-- Section: Introduction -->
-        <section id="intro" class="scroll-mt-20 max-w-5xl mx-auto">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Introduction: What is Learning?</h2>
-            <p class="text-lg text-gray-600 mb-8">
-                This module explores the fundamental concepts of how we acquire new behaviors and knowledge. Learning is defined as any relatively permanent change in behavior (or behavioral potential) that results from experience or practice. It's a foundational process that allows organisms, including humans, to adapt to their environments.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-amber-700 mb-2">Learning</h3>
-                    <p class="text-gray-700">A relatively permanent change in behavior resulting from experience. It's an inferred process, not directly observable. Changes due to fatigue or drugs are not considered learning.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-amber-700 mb-2">Performance</h3>
-                    <p class="text-gray-700">The observed behavior or action of an organism. We infer learning by observing changes in performance over time.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-amber-700 mb-2">Habituation</h3>
-                    <p class="text-gray-700">A temporary change where reflex responses weaken due to continuous exposure to a stimulus. This is not considered learning as the change is not permanent.</p>
-                </div>
+        <!-- Home Content -->
+        <section id="home-content" class="space-y-6 pt-6" data-content>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-amber-700 mb-4">What is Memory?</h2>
+                <p class="text-lg text-stone-700 mb-4">
+                    This application provides an interactive exploration of human memory, based on established psychological concepts. Memory is the faculty that allows us to retain and recall information over time. It is central to nearly all cognitive processes, including perception, thinking, and problem-solving, and is fundamental to our sense of self.
+                </p>
+                <p class="text-stone-600">
+                    Psychologists study how information is committed to memory, the mechanisms by which it is retained, the reasons for its loss, and techniques for improvement. This guide breaks down these complex topics into key areas you can explore.
+                </p>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-center text-amber-700 mb-6">The Three Foundational Processes</h2>
+                <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+                    All information must pass through three interrelated stages to be successfully remembered. A failure at any stage can result in memory loss.
+                </p>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="border border-stone-200 p-6 rounded-lg bg-stone-50 hover:shadow-lg transition-shadow">
+                        <h3 class="text-xl font-semibold text-stone-800 mb-2">1. Encoding</h3>
+                        <p class="text-stone-600">
+                            The first stage where information is recorded and registered for the first time. External stimuli are received by sensory organs, converted into neural impulses, and represented in a way that the memory system can use.
+                        </p>
+                    </div>
+                    <div class="border border-stone-200 p-6 rounded-lg bg-stone-50 hover:shadow-lg transition-shadow">
+                        <h3 class="text-xl font-semibold text-stone-800 mb-2">2. Storage</h3>
+                        <p class="text-stone-600">
+                            The second stage. This is the process through which encoded information is retained and held over a period of time so that it can be put to use later.
+                        </p>
+                    </div>
+                    <div class="border border-stone-200 p-6 rounded-lg bg-stone-50 hover:shadow-lg transition-shadow">
+                        <h3 class="text-xl font-semibold text-stone-800 mb-2">3. Retrieval</h3>
+                        <p class="text-stone-600">
+                            The third stage. This refers to recovering the stored information and bringing it into awareness so it can be used for cognitive tasks like problem-solving or decision-making.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Models of Memory Content -->
+        <section id="models-content" class="space-y-6 pt-20" data-content>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-amber-700 mb-4">Models of Memory</h2>
+                <p class="text-stone-600">
+                    To understand how memory works, psychologists have proposed several models. These models provide a framework for how information is processed, stored, and retrieved. Select a model below to explore its structure and key concepts.
+                </p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button class="sub-nav-btn active" data-model="stage">Stage Model</button>
+                <button class="sub-nav-btn" data-model="working">Working Memory</button>
+                <button class="sub-nav-btn" data-model="levels">Levels of Processing</button>
+            </div>
+
+            <div id="model-details-content" class="bg-white p-6 rounded-lg shadow-md min-h-[300px]">
+                <!-- Content injected by JS -->
+            </div>
+        </section>
+
+        <!-- Types of Memory Content -->
+        <section id="types-content" class="space-y-6 pt-20" data-content>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-amber-700 mb-4">Types of Memory</h2>
+                <p class="text-stone-600 mb-4">
+                    Memory is not a single, unitary system. It is composed of distinct types, each with different functions, capacities, and durations. Click on each memory system below to learn about its unique characteristics.
+                </p>
+                <p class="text-sm text-stone-500 italic">
+                    💡 Tip: Each colored button represents a separate memory concept. Click to explore!
+                </p>
             </div>
-        </section>
 
-        <!-- Section: Classical Conditioning -->
-        <section id="classical" class="scroll-mt-20 max-w-5xl mx-auto mt-16">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Classical Conditioning (Pavlov)</h2>
-            <p class="text-lg text-gray-600 mb-8">
-                First investigated by Ivan Pavlov, this is a process where an organism learns to associate two stimuli (S-S learning). A neutral stimulus (like a bell) becomes a signal for another stimulus (like food) that automatically produces a response. Over time, the neutral stimulus alone can elicit the response.
-            </p>
-            
-            <h3 class="text-3xl font-semibold text-gray-800 mb-6">Key Concepts</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Unconditioned Stimulus (US)</h4>
-                    <p class="text-gray-700">A stimulus that automatically and reflexively elicits a response. (e.g., Food)</p>
+            <!-- Core Memory Systems -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-bold text-stone-800 mb-4">Core Memory Systems by Duration</h3>
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <button class="pill-btn pill-btn-primary active" data-memory="sensory">Sensory Memory</button>
+                    <button class="pill-btn pill-btn-primary" data-memory="stm">Short-Term Memory</button>
+                    <button class="pill-btn pill-btn-primary" data-memory="ltm">Long-Term Memory</button>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Unconditioned Response (UR)</h4>
-                    <p class="text-gray-700">The natural, reflexive response elicited by the US. (e.g., Salivation to food)</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Conditioned Stimulus (CS)</h4>
-                    <p class="text-gray-700">A previously neutral stimulus that, after being paired with the US, comes to signal its occurrence. (e.g., Bell)</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Conditioned Response (CR)</h4>
-                    <p class="text-gray-700">The acquired response to the CS, which anticipates the US. (e.g., Salivation to the bell)</p>
-                </div>
-            </div>
-
-            <h3 class="text-3xl font-semibold text-gray-800 mb-6">Interactive: The Process of Conditioning</h3>
-            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <h4 class="text-xl font-semibold text-center mb-2">Pavlov's Dog: A Step-by-Step Model</h4>
-                <p id="classical-desc" class="text-center text-gray-600 mb-4">Click "Next Step" to see the process unfold.</p>
-                <div id="classical-diagram" class="text-center p-4 bg-amber-50 rounded-lg min-h-[160px] flex flex-col justify-center">
+                <div id="core-memory-details" class="p-4 bg-amber-50 rounded-lg border border-amber-200 min-h-[120px]">
                     <!-- Content injected by JS -->
                 </div>
-                <div class="text-center mt-4">
-                    <button id="classical-next-btn" class="bg-amber-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-amber-700 transition-colors">Start (Step 1)</button>
+            </div>
+
+            <!-- Types of Long-Term Memory -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-bold text-stone-800 mb-4">Types of Long-Term Memory</h3>
+                <p class="text-sm text-stone-600 mb-4">Long-Term Memory can be divided into different types based on what is stored:</p>
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <button class="pill-btn pill-btn-secondary" data-memory="declarative">Declarative Memory</button>
+                    <button class="pill-btn pill-btn-secondary" data-memory="procedural">Procedural Memory</button>
+                    <button class="pill-btn pill-btn-secondary" data-memory="implicit">Implicit Memory</button>
+                </div>
+                <div id="ltm-type-details" class="p-4 bg-stone-50 rounded-lg border border-stone-200 min-h-[120px]">
+                    <!-- Content injected by JS -->
                 </div>
             </div>
 
-            <h3 class="text-3xl font-semibold text-gray-800 mt-12 mb-6">Determinants of Conditioning</h3>
-            <p class="text-lg text-gray-600 mb-8">
-                The effectiveness of conditioning depends on several factors, including the timing of the stimuli, the type of stimuli, and their intensity.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-4">Time Relations</h4>
-                    <ul class="list-disc list-inside space-y-2 text-gray-700">
-                        <li><strong>Delayed:</strong> CS starts before US. Most effective.</li>
-                        <li><strong>Trace:</strong> CS starts and ends before US.</li>
-                        <li><strong>Simultaneous:</strong> CS and US start together.</li>
-                        <li><strong>Backward:</strong> US starts before CS. Rarely effective.</li>
-                    </ul>
+            <!-- Subdivisions of Declarative Memory -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-bold text-stone-800 mb-4">Subdivisions of Declarative Memory</h3>
+                <p class="text-sm text-stone-600 mb-4">Declarative Memory (explicit memories we can consciously recall) includes:</p>
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <button class="pill-btn pill-btn-tertiary" data-memory="episodic">Episodic Memory</button>
+                    <button class="pill-btn pill-btn-tertiary" data-memory="semantic">Semantic Memory</button>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-4">Stimulus Type & Intensity</h4>
-                    <ul class="list-disc list-inside space-y-2 text-gray-700">
-                        <li><strong>Aversive:</strong> Painful stimuli (shock, noise) lead to very rapid conditioning.</li>
-                        <li><strong>Appetitive:</strong> Pleasant stimuli (food, drink) lead to slower conditioning.</li>
-                        <li><strong>Intensity:</strong> More intense stimuli (a louder bell, a brighter light) are more effective.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-md mt-8">
-                <h5 class="text-xl font-semibold text-center mb-4">Relative Effectiveness of Timing</h5>
-                <div class="chart-container">
-                    <canvas id="classicalChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section: Operant Conditioning -->
-        <section id="operant" class="scroll-mt-20 max-w-5xl mx-auto mt-16">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Operant Conditioning (Skinner)</h2>
-            <p class="text-lg text-gray-600 mb-8">
-                First investigated by B.F. Skinner, this form of learning focuses on how consequences shape voluntary behavior. Organisms "operate" on their environment. Behaviors (operants) that are followed by desirable consequences (reinforcers) are more likely to be repeated.
-            </p>
-
-            <h3 class="text-3xl font-semibold text-gray-800 mb-6">Key Concepts</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Operants</h4>
-                    <p class="text-gray-700">Voluntary behaviors emitted by an organism that are under its control (e.g., pressing a lever, speaking).</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Reinforcer</h4>
-                    <p class="text-gray-700">Any stimulus or event that *increases* the probability of a desired response occurring again.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Shaping</h4>
-                    <p class="text-gray-700">A technique where a desired response is learned by reinforcing successive approximations (small steps) to that response.</p>
+                <div id="declarative-sub-details" class="p-4 bg-blue-50 rounded-lg border border-blue-200 min-h-[120px]">
+                    <!-- Content injected by JS -->
                 </div>
             </div>
 
-            <h3 class="text-3xl font-semibold text-gray-800 mt-12 mb-6">Interactive: The Consequences of Behavior</h3>
-            <p class="text-lg text-gray-600 mb-6 text-center">Click on a square to learn about the four main types of consequences.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-                <div class="text-center font-bold text-lg text-gray-700">Stimulus is Added (+)</div>
-                <div class="text-center font-bold text-lg text-gray-700">Stimulus is Removed (-)</div>
-                
-                <div class="operant-grid-cell" data-operant="pos-reinforce">
-                    <h4 class="font-bold text-xl text-center">Positive Reinforcement</h4>
-                    <p class="text-center text-sm">(Increases Behavior)</p>
+            <!-- Special Memory Phenomena -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-bold text-stone-800 mb-4">Special Memory Phenomena</h3>
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <button class="pill-btn pill-btn-primary" data-memory="flashbulb">Flashbulb Memory</button>
                 </div>
-                <div class="operant-grid-cell" data-operant="neg-reinforce">
-                    <h4 class="font-bold text-xl text-center">Negative Reinforcement</h4>
-                    <p class="text-center text-sm">(Increases Behavior)</p>
-                </div>
-                <div class="operant-grid-cell" data-operant="pos-punish">
-                    <h4 class="font-bold text-xl text-center">Positive Punishment</h4>
-                    <p class="text-center text-sm">(Decreases Behavior)</p>
-                </div>
-                <div class="operant-grid-cell" data-operant="neg-punish">
-                    <h4 class="font-bold text-xl text-center">Negative Punishment</h4>
-                    <p class="text-center text-sm">(Decreases Behavior)</p>
+                <div id="special-memory-details" class="p-4 bg-amber-50 rounded-lg border border-amber-200 min-h-[120px]">
+                    <!-- Content injected by JS -->
                 </div>
             </div>
-            <div id="operant-desc" class="mt-6 bg-white p-6 rounded-lg shadow-md min-h-[100px] max-w-2xl mx-auto">
-                <p class="text-gray-700 text-center">Select a concept from the grid above.</p>
-            </div>
-            
-            <h3 class="text-3xl font-semibold text-gray-800 mt-12 mb-6">Schedules of Reinforcement</h3>
-            <p class="text-lg text-gray-600 mb-8">
-                Reinforcement doesn't have to happen every time. The *schedule* of reinforcement drastically affects the rate of response and its resistance to extinction.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Continuous Reinforcement</h4>
-                    <p class="text-gray-700">Reinforcement is given *every time* the desired response occurs. This leads to fast learning but also very fast extinction.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Intermittent (Partial) Reinforcement</h4>
-                    <p class="text-gray-700">Responses are reinforced only *sometimes*. This leads to slower learning but produces behavior that is highly resistant to extinction (the "Partial Reinforcement Effect").</p>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-md mt-8">
-                <h5 class="text-xl font-semibold text-center mb-4">Response Patterns of Partial Schedules</h5>
-                <div class="chart-container">
-                    <canvas id="schedulesChart"></canvas>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Section: Key Processes -->
-        <section id="processes" class="scroll-mt-20 max-w-5xl mx-auto mt-16">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Key Learning Processes</h2>
-            <p class="text-lg text-gray-600 mb-8">
-                These processes occur in both classical and operant conditioning, governing how behaviors are acquired, maintained, and how they fade or spread to new situations.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-amber-700 mb-2">Extinction</h3>
-                    <p class="text-gray-700">The disappearance of a learned response when reinforcement is removed (Operant) or the US no longer follows the CS (Classical).</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-amber-700 mb-2">Generalisation</h3>
-                    <p class="text-gray-700">Responding similarly to a new stimulus that is similar to the original conditioned stimulus (e.g., fearing all white, fuzzy objects after being scared by a white rat).</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-amber-700 mb-2">Discrimination</h3>
-                    <p class="text-gray-700">The opposite of generalisation. This is learning to respond differently to similar stimuli (e.g., fearing the white rat but not a white rabbit).</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-amber-700 mb-2">Spontaneous Recovery</h3>
-                    <p class="text-gray-700">After a response has been extinguished and a rest period has passed, the learned response may temporarily reappear.</p>
-                </div>
-            </div>
-            
-            <h3 class="text-3xl font-semibold text-gray-800 mt-12 mb-6">Interactive: Extinction & Recovery</h3>
-            <div class="bg-white p-6 rounded-lg shadow-md mt-8">
-                <h5 class="text-xl font-semibold text-center mb-4">Response Strength Over Time</h5>
-                <div class="chart-container" style="height: 300px;">
-                    <canvas id="extinctionChart"></canvas>
-                </div>
-                <div class="flex justify-center space-x-4 mt-4">
-                    <button id="extinction-btn" class="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors">Start Extinction</button>
-                    <button id="recovery-btn" class="bg-lime-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-lime-700 transition-colors" disabled>Rest & Recover</button>
-                    <button id="reset-extinction-btn" class="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors">Reset</button>
-                </div>
-            </div>
-        </section>
+        </section>        <!-- Forgetting & Flaws Content -->
+        <section id="forgetting-content" class="space-y-6 pt-20" data-content>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-amber-700 mb-4">Forgetting & Memory Flaws</h2>
+                <p class="text-stone-600">
+                    Forgetting is the loss of stored information. The first systematic exploration of memory by Hermann Ebbinghaus revealed that forgetting happens rapidly at first and then levels off. Beyond simple decay, memory can also be distorted or fail due to interference or flawed retrieval processes.
+                </p>
+            </div>
 
-        <!-- Section: Complex Learning -->
-        <section id="complex" class="scroll-mt-20 max-w-5xl mx-auto mt-16">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Complex Forms of Learning</h2>
-            <p class="text-lg text-gray-600 mb-8">
-                Beyond simple conditioning, learning involves complex cognitive processes. These forms of learning often involve observation, mental representations, language, and the organization of information.
-            </p>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-center text-stone-800 mb-4">Ebbinghaus's Forgetting Curve</h3>
+                <p class="text-center text-stone-600 mb-6 max-w-2xl mx-auto">
+                    This chart illustrates the findings of Hermann Ebbinghaus, showing how quickly we forget new, meaningless information. The rate of forgetting is steepest in the first few hours and days.
+                </p>
+                <div class="chart-container">
+                    <canvas id="forgettingCurveChart"></canvas>
+                </div>
+            </div>
 
-            <div class="space-y-8">
-                <!-- Observational Learning -->
-                <div>
-                    <h3 class="text-3xl font-semibold text-gray-800 mb-4">Observational Learning (Modeling)</h3>
-                    <p class="text-gray-700 mb-6">Investigated by Albert Bandura, this is learning by observing others (models). It's also called "social learning" because we learn many social behaviors this way.</p>
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="text-xl font-semibold text-amber-700 mb-2">Acquisition vs. Performance</h4>
-                        <p class="text-gray-700">A key distinction: You can *acquire* knowledge by watching someone, but your *performance* of that behavior is influenced by seeing the model rewarded or punished.</p>
-                    </div>
-                </div>
-                
-                <!-- Cognitive Learning -->
-                <div>
-                    <h3 class="text-3xl font-semibold text-gray-800 mb-4">Cognitive Learning</h3>
-                    <p class="text-gray-700 mb-6">This approach defines learning as a change in what the learner *knows*, not just what they *do*. It focuses on internal mental processes.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h4 class="text-xl font-semibold text-amber-700 mb-2">Insight Learning (Kohler)</h4>
-                            <p class="text-gray-700">The solution to a problem appears suddenly (an "aha!" moment), not through trial-and-error. Once the insight occurs, the solution can be repeated immediately.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h4 class="text-xl font-semibold text-amber-700 mb-2">Latent Learning</h4>
-                            <p class="text-gray-700">A new behavior is learned but is not displayed until reinforcement is provided. This suggests organisms (like rats in a maze) can create a "cognitive map" (a mental representation) even without a reward.</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-stone-800 mb-4">Why We Forget: Theories & Flaws</h3>
+                <p class="text-stone-600 mb-6">
+                    Forgetting isn't just about time. Other factors, like interference from other memories or even the way a question is asked, can cause memory failure or distortion. Select a topic to learn more.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <button class="sub-nav-btn active" data-flaw="interference">Interference</button>
+                    <button class="sub-nav-btn" data-flaw="retrieval">Retrieval Failure</button>
+                    <button class="sub-nav-btn" data-flaw="eyewitness">Eyewitness Flaws</button>
+                    <button class="sub-nav-btn" data-flaw="false">False Memory</button>
+                </div>
+                <div id="flaw-details-content" class="min-h-[200px] p-4 bg-stone-50 rounded-lg">
+                    <!-- Content injected by JS -->
+                </div>
+            </div>
+        </section>
 
-                <!-- Verbal Learning -->
-                <div>
-                    <h3 class="text-3xl font-semibold text-gray-800 mb-4">Verbal Learning</h3>
-                    <p class="text-gray-700 mb-6">This type of learning is specific to humans and involves acquiring knowledge through words and symbols.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h4 class="text-xl font-semibold text-amber-700 mb-2">Methods</h4>
-                            <ul class="list-disc list-inside space-y-2 text-gray-700">
-                                <li><strong>Paired-Associates:</strong> Associating a stimulus word with a response word (e.g., learning vocabulary).</li>
-                                <li><strong>Serial Learning:</strong> Learning items in a specific order (e.g., a phone number).</li>
-                                <li><strong>Free Recall:</strong> Learning a list and recalling items in any order.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h4 class="text-xl font-semibold text-amber-700 mb-2">Key Findings</h4>
-                            <ul class="list-disc list-inside space-y-2 text-gray-700">
-                                <li><strong>Total Time Principle:</strong> A fixed amount of time is needed to learn a fixed amount of material.</li>
-                                <li><strong>Organisation:</strong> In free recall, people naturally "cluster" items by category (e.g., recalling "apple, pear, banana" together).</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md mt-8">
-                        <h5 class="text-xl font-semibold text-center mb-4">Serial Position Curve (Free Recall)</h5>
-                        <p class="text-center text-gray-600 mb-4">We best remember items at the beginning (Primacy Effect) and end (Recency Effect) of a list.</p>
-                        <div class="chart-container" style="height: 300px;">
-                            <canvas id="serialChart"></canvas>
-                        </div>
-                    </div>
-                </div>
+        <!-- Enhancement Content -->
+        <section id="enhancement-content" class="space-y-6 pt-20" data-content>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-amber-700 mb-4">Memory Enhancement Strategies</h2>
+                <p class="text-stone-600">
+                    Given that memory is a constructive process and subject to flaws, psychologists have developed strategies, known as mnemonics, to improve it. These techniques help organize information in a way that makes it easier to encode, store, and retrieve. Select a strategy from the list to see how it works.
+                </p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-1/3 space-y-3">
+                    <h3 class="text-lg font-semibold text-stone-800 mb-2">Choose a Technique:</h3>
+                    <button class="mnemonic-btn" data-mnemonic="processing">Deep Processing</button>
+                    <button class="mnemonic-btn" data-mnemonic="keyword">Keyword Method</button>
+                    <button class="mnemonic-btn" data-mnemonic="loci">Method of Loci</button>
+                    <button class="mnemonic-btn" data-mnemonic="chunking">Chunking</button>
+                    <button class="mnemonic-btn" data-mnemonic="firstletter">First Letter Technique</button>
+                    <button class="mnemonic-btn" data-mnemonic="pqrst">PQRST Method</button>
+                </div>
+                <div id="mnemonic-details" class="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-stone-800 mb-2">Select a Mnemonic</h3>
+                    <p class="text-stone-600">Click an item on the left to learn how to use that memory strategy.</p>
+                </div>
+            </div>
+        </section>
 
-                <!-- Concept Learning -->
-                <div>
-                    <h3 class="text-3xl font-semibold text-gray-800 mb-4">Concept Learning</h3>
-                    <p class="text-gray-700 mb-6">This involves organizing objects and events into categories based on shared features (attributes) connected by a rule.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h4 class="text-xl font-semibold text-amber-700 mb-2">Artificial Concepts</h4>
-                            <p class="text-gray-700">Precise and rigid, defined by exact rules. Features are singly necessary and jointly sufficient (e.g., "a square" must have 4 equal sides and 4 right angles).</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h4 class="text-xl font-semibold text-amber-700 mb-2">Natural Concepts</h4>
-                            <p class="text-gray-700">Ill-defined categories with "fuzzy" boundaries (e.g., "bird" or "tool"). A penguin is a bird, but a robin is a more typical example.</p>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md mt-8">
-                        <h5 class="text-xl font-semibold text-center mb-4">Interactive: Find the Concept</h5>
-                        <p class="text-center text-gray-600 mb-4">The rule is: <strong>"Red AND Square"</strong>. Click all the shapes that fit the concept.</p>
-                        <div id="concept-game" class="flex flex-wrap justify-center gap-4 p-4">
-                            <!-- Shapes injected by JS -->
-                        </div>
-                        <p id="concept-feedback" class="text-center font-medium h-6"></p>
-                        <div class="text-center mt-4">
-                            <button id="concept-reset" class="bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors">Reset Game</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Skill Learning -->
-                <div>
-                    <h3 class="text-3xl font-semibold text-gray-800 mb-4">Skill Learning</h3>
-                    <p class="text-gray-700 mb-6">A skill is the ability to perform a complex task smoothly and efficiently (e.g., driving a car, writing shorthand). It's acquired in phases.</p>
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h5 class="text-xl font-semibold text-center mb-4">Interactive: Phases of Skill Acquisition</h5>
-                        <div id="skill-phase-card" class="text-center p-6 bg-amber-50 border-2 border-amber-200 rounded-lg min-h-[150px]">
-                            <!-- Content injected by JS -->
-                        </div>
-                        <div class="text-center mt-4">
-                            <button id="skill-next-btn" class="bg-amber-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-amber-700 transition-colors">Start</button>
-                        </div>
-                    </div>
-                </div>
+    </main>
 
-            </div>
-        </section>
+    <footer class="text-center py-6 mt-8 text-stone-500 text-sm">
+        <p>An interactive exploration of the concepts of human memory.</p>
+    </footer>
 
-        <!-- Section: Transfer of Learning -->
-        <section id="transfer" class="scroll-mt-20 max-w-5xl mx-auto mt-16">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Transfer of Learning</h2>
-            <p class="text-lg text-gray-600 mb-8">
-                This refers to the effect that prior learning has on new learning. The similarity between the tasks is a key factor.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow-md text-center border-t-4 border-lime-500">
-                    <span class="text-5xl text-lime-600 font-bold">+</span>
-                    <h3 class="text-xl font-semibold text-lime-700 mt-2 mb-2">Positive Transfer</h3>
-                    <p class="text-gray-700">Prior learning <strong>helps</strong> new learning (e.g., knowing Latin helps in learning French).</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md text-center border-t-4 border-red-500">
-                    <span class="text-5xl text-red-600 font-bold">-</span>
-                    <h3 class="text-xl font-semibold text-red-700 mt-2 mb-2">Negative Transfer</h3>
-                    <p class="text-gray-700">Prior learning <strong>hinders</strong> new learning (e.g., driving an automatic car makes it harder to learn a manual transmission).</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md text-center border-t-4 border-gray-400">
-                    <span class="text-5xl text-gray-500 font-bold">0</span>
-                    <h3 class="text-xl font-semibold text-gray-700 mt-2 mb-2">Zero Transfer</h3>
-                    <p class="text-gray-700">Prior learning has no effect on new learning (e.g., knowing history doesn't help in learning physics).</p>
-                </div>
-            </div>
-        </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-        <!-- Section: The Learner -->
-        <section id="learner" class="scroll-mt-20 max-w-5xl mx-auto mt-16">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Factors & The Learner</h2>
-            <p class="text-lg text-gray-600 mb-8">
-                Learning isn't just a universal process; it's deeply influenced by individual factors like motivation, biological preparedness, and cognitive styles.
-            </p>
-            <div class="space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-semibold text-amber-700 mb-2">Motivation</h3>
-                        <p class="text-gray-700 mb-4">A prerequisite for learning. It can be:</p>
-                        <ul class="list-disc list-inside space-y-1">
-                            <li><strong>Intrinsic:</strong> Learning for its own sake (e.g., for enjoyment).</li>
-                            <li><strong>Extrinsic:</strong> Learning to attain a separate goal (e.g., for a good grade).</li>
-                        </ul>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-semibold text-amber-700 mb-2">Preparedness</h3>
-                        <p class="text-gray-700">Biological and genetic constraints. Organisms are "prepared" to learn certain associations more easily than others (e.g., it's easier to learn to fear snakes than flowers).</p>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-3xl font-semibold text-gray-800 mb-4">Learning Styles</h3>
-                    <p class="text-gray-700 mb-6">A learner's consistent, preferred way of responding to and using stimuli. These are often debated but provide a useful framework.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Perceptual Modality</h4>
-                            <p class="text-gray-700">Preference for intake (e.g., Visual, Auditory, Kinesthetic).</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Information Processing</h4>
-                            <p class="text-gray-700">How you think (e.g., Active/Reflective, Sequential/Global).</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h4 class="text-lg font-semibold text-gray-800 mb-2">Personality Patterns</h4>
-                            <p class="text-gray-700">e.g., <strong>Relational</strong> (sees total picture) vs. <strong>Analytical</strong> (focuses on detail).</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-3xl font-semibold text-gray-800 mb-4">Learning Disabilities</h3>
-                    <p class="text-gray-700 mb-6">A group of disorders manifested by difficulty in acquiring skills like reading, writing, or reasoning. These are inherent to the child (often from CNS issues) and are not due to a lack of intelligence.</p>
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-red-200">
-                        <h4 class="text-xl font-semibold text-red-700 mb-2">Example: Dyslexia</h4>
-                        <p class="text-gray-700">A common disability where children struggle to copy letters and words, often confusing similar characters. This can also be accompanied by disorders of attention, hyperactivity, and poor motor coordination.</p>
-                        <div class="flex flex-wrap justify-around items-center mt-4 text-3xl font-mono p-4 bg-red-50 rounded">
-                            <span class="p-2">b &harr; d</span>
-                            <span class="p-2">p &harr; q</span>
-                            <span class="p-2">was &harr; saw</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+            const modelData = {
+                stage: {
+                    title: 'The Stage Model (Atkinson and Shiffrin, 1968)',
+                    content: `
+                        <h3 class="text-xl font-semibold text-stone-800 mb-4">The Stage Model</h3>
+                        <p class="text-stone-600 mb-6">This influential model proposed that memory consists of three distinct, sequential stores. Information must pass through each store to be remembered long-term.</p>
+                        <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 p-4 text-center">
+                            <div class="diagram-box w-48">
+                                <h4 class="font-bold">Sensory Memory</h4>
+                                <p class="text-sm">Large capacity<br>Duration: < 1 sec</p>
+                            </div>
+                            <div class="diagram-arrow">&rarr;</div>
+                            <div class="diagram-box w-48 relative">
+                                <h4 class="font-bold">Short-Term Memory (STM)</h4>
+                                <p class="text-sm">Capacity: 7±2 chunks<br>Duration: < 30 sec</p>
+                                <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm text-stone-600">Maintenance Rehearsal ↺</span>
+                            </div>
+                            <div class="diagram-arrow">&rarr;</div>
+                            <div class="diagram-box w-48">
+                                <h4 class="font-bold">Long-Term Memory (LTM)</h4>
+                                <p class="text-sm">Unlimited capacity<br>Duration: Lifetime</p>
+                            </div>
+                        </div>
+                        <p class="text-stone-600 mt-12"><strong>Control Processes</strong> like <strong>Selective Attention</strong> (decides what enters STM from Sensory) and <strong>Elaborative Rehearsal</strong> (moves info from STM to LTM by linking it to existing knowledge) regulate the flow of information.</p>
+                    `
+                },
+                working: {
+                    title: 'Working Memory (Baddeley, 1986)',
+                    content: `
+                        <h3 class="text-xl font-semibold text-stone-800 mb-4">Working Memory (Infographic)</h3>
+                        <p class="text-stone-600 mb-6">This model views short-term memory not as a passive store, but as an active "workbench" with multiple components managed by a Central Executive.</p>
+                        <div class="w-full p-4">
+                            <div class="flex flex-col items-center">
+                                <div class="grid grid-cols-2 gap-4 w-full max-w-md">
+                                    <div class="diagram-box bg-blue-50 border-blue-400">
+                                        <h4 class="font-bold text-blue-800">Phonological Loop</h4>
+                                        <p class="text-sm text-blue-700">(Sounds, Language)</p>
+                                    </div>
+                                    <div class="diagram-box bg-green-50 border-green-400">
+                                        <h4 class="font-bold text-green-800">Visuospatial Sketchpad</h4>
+                                        <p class="text-sm text-green-700">(Visual, Spatial Data)</p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-center">
+                                    <div class="diagram-arrow transform -rotate-45 -mr-12">↳</div>
+                                    <div class="diagram-arrow transform rotate-45 -ml-12">↲</div>
+                                </div>
+                                <div class="diagram-box bg-amber-50 border-amber-500 w-full max-w-xs my-2">
+                                    <h4 class="font-bold text-amber-800">Central Executive</h4>
+                                    <p class="text-sm text-amber-700">(The "Manager" / Allocates Attention)</p>
+                                </div>
+                                <div class="diagram-arrow transform rotate-90">↕</div>
+                                <div class="diagram-box bg-stone-50 border-stone-400 w-full max-w-xs">
+                                    <h4 class="font-bold text-stone-800">Long-Term Memory</h4>
+                                    <p class="text-sm text-stone-700">(Integrates & Retrieves)</p>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                levels: {
+                    title: 'Levels of Processing (Craik & Lockhart, 1972)',
+                    content: `
+                        <h3 class="text-xl font-semibold text-stone-800 mb-4">Levels of Processing (Infographic)</h3>
+                        <p class="text-stone-600 mb-6">This view argues that retention is determined by the *depth* of processing. Deeper analysis leads to stronger memories.</p>
+                        <div class="space-y-4 max-w-md mx-auto">
+                            <div class="p-4 border border-red-200 bg-red-50 rounded-lg shadow-sm">
+                                <strong class="text-red-700">1. Shallow Level (Structural)</strong>
+                                <p class="text-red-600 text-sm">Processing based on physical features (e.g., "The word is in capital letters.").</p>
+                                <p class="font-bold text-center mt-2">Leads to fragile, short-term memory.</p>
+                            </div>
+                            <div class="diagram-arrow text-center text-xl">↓</div>
+                            <div class="p-4 border border-yellow-200 bg-yellow-50 rounded-lg shadow-sm">
+                                <strong class="text-yellow-700">2. Intermediate Level (Phonetic)</strong>
+                                <p class="text-yellow-600 text-sm">Processing based on sound (e.g., "The word rhymes with 'cat'.").</p>
+                                <p class="font-bold text-center mt-2">Leads to slightly better memory.</p>
+                            </div>
+                            <div class="diagram-arrow text-center text-xl">↓</div>
+                            <div class="p-4 border border-green-200 bg-green-50 rounded-lg shadow-sm">
+                                <strong class="text-green-700">3. Deepest Level (Semantic)</strong>
+                                <p class="text-green-600 text-sm">Processing based on meaning (e.g., "This word means a type of animal. I have a pet cat.").</p>
+                                <p class="font-bold text-center mt-2">Leads to strong, long-term retention.</p>
+                            </div>
+                        </div>
+                    `
+                }
+            };
 
-        <!-- Section: Applications -->
-        <section id="applications" class="scroll-mt-20 max-w-5xl mx-auto mt-16">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Applications in Therapy</h2>
-            <p class="text-lg text-gray-600 mb-8">
-                Learning principles are highly effective in modifying maladaptive behaviors, habits, and fears.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Systematic Desensitisation</h4>
-                    <p class="text-gray-700">Used for phobias. It reverses classical conditioning by pairing the feared stimulus with a new response (e.g., relaxation) in a gradual process.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Flooding / Implosive Therapy</h4>
-                    <p class="text-gray-700">Treats irrational fears by exposing the person to the feared object, either in vivo (real life) or in imagination, until the fear is extinguished.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Aversion Therapy</h4>
-                    <p class="text-gray-700">Eliminates undesirable habits by pairing the habit (e.g., smoking) with a painful or unpleasant experience (e.g., a shock or bad taste).</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Biofeedback</h4>
-                    <p class="text-gray-700">Uses instrumental conditioning to help people gain control over bodily functions (like heart rate or blood pressure) by providing real-time "feedback" on them.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="text-xl font-semibold text-amber-700 mb-2">Assertive Learning</h4>
-                    <p class="text-gray-700">A therapy based on learning principles used for individuals with excessive shyness and difficulties in interpersonal interactions.</p>
-                </div>
-            </div>
-        </section>
-    </main>
+            const memoryTypeData = {
+                memory: { title: 'Memory Systems', description: 'Memory is composed of multiple interacting systems, broadly divided by duration and content.' },
+                sensory: { title: 'Sensory Memory', description: 'The briefest form of memory. It acts as a register for all incoming sensory information (e.g., iconic memory for sight, echoic for sound) but decays in less than a second unless attended to.' },
+                stm: { title: 'Short-Term Memory (STM)', description: 'A memory store with a limited capacity (approx. 7±2 chunks) and a short duration (less than 30 seconds) without rehearsal. It holds information currently in awareness.' },
+                ltm: { title: 'Long-Term Memory (LTM)', description: 'The permanent and limitless storehouse of memory. Information is stored here primarily based on meaning (semantically) and can last a lifetime. Forgetting is often a failure of retrieval, not storage.' },
+                declarative: { title: 'Declarative Memory', description: 'A type of LTM that holds information pertaining to facts, names, and dates (also known as "explicit memory"). These are memories that can be consciously recalled and verbally described.' },
+                procedural: { title: 'Procedural Memory', description: 'A type of LTM (also "nondeclarative") for skills and procedures (e.g., how to ride a bike or play an instrument). These memories are retrieved automatically and are difficult to describe verbally.' },
+                episodic: { title: 'Episodic Memory', description: 'A sub-type of Declarative Memory. It contains biographical details and personal life experiences. These memories are "dated" (tied to a specific time and place) and often emotional.' },
+                semantic: { title: 'Semantic Memory', description: 'A sub-type of Declarative Memory. This is the memory of general awareness and knowledge, including concepts, facts, and rules of logic (e.g., knowing that Paris is the capital of France). It is not dated.' },
+                implicit: { title: 'Implicit Memory', description: 'Memory that remains outside a person\'s conscious awareness but still influences behavior. Procedural memory is a type of implicit memory. We are not aware a memory exists, but it affects us.' },
+                flashbulb: { title: 'Flashbulb Memory', description: 'Highly detailed, vivid memories of events that are very arousing or surprising (e.g., where you were on 9/11). They feel like a "photo" frozen in memory, though their accuracy can still be debated.' }
+            };
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- New Mobile Menu ---
-            const menuBtn = document.getElementById('menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            menuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
+            const flawData = {
+                interference: {
+                    title: 'Forgetting due to Interference (Infographic)',
+                    content: `
+                        <h4 class="text-lg font-semibold text-stone-800 mb-4">Forgetting due to Interference</h4>
+                        <p class="text-stone-600 mb-6">This theory suggests forgetting is caused by competition between different sets of stored information. Old and new memories get mixed up.</p>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="border border-red-300 bg-red-50 p-4 rounded-lg">
+                                <h5 class="font-bold text-red-700 text-lg mb-2">Proactive Interference (Forward-moving)</h5>
+                                <p class="text-red-600 mb-4">When <strong>old</strong> learning interferes with recalling <strong>new</strong> learning.</p>
+                                <div class="space-y-2">
+                                    <div class="p-2 border border-red-400 rounded bg-white">1. Learn <strong>Old Password</strong></div>
+                                    <div class="diagram-arrow text-xl text-red-500">↓</div>
+                                    <div class="p-2 border border-red-400 rounded bg-white">2. Learn <strong>New Password</strong></div>
+                                    <div class="diagram-arrow text-xl text-red-500">↓</div>
+                                    <div class="p-2 border border-red-400 rounded bg-red-100">3. Try to recall <strong>New Password</strong>... but you keep remembering the <strong>Old</strong> one!</div>
+                                </div>
+                            </div>
+                            <div class="border border-blue-300 bg-blue-50 p-4 rounded-lg">
+                                <h5 class="font-bold text-blue-700 text-lg mb-2">Retroactive Interference (Backward-moving)</h5>
+                                <p class="text-blue-600 mb-4">When <strong>new</strong> learning interferes with recalling <strong>old</strong> learning.</p>
+                                <div class="space-y-2">
+                                    <div class="p-2 border border-blue-400 rounded bg-white">1. Learn <strong>Spanish</strong> vocab</div>
+                                    <div class="diagram-arrow text-xl text-blue-500">↓</div>
+                                    <div class="p-2 border border-blue-400 rounded bg-white">2. Learn <strong>French</strong> vocab</div>
+                                    <div class="diagram-arrow text-xl text-blue-500">↓</div>
+                                    <div class="p-2 border border-blue-400 rounded bg-blue-100">3. Try to recall <strong>Spanish</strong>... but the new <strong>French</strong> words get in the way!</div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                retrieval: {
+                    title: 'Forgetting due to Retrieval Failure',
+                    content: `
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Forgetting due to Retrieval Failure</h4>
+                        <p class="text-stone-600">This type of forgetting occurs when the information is still stored in LTM, but it becomes inaccessible. This is often due to the absence of appropriate <strong>Retrieval Cues</strong> at the time of recall.</p>
+                        <p class="text-stone-600 mt-2">Retrieval cues are aids (like category names, the physical context of learning, or the emotional state you were in) that help recover stored information. This is why you might remember something later when you're "back in the context" where you learned it.</p>
+                    `
+                },
+                eyewitness: {
+                    title: 'Eyewitness Memory Flaws',
+                    content: `
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Eyewitness Memory Flaws</h4>
+                        <p class="text-stone-600">Eyewitness testimony is highly susceptible to flaws. Memory is a constructive process, not a perfect recording. Experiments by Loftus showed that:</p>
+                        <ul class="list-disc list-inside space-y-2 text-stone-600">
+                            <li><strong>Leading Questions</strong> can alter an eyewitness's memory. For example, asking "How fast were the cars going when they <strong>smashed</strong>?" results in higher speed estimates than asking "when they <strong>contacted</strong>?".</li>
+                            <li><strong>Post-event information</strong> can overwrite or distort the original encoding of the event.</li>
+                            <li><strong>Strong emotions</strong> during a traumatic event can overwhelm attention, preventing detailed encoding in the first place.</li>
+                        </ul>
+                    `
+                },
+                false: {
+                    title: 'False Memory',
+                    content: `
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">False Memory</h4>
+                        <p class="text-stone-600">Memory can be induced or implanted, often through the powerful imagination of events that never actually took place. This is sometimes called "imagination inflation."</p>
+                        <p class="text-stone-600 mt-2">Simply visualizing and imagining an event as real can cause a person to later rate that event as having a high likelihood of actually occurring in their life, even if it never did. This shows how memory can be highly malleable.</p>
+                    `
+                }
+            };
 
-            // --- Active Nav Scrolling ---
-            const navLinks = document.querySelectorAll('.nav-link');
-            const mobileLinks = document.querySelectorAll('.mobile-link');
-            const sections = document.querySelectorAll('section');
+            const mnemonicData = {
+                processing: {
+                    title: 'Engage in Deep Level Processing',
+                    content: `
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Engage in Deep Level Processing</h4>
+                        <p class="text-stone-600">This is one of the most effective strategies. Instead of rote memorization (shallow processing), focus on the *meaning* of the information (semantic processing).</p>
+                        <ul class="list-disc list-inside space-y-2 text-stone-600 mt-2">
+                            <li>Ask "why" questions about the material.</li>
+                            <li>Consider its meaning and how it relates to things you already know.</li>
+                            <li>Try to explain the concept in your own words to someone else.</li>
+                        </ul>
+                        <p class="text-stone-600 mt-2">This creates more connections and retrieval cues, making the memory stronger.</p>
+                    `
+                },
+                keyword: {
+                    title: 'The Keyword Method (Infographic)',
+                    content: `
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">The Keyword Method</h4>
+                        <p class="text-stone-600 mb-4">This image-based mnemonic is very effective for learning foreign language vocabulary.</p>
+                        <p class="text-stone-600 mb-4"><strong>Example:</strong> To remember the Spanish word <strong>Pato</strong> (which means "duck").</p>
+                        <div class="space-y-3">
+                            <div class="p-3 border border-stone-300 rounded-lg bg-white">
+                                <span class="font-bold text-lg">1. Foreign Word:</span> "Pato"
+                            </div>
+                            <div class="diagram-arrow text-xl text-stone-500">↓</div>
+                            <div class="p-3 border border-stone-300 rounded-lg bg-white">
+                                <span class="font-bold text-lg">2. Keyword (sounds like):</span> "Pot"
+                            </div>
+                            <div class="diagram-arrow text-xl text-stone-500">↓</div>
+                            <div class="p-3 border border-amber-400 rounded-lg bg-amber-50 text-center">
+                                <span class="font-bold text-lg text-amber-800">3. Create Vivid Image:</span>
+                                <p class="text-amber-700">Imagine a <strong>duck</strong> with a <strong>pot</strong> on its head.</p>
+                            </div>
+                            <div class="diagram-arrow text-xl text-stone-500">↓</div>
+                            <div class="p-3 border border-green-400 rounded-lg bg-green-50">
+                                <span class="font-bold text-lg text-green-800">4. Link Meaning:</span> "Pato" = "Duck"
+                            </div>
+                        </div>
+                    `
+                },
+                loci: {
+                    title: 'The Method of Loci',
+                    content: `
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">The Method of Loci</h4>
+                        <p class="text-stone-600">This is an excellent strategy for remembering items in a specific order (serial recall).</p>
+                        <ol class="list-decimal list-inside space-y-2 text-stone-600 mt-2">
+                            <li>Think of a well-known physical route or series of locations (loci), such as the rooms in your house or your walk to school.</li>
+                            <li>Mentally "place" the items you need to remember, one by one, in each of these locations in sequence.</li>
+                            <li>To recall the list, you mentally "walk" the route, retrieving the item associated with each location.</li>
+                        </ol>
+                    `
+                },
+                chunking: {
+                    title: 'Chunking',
+                    content: `
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Chunking</h4>
+                        <p class="text-stone-600">This organizational mnemonic helps expand the capacity of Short-Term Memory (which is normally 7±2 items).</p>
+                        <p class="text-stone-600 mt-2">Chunking involves combining several smaller units into larger, more meaningful chunks. By discovering an organizational principle, you reduce the number of items you have to remember.</p>
+                        <p class="text-stone-600 mt-2"><strong>Example:</strong> Remembering the number string <strong>194719492004</strong> is hard. But if you "chunk" it into <strong>1947, 1949, 2004</strong> (three meaningful years), it becomes much easier to hold in STM.</p>
+                    `
+                },
+                firstletter: {
+                    title: 'First Letter Technique',
+                    content: `
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">First Letter Technique</h4>
+                        <p class="text-stone-600">This is a simple organizational mnemonic for remembering lists.</p>
+                        <p class="text-stone-600 mt-2">You take the first letter of each word you need to remember and arrange them to form another word or a sentence (an acronym or acrostic).</p>
+                        <p class="text-stone-600 mt-2"><strong>Example:</strong> To remember the colors of the rainbow (Red, Orange, Yellow, Green, Blue, Indigo, Violet), you can use the name <strong>VIBGYOR</strong> (in reverse) or the sentence <strong>"Richard Of York Gave Battle In Vain"</strong>.</p>
+                    `
+                },
+                pqrst: {
+                    title: 'PQRST Method',
+                    content: `
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">PQRST Method</h4>
+                        <p class="text-stone-600">This is a comprehensive strategy for studying and remembering textbook material. It stands for:</p>
+                        <ul class="list-disc list-inside space-y-2 text-stone-600 mt-2">
+                            <li><strong>Preview:</strong> Give a cursory look at the chapter contents to get an overview.</li>
+                            <li><strong>Question:</strong> Raise questions and seek answers from the lesson. Turn headings into questions.</li>
+                            <li><strong>Read:</strong> Read the material actively, looking for the answers to the questions you raised.</li>
+                            <li><strong>Self-recitation:</strong> After reading a section, try to rewrite or state what you have read in your own words.</li>
+                            <li><strong>Test:</strong> At the end, assess how much you have understood and can recall.</li>
+                        </ul>
+                    `
+                }
+            };
 
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.3
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const mobileNav = document.getElementById('mobile-nav');
+            const header = document.getElementById('main-header');
+            const contentSections = document.querySelectorAll('[data-content]');
+            let forgettingChart = null;
+
+            function scrollToSection(sectionId) {
+                const section = document.getElementById(sectionId);
+                if (!section) return;
+
+                const headerHeight = header.offsetHeight;
+                const sectionTop = section.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+
+                window.scrollTo({
+                    top: sectionTop,
+                    behavior: 'smooth'
+                });
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = button.dataset.scrollTo;
+                    scrollToSection(sectionId);
+                });
+            });
+
+            mobileNav.addEventListener('change', (e) => {
+                scrollToSection(e.target.value);
+            });
+
+            function updateActiveNav() {
+                const headerHeight = header.offsetHeight;
+                let currentSectionId = '';
+
+                contentSections.forEach(section => {
+                    const sectionTop = section.getBoundingClientRect().top;
+                    if (sectionTop < (headerHeight + 60)) { 
+                        currentSectionId = section.id;
+                    }
+                });
+                
+                if (window.innerHeight + Math.ceil(window.pageYOffset) >= document.body.offsetHeight - 50) {
+                    currentSectionId = contentSections[contentSections.length - 1].id;
+                } else if (window.pageYOffset < 100) {
+                    currentSectionId = contentSections[0].id;
+                }
+
+                if (currentSectionId) {
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.dataset.scrollTo === currentSectionId) {
+                            btn.classList.add('active');
+                        }
+                    });
+                    
+                    if (mobileNav.value !== currentSectionId) {
+                        mobileNav.value = currentSectionId;
+                    }
+                }
+            }
+
+            window.addEventListener('scroll', updateActiveNav);
+
+            function renderForgettingChart() {
+                const ctx = document.getElementById('forgettingCurveChart').getContext('2d');
+                if (forgettingChart) {
+                    forgettingChart.destroy();
+                }
+                forgettingChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Initial (20 min)', '1 hour', '9 hours', '1 day', '2 days', '6 days', '31 days'],
+                        datasets: [{
+                            label: 'Retention (%)',
+                            data: [58.2, 44.2, 35.8, 33.7, 27.8, 25.4, 21.1],
+                            borderColor: 'rgb(217, 119, 6)',
+                            backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                            fill: true,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: 'Percentage Retained'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time After Learning'
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.parsed.y}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            let chartRendered = false;
+            const chartSection = document.getElementById('forgetting-content');
+            
+            const chartObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !chartRendered) {
+                        renderForgettingChart();
+                        chartRendered = true;
+                        chartObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            chartObserver.observe(chartSection);
+
+
+            const modelNav = document.getElementById('models-content');
+            const modelDetails = document.getElementById('model-details-content');
+            modelNav.addEventListener('click', (e) => {
+                if (e.target.matches('[data-model]')) {
+                    const modelKey = e.target.dataset.model;
+                    modelDetails.innerHTML = modelData[modelKey].content;
+                    
+                    modelNav.querySelectorAll('[data-model]').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                }
+            });
+
+            // Memory pill button handlers
+            const typesSection = document.getElementById('types-content');
+            const coreMemoryDetails = document.getElementById('core-memory-details');
+            const ltmTypeDetails = document.getElementById('ltm-type-details');
+            const declarativeSubDetails = document.getElementById('declarative-sub-details');
+            const specialMemoryDetails = document.getElementById('special-memory-details');
+
+            // Mapping memory keys to their detail containers
+            const memoryContainers = {
+                'sensory': coreMemoryDetails,
+                'stm': coreMemoryDetails,
+                'ltm': coreMemoryDetails,
+                'declarative': ltmTypeDetails,
+                'procedural': ltmTypeDetails,
+                'implicit': ltmTypeDetails,
+                'episodic': declarativeSubDetails,
+                'semantic': declarativeSubDetails,
+                'flashbulb': specialMemoryDetails
             };
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.id;
-                        navLinks.forEach(link => {
-                            link.classList.remove('active-nav');
-                            if (link.href.includes(id)) {
-                                link.classList.add('active-nav');
-                            }
-                        });
-                    }
-                });
-            }, observerOptions);
-
-            sections.forEach(section => observer.observe(section));
-            
-            // Close mobile menu on link click
-            mobileLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.add('hidden');
-                });
-            });
-
-            // --- Chart.js Config ---
-            Chart.defaults.font.family = "'Inter', sans-serif";
-            
-            // --- 1. Classical Conditioning Interactive Diagram ---
-            const classicalBtn = document.getElementById('classical-next-btn');
-            const classicalDiagram = document.getElementById('classical-diagram');
-            const classicalDesc = document.getElementById('classical-desc');
-            let classicalStep = 0;
-            const classicalSteps = [
-                {
-                    btn: "Start (Step 1)",
-                    desc: "Click 'Next Step' to see the process unfold.",
-                    html: `
-                        <p class="font-medium"><strong>Step 1: Before Conditioning</strong></p>
-                        <div class="flex justify-center items-center gap-2 mt-2">
-                            <span class="p-2 bg-amber-100 text-amber-800 rounded">Food (US)</span>
-                            <span class="text-2xl font-bold text-gray-500">&rarr;</span>
-                            <span class="p-2 bg-lime-100 text-lime-800 rounded">Salivation (UR)</span>
-                        </div>
-                        <div class="flex justify-center items-center gap-2 mt-2">
-                            <span class="p-2 bg-gray-200 text-gray-800 rounded">Bell (Neutral)</span>
-                            <span class="text-2xl font-bold text-gray-500">&rarr;</span>
-                            <span class="p-2 bg-red-100 text-red-800 rounded">No Response</span>
-                        </div>`
-                },
-                {
-                    btn: "Next Step (Step 2)",
-                    desc: "The neutral stimulus (Bell) is repeatedly paired with the unconditioned stimulus (Food).",
-                    html: `
-                        <p class="font-medium"><strong>Step 2: During Conditioning</strong></p>
-                        <div class="flex justify-center items-center gap-2 mt-2">
-                            <span class="p-2 bg-gray-200 text-gray-800 rounded">Bell (CS)</span>
-                            <span class="text-2xl font-bold text-gray-500">+</span>
-                            <span class="p-2 bg-amber-100 text-amber-800 rounded">Food (US)</span>
-                            <span class="text-2xl font-bold text-gray-500">&rarr;</span>
-                            <span class="p-2 bg-lime-100 text-lime-800 rounded">Salivation (UR)</span>
-                        </div>`
-                },
-                {
-                    btn: "Next Step (Step 3)",
-                    desc: "The association is formed. The bell is now a conditioned stimulus.",
-                    html: `
-                        <p class="font-medium"><strong>Step 3: After Conditioning</strong></p>
-                        <div class="flex justify-center items-center gap-2 mt-2">
-                            <span class="p-2 bg-gray-200 text-gray-800 rounded">Bell (CS)</span>
-                            <span class="text-2xl font-bold text-gray-500">&rarr;</span>
-                            <span class="p-2 bg-lime-100 text-lime-800 rounded">Salivation (CR)</span>
-                        </div>`
-                },
-                {
-                    btn: "Reset",
-                    desc: "The organism has learned to associate the bell with food.",
-                    html: `
-                        <p class="font-medium"><strong>Step 3: After Conditioning</strong></p>
-                        <div class="flex justify-center items-center gap-2 mt-2">
-                            <span class="p-2 bg-gray-200 text-gray-800 rounded">Bell (CS)</span>
-                            <span class="text-2xl font-bold text-gray-500">&rarr;</span>
-                            <span class="p-2 bg-lime-100 text-lime-800 rounded">Salivation (CR)</span>
-                        </div>`
-                }
-            ];
-            
-            function updateClassicalStep(step) {
-                classicalDiagram.innerHTML = classicalSteps[step].html;
-                classicalDesc.textContent = classicalSteps[step].desc;
-                classicalBtn.textContent = classicalSteps[step].btn;
-            }
-            
-            classicalBtn.addEventListener('click', () => {
-                classicalStep = (classicalStep + 1) % classicalSteps.length;
-                updateClassicalStep(classicalStep);
-            });
-            updateClassicalStep(0);
-
-
-            // --- 2. Classical Determinants Chart (Warm Colors) ---
-            const classicalCtx = document.getElementById('classicalChart');
-            if (classicalCtx) {
-                new Chart(classicalCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: [['Delayed'], ['Trace'], ['Simultaneous'], ['Backward']],
-                        datasets: [{
-                            label: 'Relative Effectiveness',
-                            data: [100, 70, 30, 5],
-                            backgroundColor: [
-                                'rgba(217, 119, 6, 0.7)', // amber-600
-                                'rgba(245, 158, 11, 0.7)', // amber-500
-                                'rgba(252, 211, 77, 0.7)', // amber-400
-                                'rgba(254, 243, 199, 0.7)' // amber-100
-                            ],
-                            borderColor: '#B45309', // amber-800
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true, title: { display: true, text: 'Effectiveness' } } }
-                    }
-                });
-            }
-
-            // --- 3. Operant Conditioning Interactive Grid ---
-            const operantCells = document.querySelectorAll('.operant-grid-cell');
-            const operantDesc = document.getElementById('operant-desc');
-            const operantData = {
-                'pos-reinforce': {
-                    title: 'Positive Reinforcement',
-                    text: '<strong>Definition:</strong> Adding a pleasant stimulus to <strong>increase</strong> behavior. <br><strong>Example:</strong> Giving a child a cookie for cleaning their room.'
-                },
-                'neg-reinforce': {
-                    title: 'Negative Reinforcement',
-                    text: '<strong>Definition:</strong> Removing an unpleasant stimulus to <strong>increase</strong> behavior. <br><strong>Example:</strong> Taking painkillers to remove a headache. (This is *not* punishment!)'
-                },
-                'pos-punish': {
-                    title: 'Positive Punishment',
-                    text: '<strong>Definition:</strong> Adding an unpleasant stimulus to <strong>decrease</strong> behavior. <br><strong>Example:</strong> Scolding a dog for-jumping on a guest.'
-                },
-                'neg-punish': {
-                    title: 'Negative Punishment',
-                    text: '<strong>Definition:</strong> Removing a pleasant stimulus to <strong>decrease</strong> behavior. <br><strong>Example:</strong> Taking away a teenager\'s phone for breaking curfew.'
-                }
-            };
-
-            operantCells.forEach(cell => {
-                cell.addEventListener('click', () => {
-                    const key = cell.dataset.operant;
-                    operantCells.forEach(c => c.classList.remove('active-operant'));
-                    cell.classList.add('active-operant');
+            typesSection.addEventListener('click', (e) => {
+                if (e.target.matches('[data-memory]')) {
+                    const memoryKey = e.target.dataset.memory;
+                    const data = memoryTypeData[memoryKey];
+                    const container = memoryContainers[memoryKey];
                     
-                    operantDesc.innerHTML = `
-                        <h4 class="font-bold text-xl text-center mb-2 text-amber-700">${operantData[key].title}</h4>
-                        <p class="text-gray-700 text-center">${operantData[key].text}</p>
-                    `;
-                });
-            });
-            
-            // --- 4. Reinforcement Schedules Chart (Warm Colors) ---
-            const schedulesCtx = document.getElementById('schedulesChart');
-            if (schedulesCtx) {
-                new Chart(schedulesCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Time', '', '', '', '', '', '', '', '', ''],
-                        datasets: [
-                            {
-                                label: 'Variable Ratio (e.g., Slot Machine)',
-                                data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90],
-                                borderColor: '#EA580C', // orange-600
-                                tension: 0.1,
-                                fill: false
-                            },
-                            {
-                                label: 'Fixed Ratio (e.g., Paid per 10 items)',
-                                data: [0, 5, 5, 15, 15, 25, 25, 35, 35, 45],
-                                borderColor: '#D97706', // amber-600
-                                tension: 0,
-                                fill: false
-                            },
-                            {
-                                label: 'Variable Interval (e.g., Pop Quiz)',
-                                data: [0, 2, 4, 8, 11, 15, 18, 22, 25, 30],
-                                borderColor: '#F59E0B', // amber-500
-                                tension: 0.4,
-                                fill: false
-                            },
-                            {
-                                label: 'Fixed Interval (e.g., Weekly Paycheck)',
-                                data: [0, 1, 2, 2.5, 3, 10, 11, 12, 13, 20],
-                                borderColor: '#DC2626', // red-600
-                                tension: 0.4,
-                                fill: false,
-                                stepped: 'after'
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { title: { display: false } },
-                        scales: { 
-                            y: { title: { display: true, text: 'Cumulative Responses' } },
-                            x: { title: { display: true, text: 'Time' } }
+                    if (data && container) {
+                        container.innerHTML = `
+                            <h4 class="text-lg font-semibold text-stone-800 mb-2">${data.title}</h4>
+                            <p class="text-stone-700">${data.description}</p>
+                        `;
+                        
+                        // Remove active class from buttons in the same group
+                        const parentSection = e.target.closest('.bg-white');
+                        if (parentSection) {
+                            parentSection.querySelectorAll('[data-memory]').forEach(btn => btn.classList.remove('active'));
                         }
+                        e.target.classList.add('active');
                     }
-                });
-            }
+                }
+            });            const flawNav = document.getElementById('forgetting-content');
+            const flawDetails = document.getElementById('flaw-details-content');
+            flawNav.addEventListener('click', (e) => {
+                if (e.target.matches('[data-flaw]')) {
+                    const flawKey = e.target.dataset.flaw;
+                    flawDetails.innerHTML = flawData[flawKey].content;
+                    
+                    flawNav.querySelectorAll('[data-flaw]').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                }
+            });
 
-            // --- 5. Extinction & Recovery Chart (Warm Colors) ---
-            const extinctionCtx = document.getElementById('extinctionChart');
-            let extinctionChart;
-            const extinctionBtn = document.getElementById('extinction-btn');
-            const recoveryBtn = document.getElementById('recovery-btn');
-            const resetExtinctionBtn = document.getElementById('reset-extinction-btn');
-            
-            const baseData = [5, 10, 15, 20, 25, 30, 30, 30, 30, 30];
-            const baseLabels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10'];
-            
-            function createExtinctionChart() {
-                if (extinctionChart) extinctionChart.destroy();
-                extinctionBtn.disabled = false;
-                recoveryBtn.disabled = true;
+            const mnemonicNav = document.getElementById('enhancement-content');
+            const mnemonicDetails = document.getElementById('mnemonic-details');
+            mnemonicNav.addEventListener('click', (e) => {
+                if (e.target.matches('[data-mnemonic]')) {
+                    const mnemonicKey = e.target.dataset.mnemonic;
+                    mnemonicDetails.innerHTML = `
+                        <h3 class="text-xl font-semibold text-stone-800 mb-2">${mnemonicData[mnemonicKey].title}</h3>
+                        <div class="text-stone-600">${mnemonicData[mnemonicKey].content}</div>
+                    `;
+                    
+                    mnemonicNav.querySelectorAll('[data-mnemonic]').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                }
+            });
+
+            function initializeContent() {
+                const initialModelBtn = document.querySelector('[data-model="stage"]');
+                initialModelBtn.classList.add('active');
+                modelDetails.innerHTML = modelData.stage.content;
+
+                const initialFlawBtn = document.querySelector('[data-flaw="interference"]');
+                initialFlawBtn.classList.add('active');
+                flawDetails.innerHTML = flawData.interference.content;
+
+                const initialMnemonicBtn = document.querySelector('[data-mnemonic="processing"]');
+                initialMnemonicBtn.classList.add('active');
+                mnemonicDetails.innerHTML = `
+                    <h3 class="text-xl font-semibold text-stone-800 mb-2">${mnemonicData.processing.title}</h3>
+                    <div class="text-stone-600">${mnemonicData.processing.content}</div>
+                `;
+
+                // Initialize memory pill buttons
+                coreMemoryDetails.innerHTML = `
+                    <h4 class="text-lg font-semibold text-stone-800 mb-2">${memoryTypeData.sensory.title}</h4>
+                    <p class="text-stone-700">${memoryTypeData.sensory.description}</p>
+                `;
+                ltmTypeDetails.innerHTML = `
+                    <p class="text-stone-600 italic">Click a button above to learn about different types of Long-Term Memory.</p>
+                `;
+                declarativeSubDetails.innerHTML = `
+                    <p class="text-stone-600 italic">Click a button above to explore the subdivisions of Declarative Memory.</p>
+                `;
+                specialMemoryDetails.innerHTML = `
+                    <p class="text-stone-600 italic">Click the button above to learn about this special memory phenomenon.</p>
+                `;
                 
-                extinctionChart = new Chart(extinctionCtx, {
-                    type: 'line',
-                    data: {
-                        labels: [...baseLabels],
-                        datasets: [{
-                            label: 'Response Strength',
-                            data: [...baseData],
-                            borderColor: '#D97706', // amber-600
-                            tension: 0.1,
-                            fill: false
-                        }]
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true, max: 35 } }
-                    }
-                });
-            }
-            
-            extinctionBtn.addEventListener('click', () => {
-                extinctionChart.data.labels = [...baseLabels, 'T11', 'T12', 'T13'];
-                extinctionChart.data.datasets[0].data = [...baseData, 15, 5, 0];
-                extinctionChart.update();
-                extinctionBtn.disabled = true;
-                recoveryBtn.disabled = false;
-            });
+                updateActiveNav();
+            }            initializeContent();
 
-            recoveryBtn.addEventListener('click', () => {
-                extinctionChart.data.labels.push('Rest', 'T14');
-                extinctionChart.data.datasets[0].data.push(0, 10);
-                extinctionChart.update();
-                recoveryBtn.disabled = true;
-            });
-            
-            resetExtinctionBtn.addEventListener('click', createExtinctionChart);
-            if(extinctionCtx) createExtinctionChart();
-
-            // --- 6. Serial Position Curve Chart (Warm Colors) ---
-            const serialCtx = document.getElementById('serialChart');
-            if (serialCtx) {
-                new Chart(serialCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'Item 7', 'Item 8', 'Item 9', 'Item 10'],
-                        datasets: [{
-                            label: '% Recalled',
-                            data: [80, 65, 50, 40, 35, 30, 40, 55, 75, 90],
-                            borderColor: '#EA580C', // orange-600
-                            backgroundColor: 'rgba(234, 88, 12, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Probability of Recall' } } }
-                    }
-                });
-            }
-
-            // --- 7. Concept Learning Game (Warm Colors) ---
-            const conceptGame = document.getElementById('concept-game');
-            const conceptFeedback = document.getElementById('concept-feedback');
-            const conceptReset = document.getElementById('concept-reset');
-            const shapes = [
-                { color: '#D97706', shape: 'round', correct: false }, // amber-600
-                { color: '#DC2626', shape: 'square', correct: true }, // red-600
-                { color: '#D97706', shape: 'square', correct: false }, // amber-600
-                { color: '#DC2626', shape: 'round', correct: false }, // red-600
-                { color: '#DC2626', shape: 'square', correct: true }, // red-600
-                { color: '#D97706', shape: 'round', correct: false } // amber-600
-            ];
-            
-            function initConceptGame() {
-                conceptGame.innerHTML = '';
-                conceptFeedback.textContent = '';
-                shapes.forEach((shape, i) => {
-                    const el = document.createElement('div');
-                    el.style.width = '60px';
-                    el.style.height = '60px';
-                    el.style.backgroundColor = shape.color;
-                    el.style.border = '2px solid transparent';
-                    el.style.cursor = 'pointer';
-                    el.style.borderRadius = shape.shape === 'round' ? '50%' : '0';
-                    el.dataset.correct = shape.correct;
-                    el.addEventListener('click', () => checkConcept(el));
-                    conceptGame.appendChild(el);
-                });
-            }
-            
-            function checkConcept(el) {
-                if (el.dataset.correct === 'true') {
-                    el.style.border = '4px solid #84CC16'; // lime-500
-                    conceptFeedback.textContent = 'Correct!';
-                    conceptFeedback.style.color = '#65A30D'; // lime-600
-                } else {
-                    el.style.border = '4px solid #9CA3AF'; // gray-400
-                    conceptFeedback.textContent = 'Try again.';
-                    conceptFeedback.style.color = '#7F1D1D'; // red-900
-                }
-            }
-            
-            if (conceptGame) initConceptGame();
-            conceptReset.addEventListener('click', initConceptGame);
-
-            // --- 8. Skill Learning Phases (Warm Colors) ---
-            const skillBtn = document.getElementById('skill-next-btn');
-            const skillCard = document.getElementById('skill-phase-card');
-            let skillStep = 0;
-            const skillPhases = [
-                {
-                    btn: "Start",
-                    html: `<h4 class="text-xl font-semibold text-amber-700 mb-2">Click to Start</h4><p class="text-gray-600">Learn the 3 phases of acquiring a new skill.</p>`
-                },
-                {
-                    btn: "Next Phase (Associative)",
-                    html: `<span class="font-bold text-sm text-amber-600">PHASE 1</span><h4 class="text-xl font-semibold text-amber-700 mb-2">Cognitive Phase</h4><p class="text-gray-600">You must understand and memorize instructions. Every action requires high conscious effort.</p>`
-                },
-                {
-                    btn: "Next Phase (Autonomous)",
-                    html: `<span class="font-bold text-sm text-amber-600">PHASE 2</span><h4 class="text-xl font-semibold text-amber-700 mb-2">Associative Phase</h4><p class="text-gray-600">Sensory inputs are linked with responses. Practice increases, errors decrease, but concentration is still needed.</p>`
-                },
-                {
-                    btn: "Reset",
-                    html: `<span class="font-bold text-sm text-amber-600">PHASE 3</span><h4 class="text-xl font-semibold text-amber-700 mb-2">Autonomous Phase</h4><p class="text-gray-600">The skill becomes automatic. Attentional demands decrease significantly, and performance is smooth.</p>`
-                }
-            ];
-            
-            function updateSkillStep(step) {
-                skillCard.innerHTML = skillPhases[step].html;
-                skillBtn.textContent = skillPhases[step].btn;
-            }
-            
-            skillBtn.addEventListener('click', () => {
-                skillStep = (skillStep + 1) % skillPhases.length;
-                updateSkillStep(skillStep);
-            });
-            updateSkillStep(0);
-
-        });
-    </script>
+        });
+    </script>
 </body>
 </html>
