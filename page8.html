@@ -3,90 +3,520 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Progress Tracker - Inner Peace</title>
-    <link href="tooplate-inner-peace.css" rel="stylesheet">
+    <title>Exploring Human Cognition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm (Amber, Orange, Stone, Neutral) -->
+    <!-- Application Structure Plan: This SPA uses a sticky top-level horizontal navigation bar. The user can click any concept in this bar (e.g., 'Overview', 'Problem Solving') to smoothly scroll to the corresponding detailed content section on the page. This replaces the previous "hub" grid, creating a cleaner, more traditional single-page layout while retaining the fast navigation. A "Back to Top" button provides an easy return. -->
+    <!-- Visualization & Content Choices: (All original concepts and visualizations are retained)
+        - Report Info: Concept Hierarchy. Goal: Organize. Viz: HTML/CSS Diagram. Interaction: Static. Justification: Visually represents the text's Superordinate > Basic > Subordinate structure clearly. Method: HTML/Tailwind (re-themed with warm colors).
+        - Report Info: Problem Solving Obstacles. Goal: Inform/Organize. Viz: Interactive Accordion Cards. Interaction: Click to reveal definition. Justification: Makes definitions interactive. Method: HTML/Tailwind/JS (re-themed).
+        - Report Info: Reasoning Types. Goal: Compare. Viz: Side-by-side HTML grid. Interaction: Static. Justification: Directly compares Deductive vs. Inductive. Method: HTML/Tailwind.
+        - Report Info: Judgment vs. Decision-making Metaphor. Goal: Inform/Relate. Viz: HTML/CSS Flow Diagram. Interaction: Static. Justification: Uses the report's own metaphor. Method: HTML/Tailwind (re-themed).
+        - Report Info: Creative Thinking Process. Goal: Change/Process. Viz: Doughnut Chart. Interaction: Hover. Justification: Visualizes the cyclical stages. Library: Chart.js (Canvas) (re-themed with warm colors).
+        - Report Info: Language Development Stages. Goal: Change/Process. Viz: Bar Chart. Interaction: Hover. Justification: Creates a visual timeline. Library: Chart.js (Canvas) (re-themed with warm colors).
+        - Report Info: Language Theories (Chomsky vs. Skinner). Goal: Compare. Viz: Side-by-side HTML grid. Interaction: Static. Justification: Clearly contrasts 'Nature' vs. 'Nurture'. Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        /* Simple scrollbar for horizontal nav */
+        .nav-container::-webkit-scrollbar {
+            height: 4px;
+        }
+        .nav-container::-webkit-scrollbar-thumb {
+            background-color: #f59e0b; /* amber-500 */
+            border-radius: 20px;
+        }
+    </style>
 </head>
-<body>
-    <div class="geometric-bg"></div>
+<body class="bg-amber-50 text-stone-800">
 
-    <!-- Header -->
-    <header>
-        <nav>
-            <a href="index.html" class="logo">
-                <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="20" cy="20" r="18" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
-                    <circle cx="20" cy="20" r="14" fill="none" stroke="url(#logoGradient)" stroke-width="1.5" opacity="0.7"/>
-                    <circle cx="20" cy="20" r="10" fill="none" stroke="url(#logoGradient)" stroke-width="1" opacity="0.5"/>
-                    <circle cx="20" cy="20" r="6" fill="none" stroke="url(#logoGradient)" stroke-width="0.5" opacity="0.3"/>
-                    <circle cx="20" cy="20" r="3" fill="url(#logoGradient)"/>
-                </svg>
-                <span class="logo-text">Inner Peace</span>
-            </a>
-            <div class="menu-toggle" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
+    <!-- Header & Navigation -->
+    <header class="bg-white shadow-sm border-b border-amber-200 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <h1 class="text-2xl font-bold text-orange-700">Exploring Human Cognition</h1>
+            <p class="text-neutral-600 text-sm">A visual guide to the processes of thought.</p>
+        </div>
+        <!-- Horizontal Navigation Bar -->
+        <nav class="bg-amber-50 border-b border-t border-amber-200">
+            <div class="container mx-auto px-6 nav-container overflow-x-auto whitespace-nowrap">
+                <div class="flex flex-nowrap space-x-4 py-2">
+                    <a href="#content-overview" class="nav-link py-2 px-4 rounded-full text-sm font-medium text-orange-800 bg-amber-100 hover:bg-amber-200 transition-colors">🧠 Overview</a>
+                    <a href="#content-blocks" class="nav-link py-2 px-4 rounded-full text-sm font-medium text-stone-700 hover:bg-amber-100 transition-colors">🧱 Building Blocks</a>
+                    <a href="#content-processes" class="nav-link py-2 px-4 rounded-full text-sm font-medium text-stone-700 hover:bg-amber-100 transition-colors">⚙️ Processes</a>
+                    <a href="#content-solving" class="nav-link py-2 px-4 rounded-full text-sm font-medium text-stone-700 hover:bg-amber-100 transition-colors">🧩 Problem Solving</a>
+                    <a href="#content-reasoning" class="nav-link py-2 px-4 rounded-full text-sm font-medium text-stone-700 hover:bg-amber-100 transition-colors">⚖️ Reasoning</a>
+                    <a href="#content-judgment" class="nav-link py-2 px-4 rounded-full text-sm font-medium text-stone-700 hover:bg-amber-100 transition-colors">🤔 Judgment</a>
+                    <a href="#content-creative" class="nav-link py-2 px-4 rounded-full text-sm font-medium text-stone-700 hover:bg-amber-100 transition-colors">💡 Creative Thinking</a>
+                    <a href="#content-language" class="nav-link py-2 px-4 rounded-full text-sm font-medium text-stone-700 hover:bg-amber-100 transition-colors">🗣️ Language</a>
+                </div>
             </div>
-            <ul class="nav-links">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="index.html#about" class="nav-link">About</a></li>
-                <li><a href="index.html#practices" class="nav-link">Practices</a></li>
-                <li><a href="index.html#resources" class="nav-link">Resources</a></li>
-            </ul>
         </nav>
     </header>
 
     <!-- Main Content -->
-    <main style="padding: 8rem 5% 4rem; max-width: 1200px; margin: 0 auto;">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">📊</div>
-            <h1 class="section-title">Progress Tracker</h1>
-            <p class="section-subtitle">Monitor your mindfulness journey and growth</p>
-        </div>
+    <main class="container mx-auto px-6 py-12">
 
-        <div style="background: white; border-radius: 25px; padding: 3rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); margin-bottom: 2rem;">
-            <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Welcome to Progress Tracker</h2>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                This is a placeholder page for the Progress Tracker tool. Here you can add functionality to track meditation sessions, 
-                monitor mood changes, set goals, or any other features to help users track their mindfulness journey progress.
-            </p>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
-                Some features you might want to include:
-            </p>
-            <ul style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem; padding-left: 2rem;">
-                <li>Daily meditation streak tracking</li>
-                <li>Mood and energy level monitoring</li>
-                <li>Weekly and monthly progress charts</li>
-                <li>Personal goals and milestones</li>
-                <li>Reflection journal entries</li>
-            </ul>
+        <!-- Content Sections -->
+        <div class="space-y-16">
             
-            <a href="index.html" style="display: inline-block; background: var(--gradient-1); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: transform 0.3s ease; margin-top: 1rem;">
-                ← Back to Homepage
-            </a>
+            <section id="content-overview" class="space-y-6 scroll-mt-32">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">🧠 The Foundation of Cognition</h2>
+                <p class="text-lg text-neutral-600 max-w-3xl">Thinking is the cornerstone of all cognitive processes, a high-level mental activity unique to humans. It's a high-level mental process involving the manipulation and analysis of information, generally organized, goal-directed, and reliant on existing knowledge.</p>
+                
+                <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200 max-w-3xl">
+                    <h3 class="text-xl font-semibold text-orange-700 mb-2">What is Thinking?</h3>
+                    <p class="text-neutral-700">Thinking is a high-level mental process involving the manipulation and analysis of information. It is generally organized, goal-directed, and relies on knowledge we already possess. While it's an internal process, its activities—like planning, reasoning, or judging—can be inferred from observable behavior.</p>
+                </div>
+
+                <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200 max-w-3xl">
+                    <h3 class="text-xl font-semibold text-orange-700 mb-2">Culture and Thinking</h3>
+                    <p class="text-neutral-700 mb-4">Our beliefs, values, and social practices strongly influence the way we think. This leads to different dominant styles of cognition:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                            <h4 class="font-semibold text-lg text-amber-900">Analytical Thinking</h4>
+                            <p class="text-neutral-600">Involves focusing on and analyzing each object in a scene or problem separately.</p>
+                        </div>
+                        <div class="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                            <h4 class="font-semibold text-lg text-amber-900">Holistic Thinking</h4>
+                            <p class="text-neutral-600">Emphasizes thinking about the relationships between objects and their backgrounds.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-blocks" class="space-y-6 scroll-mt-32">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">🧱 Building Blocks of Thought</h2>
+                <p class="text-lg text-neutral-600 max-w-3xl">Thinking relies on knowledge we already possess. This knowledge is represented internally in two primary forms: mental images and concepts. These "building blocks" help us organize our knowledge, making our thought process quick and efficient.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-xl font-semibold text-orange-700 mb-2">Mental Image</h3>
+                        <p class="text-neutral-700">A mental representation of a sensory experience. This can be visual or related to other senses, and we use it when thinking about things, places, and events.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-xl font-semibold text-orange-700 mb-2">Concepts</h3>
+                        <p class="text-neutral-700">A mental representation of a category. Concepts refer to a class of objects, ideas, or events that share common properties, helping us organize knowledge efficiently.</p>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200 max-w-4xl">
+                    <h3 class="text-xl font-semibold text-orange-700 mb-4">Hierarchy of Concepts</h3>
+                    <p class="text-neutral-700 mb-4">Concepts exist in hierarchical levels, moving from the most general to the most specific. We most frequently use the "Basic" level in conversation.</p>
+                    <div class="p-4 bg-amber-50 rounded-lg text-center max-w-md mx-auto">
+                        <div class="font-bold text-lg text-orange-800 p-3 bg-orange-100 rounded-md">Superordinate (e.g., "Animal")</div>
+                        <div class="flex justify-center"><div class="w-px h-6 bg-orange-300"></div></div>
+                        <div class="font-semibold text-base p-3 bg-white rounded-md shadow-sm border border-stone-200">Basic (e.g., "Dog")</div>
+                        <div class="flex justify-center"><div class="w-px h-6 bg-orange-300"></div></div>
+                        <div class="text-sm p-3 bg-stone-100 rounded-md text-neutral-600">Subordinate (e.g., "Four-legged animal that barks")</div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200 max-w-4xl">
+                    <h3 class="text-xl font-semibold text-orange-700 mb-2">Prototype</h3>
+                    <p class="text-neutral-700">Since many concepts are fuzzy or poorly defined, people construct a prototype. This is the best, most typical, or standard representative member of a category. We use it for comparison when deciding if a new item belongs to that category.</p>
+                </div>
+            </section>
+            
+            <section id="content-processes" class="space-y-6 scroll-mt-32">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">⚙️ Processes of Thought</h2>
+                <p class="text-lg text-neutral-600 max-w-3xl">Thinking isn't just one activity; it's a collection of complex processes. This section provides an overview of the key thought processes, which are explored in more detail in the following sections: Problem Solving, Reasoning, Judgment, and Creative Thinking.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-xl font-semibold text-orange-700 mb-2">Problem Solving</h3>
+                        <p class="text-neutral-700">Goal-directed thinking aimed at reaching a desired outcome, moving from an initial state (the problem) to an end state (the goal).</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-xl font-semibold text-orange-700 mb-2">Reasoning</h3>
+                        <p class="text-neutral-700">The process of gathering and analyzing information to reach conclusions. It's a form of problem solving where the goal is to determine what can be drawn from given info.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-xl font-semibold text-orange-700 mb-2">Judgment & Decision-making</h3>
+                        <p class="text-neutral-700">Interrelated processes. Judgment is forming opinions or evaluating events, while decision-making is selecting one option from a set of alternatives.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-xl font-semibold text-orange-700 mb-2">Creative Thinking</h3>
+                        <p class="text-neutral-700">Distinguished by the production of novel and original ideas or solutions that are also appropriate, constructive, and socially desirable.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-solving" class="space-y-6 scroll-mt-32">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">🧩 Problem Solving</h2>
+                <p class="text-lg text-neutral-600 max-w-3xl">Problem solving is goal-directed thinking that moves from an initial state (the problem) to an end state (the goal) through a series of mental operations. However, several common obstacles can hinder this process. Click on each obstacle below to learn more.</p>
+
+                <div class="max-w-3xl space-y-3" id="obstacles-accordion">
+                    <div class="bg-white rounded-lg shadow-sm border border-amber-200 overflow-hidden">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-stone-800">
+                            <span>Mental Set</span>
+                            <span class="accordion-icon text-orange-600 text-2xl transform transition-transform duration-200">+</span>
+                        </button>
+                        <div class="accordion-content hidden p-5 pt-0 text-neutral-600">
+                            <p>A rigid tendency tosolve a new problem by following mental operations or steps that worked successfully in the past. While sometimes helpful, this can obstruct the discovery of new strategies when the old steps interfere.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-sm border border-amber-200 overflow-hidden">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-stone-800">
+                            <span>Functional Fixedness</span>
+                            <span class="accordion-icon text-orange-600 text-2xl transform transition-transform duration-200">+</span>
+                        </button>
+                        <div class="accordion-content hidden p-5 pt-0 text-neutral-600">
+                            <p>Occurs when an individual fails to solve a problem because they are fixated only on the usual function of an object, preventing them from seeing a novel use.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm border border-amber-200 overflow-hidden">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-stone-800">
+                            <span>Lack of Motivation</span>
+                            <span class="accordion-icon text-orange-600 text-2xl transform transition-transform duration-200">+</span>
+                        </button>
+                        <div class="accordion-content hidden p-5 pt-0 text-neutral-600">
+                            <p>Insufficient drive or persistence to continue seeking a solution. This can cause individuals to give up easily when faced with a difficult problem.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-reasoning" class="space-y-6 scroll-mt-32">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">⚖️ Reasoning</h2>
+                <p class="text-lg text-neutral-600 max-w-3xl">Reasoning is the process of gathering and analyzing information to reach conclusions. It's how we determine what conclusions can be drawn from a set of given information. The two main forms are deductive and inductive reasoning.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-2xl font-semibold text-orange-700 mb-3">Deductive Reasoning</h3>
+                        <p class="font-semibold text-center text-lg mb-2">General → Specific</p>
+                        <div class="text-center text-3xl mb-2 text-orange-600">&darr;</div>
+                        <p class="text-neutral-700">This begins with a general assumption (a premise) that is believed to be true and leads to a specific conclusion based on that assumption. If the initial general statement is untrue, the resulting conclusion will be invalid.</p>
+                        <p class="text-neutral-600 italic mt-4 border-t border-amber-100 pt-3"><span class="font-semibold not-italic text-neutral-700">Example:</span><br>1. All men are mortal. (General premise)<br>2. Socrates is a man. (Specific premise)<br>3. Therefore, Socrates is mortal. (Specific conclusion)</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-2xl font-semibold text-orange-700 mb-3">Inductive Reasoning</h3>
+                        <p class="font-semibold text-center text-lg mb-2">Specific → General</p>
+                        <div class="text-center text-3xl mb-2 text-orange-600">&uarr;</div>
+                        <p class="text-neutral-700">This is based on specific facts and observations to draw a general conclusion. It involves observing multiple instances and then determining a general rule that covers them all. This is common in scientific thought.</p>
+                        <p class="text-neutral-600 italic mt-4 border-t border-amber-100 pt-3"><span class="font-semibold not-italic text-neutral-700">Example:</span><br>1. This swan is white. (Specific observation)<br>2. That swan is white. (Specific observation)<br>3. All swans I have seen are white. (Specific observation)<br>4. Therefore, all swans are white. (General conclusion)</p>
+                    </div>
+                </div>
+                
+                <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200 max-w-4xl">
+                    <h3 class="text-xl font-semibold text-orange-700 mb-2">Analogy</h3>
+                    <p class="text-neutral-700">A specific form of reasoning where the relationship between two items (A is to B) is identified as the same as the relationship between two other items (C is to D). Analogies help in identifying and visualizing important characteristics.</p>
+                </div>
+            </section>
+
+            <section id="content-judgment" class="space-y-6 scroll-mt-32">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">🤔 Judgment & Decision-Making</h2>
+                <p class="text-lg text-neutral-600 max-w-3xl">These two interrelated processes are crucial for navigating daily life. Judgment involves forming opinions, while decision-making involves acting on them by choosing from available alternatives. The choices in decision-making are usually known beforehand.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-xl font-semibold text-orange-700 mb-2">Judgment</h3>
+                        <p class="text-neutral-700">The act of drawing conclusions, forming opinions, or evaluating events and objects based on knowledge and available evidence. Judgments are influenced by personal beliefs and can be changed with new information.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-xl font-semibold text-orange-700 mb-2">Decision-Making</h3>
+                        <p class="text-neutral-700">This involves selecting or choosing one option from a set of several available alternatives. The process requires evaluating the associated costs and benefits of each alternative before making a choice.</p>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200 max-w-4xl">
+                    <h3 class="text-xl font-semibold text-orange-700 mb-4">A Visual Metaphor</h3>
+                    <p class="text-neutral-700 mb-4">The relationship between these concepts can be visualized like planning a trip. You use all available evidence to conclude which path is best, and only then do you commit to traveling it.</p>
+                    <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center">
+                        <div class="p-4 bg-stone-100 rounded-lg shadow-sm">
+                            <div class="text-lg font-semibold">Reasoning</div>
+                            <div class="text-sm text-neutral-600">(Using the map)</div>
+                        </div>
+                        <div class="text-2xl font-bold text-orange-600">&rarr;</div>
+                        <div class="p-4 bg-amber-100 rounded-lg shadow-sm border border-amber-300">
+                            <div class="text-lg font-semibold text-amber-900">Judgment</div>
+                            <div class="text-sm text-amber-800">(Determining the best route)</div>
+                        </div>
+                        <div class="text-2xl font-bold text-orange-600">&rarr;</div>
+                        <div class="p-4 bg-stone-100 rounded-lg shadow-sm">
+                            <div class="text-lg font-semibold">Decision-Making</div>
+                            <div class="text-sm text-neutral-600">(Setting out on the journey)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-creative" class="space-y-6 scroll-mt-32">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">💡 Creative Thinking</h2>
+                <p class="text-lg text-neutral-600 max-w-3xl">Creative thinking is distinguished by the production of novel and original ideas or solutions that are also reality-oriented, appropriate, and constructive. It relies on two different types of thinking: convergent and divergent.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-xl font-semibold text-orange-700 mb-2">Convergent Thinking</h3>
+                        <p class="text-neutral-700">This type of thinking is necessary for problems that have only one correct answer. The mind converges on that single solution. It is important for identifying the most useful or appropriate idea *after* many options have been generated.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200">
+                        <h3 class="text-xl font-semibold text-orange-700 mb-2">Divergent Thinking</h3>
+                        <p class="text-neutral-700">This is open-ended thinking where the individual generates many different answers or ideas for a question. It is essential for producing novel and original ideas and is characterized by fluency, flexibility, originality, and elaboration.</p>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200 max-w-4xl">
+                    <h3 class="text-xl font-semibold text-orange-700 mb-4">The Creative Process</h3>
+                    <p class="text-neutral-700 mb-4">Creative thinking is not a single event but a process involving several distinct stages. This chart visualizes the typical flow, from initial preparation to the final verification of the idea.</p>
+                    <div class="chart-container">
+                        <canvas id="creativeProcessChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-language" class="space-y-6 scroll-mt-32">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">🗣️ Language & Thought</h2>
+                <p class="text-lg text-neutral-600 max-w-3xl">Language is a uniquely human, complex system of symbols and rules used to communicate. Its relationship with thought is a classic topic of debate: Does language determine how we think, or does thought come first?</p>
+
+                <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200 max-w-4xl">
+                    <h3 class="text-xl font-semibold text-orange-700 mb-4">Development of Language</h3>
+                    <p class="text-neutral-700 mb-4">Language acquisition follows a predictable pattern globally, as illustrated in the timeline below. This predictable progression is at the heart of the "Nature vs. Nurture" debate.</p>
+                    <div class="chart-container">
+                        <canvas id="languageDevChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200 max-w-4xl">
+                    <h3 class="text-xl font-semibold text-orange-700 mb-4">Theories of Language Acquisition</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                            <h4 class="font-semibold text-lg text-amber-900">Behaviorist View (Nurture)</h4>
+                            <p class="text-sm font-medium text-neutral-500 mb-1">B.F. Skinner</p>
+                            <p class="text-neutral-600">Believed language is learned via general principles like association (linking words to objects), imitation (copying adults), and reinforcement (rewards for correct sounds).</p>
+                        </div>
+                        <div class="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                            <h4 class="font-semibold text-lg text-amber-900">Nativist View (Nature)</h4>
+                            <p class="text-sm font-medium text-neutral-500 mb-1">Noam Chomsky</p>
+                            <p class="text-neutral-600">Argued that children are born with a "universal grammar," and that language development is largely biological, like physical maturation.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white rounded-lg shadow-sm border border-amber-200 max-w-4xl">
+                    <h3 class="text-xl font-semibold text-orange-700 mb-4">Relationship: Thought & Language</h3>
+                    <div class="space-y-3">
+                        <div class="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                            <h4 class="font-semibold text-lg text-amber-900">Linguistic Relativity Hypothesis</h4>
+                            <p class="text-sm font-medium text-neutral-500 mb-1">Benjamin Lee Whorf</p>
+                            <p class="text-neutral-600">The view that language determines the content of thought. (Linguistic Determinism is the stronger version).</p>
+                        </div>
+                        <div class="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                            <h4 class="font-semibold text-lg text-amber-900">Thought as Determinant</h4>
+                            <p class="text-sm font-medium text-neutral-500 mb-1">Jean Piaget</p>
+                            <p class="text-neutral-600">Argued that thought precedes language; children must understand a concept *before* they can learn the word for it.</p>
+                        </div>
+                        <div class="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                            <h4 class="font-semibold text-lg text-amber-900">Separate Origins</h4>
+                            <p class="text-sm font-medium text-neutral-500 mb-1">Lev Vygotsky</p>
+                            <p class="text-neutral-600">Believed thought and language develop separately until about age two, after which they merge and become interdependent.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
         </div>
     </main>
+    
+    <!-- Back to Top Button -->
+    <button id="to-top-button" title="Back to Top" class="hidden fixed z-50 bottom-8 right-8 bg-orange-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-orange-700 transition-all duration-200 flex items-center justify-center text-2xl">
+        &uarr;
+    </button>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Service</a>
-                <a href="#support">Support</a>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Inner Peace. All rights reserved. Nurturing minds, one breath at a time.</p>
-            </div>
-        </div>
-    </footer>
 
-    <script src="tooplate-inner-peace-scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Nav Link Active State ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section[id]');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '-35% 0px -65% 0px',
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.remove('bg-amber-100', 'text-orange-800');
+                            link.classList.add('text-stone-700', 'hover:bg-amber-100');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('bg-amber-100', 'text-orange-800');
+                                link.classList.remove('text-stone-700', 'hover:bg-amber-100');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // --- Accordion Logic ---
+            const accordionToggles = document.querySelectorAll('.accordion-toggle');
+            accordionToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const icon = toggle.querySelector('.accordion-icon');
+                    
+                    if (content.classList.contains('hidden')) {
+                        content.classList.remove('hidden');
+                        icon.textContent = '−';
+                    } else {
+                        content.classList.add('hidden');
+                        icon.textContent = '+';
+                    }
+                });
+            });
+
+            // --- Back to Top Button Logic ---
+            const toTopButton = document.getElementById('to-top-button');
+            
+            window.onscroll = () => {
+                if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                    toTopButton.classList.remove('hidden');
+                } else {
+                    toTopButton.classList.add('hidden');
+                }
+            };
+            
+            toTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+
+            // --- Chart.js Initialization ---
+            function initCharts() {
+                const creativeCtx = document.getElementById('creativeProcessChart');
+                if (creativeCtx) {
+                    new Chart(creativeCtx.getContext('2d'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Preparation', 'Incubation', 'Illumination', 'Verification'],
+                            datasets: [{
+                                label: 'Creative Process Stage',
+                                data: [25, 25, 25, 25],
+                                backgroundColor: [
+                                    'rgba(245, 158, 11, 0.2)', // amber-500
+                                    'rgba(217, 119, 6, 0.2)',  // amber-600
+                                    'rgba(249, 115, 22, 0.2)', // orange-500
+                                    'rgba(234, 88, 12, 0.2)'  // orange-600
+                                ],
+                                borderColor: [
+                                    'rgba(245, 158, 11, 1)',
+                                    'rgba(217, 119, 6, 1)',
+                                    'rgba(249, 115, 22, 1)',
+                                    'rgba(234, 88, 12, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                    labels: {
+                                        color: '#44403c' // stone-700
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: true,
+                                }
+                            }
+                        }
+                    });
+                }
+
+                const langDevCtx = document.getElementById('languageDevChart');
+                if (langDevCtx) {
+                    new Chart(langDevCtx.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Crying', 'Cooing (~2m)', 'Babbling (~6m)', 'Echolalia (~9m)', 'One-word (~1y)', 'Two-word (~18m)'],
+                            datasets: [{
+                                label: 'Approximate Age (in months)',
+                                data: [0, 2, 6, 9, 12, 18],
+                                backgroundColor: 'rgba(249, 115, 22, 0.6)', // orange-500
+                                borderColor: 'rgba(249, 115, 22, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Age in Months',
+                                        color: '#57534e' // stone-600
+                                    },
+                                    ticks: { color: '#78716c' }, // stone-500
+                                    grid: { color: '#f5f5f4' } // stone-100
+                                },
+                                x: {
+                                    ticks: { color: '#78716c' }, // stone-500
+                                    grid: { display: false }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    enabled: true,
+                                    callbacks: {
+                                        title: function(context) {
+                                            return context[0].label;
+                                        },
+                                        label: function(context) {
+                                            return `Approx. ${context.raw} months`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            initCharts();
+        });
+    </script>
 </body>
 </html>
