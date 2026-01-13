@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Inner Drive: Motivation & Emotion Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    
+    <!-- Chosen Palette: Calm Harmony
+        Background: Stone-50 (Warm Neutral)
+        Text: Slate-800
+        Primary Accent (Motivation): Amber-600
+        Secondary Accent (Emotion): Indigo-600
+        Tertiary Accent (Wellness): Emerald-600
+    -->
+
+    <!-- Application Structure Plan: 
+        The app is designed as a "Dashboard of the Self," utilizing the report's metaphor of a ship (Wind=Motivation, Sails=Emotion).
+        1. Hero Section: Sets the context with the definitions and the core metaphor.
+        2. "The Engine Room" (Motivation): Focuses on the process. Uses a linear interactive stepper for the Motivational Cycle to make the abstract "Need->Drive" concept concrete.
+        3. "Drive Systems" (Types of Motives): interactive panels distinguishing Biological vs. Psychosocial. Includes a specific "Hunger Simulation" to clarify the LH/VMH brain functions.
+        4. "Navigation Obstacles" (Hierarchy & Conflict): Visualizes Maslow's pyramid (interactive HTML) and Conflict types to help users distinguish between complex psychological hurdles.
+        5. "The Weather Station" (Emotion): Deconstructs the physiology and theories. The "Theory Simulator" is the key interaction here, turning static definitions of James-Lange etc., into dynamic process flows.
+        6. "Control Deck" (Wellness): Uses a Radar Chart to map Emotional Intelligence skills, providing a quantitative visual for a qualitative concept, and clickable cards for management strategies.
+    -->
+
+    <!-- Visualization & Content Choices:
+        1. Motivational Cycle: Goal -> Inform/Process -> Interactive Stepper (JS) -> Visualizes the sequential nature of drive reduction.
+        2. Hunger Regulation: Goal -> Inform/Mechanism -> Switch/Toggle Simulation (JS) -> Shows the binary nature of LH (Start) vs VMH (Stop) centers.
+        3. Maslow's Hierarchy: Goal -> Organize/Rank -> CSS Pyramid (Tailwind) -> Clicking levels reveals details, reinforcing the "bottom-up" satisfaction rule.
+        4. Theories of Emotion: Goal -> Compare/Process -> Dynamic Flow Diagram (JS Text Generation) -> Users select a theory and see the specific order of events (Arousal vs Label vs Feeling).
+        5. Emotional Intelligence: Goal -> Inform/Structure -> Radar Chart (Chart.js) -> Perfect for showing the 4 dimensions (Self/Social x Awareness/Management) as a balanced profile.
+        6. Sources of Power: Goal -> Inform -> Doughnut Chart (Chart.js) -> Shows the four facets of the Need for Power equalized.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        /* Custom Styles for specific interactive elements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        
+        .pyramid-level {
+            transition: all 0.3s ease;
+            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+            cursor: pointer;
+        }
+        
+        /* Specific clip paths for pyramid look */
+        .pyr-1 { clip-path: polygon(50% 0, 50% 0, 60% 100%, 40% 100%); } /* Tip - fake visually */
+        .pyr-top { clip-path: polygon(42% 0, 58% 0, 65% 100%, 35% 100%); }
+        .pyr-mid-top { clip-path: polygon(35% 0, 65% 0, 72% 100%, 28% 100%); }
+        .pyr-mid { clip-path: polygon(28% 0, 72% 0, 79% 100%, 21% 100%); }
+        .pyr-mid-bot { clip-path: polygon(21% 0, 79% 0, 86% 100%, 14% 100%); }
+        .pyr-bot { clip-path: polygon(14% 0, 86% 0, 93% 100%, 7% 100%); }
+
+        .active-step {
+            border-color: #d97706; /* Amber-600 */
+            background-color: #fef3c7; /* Amber-100 */
+            font-weight: bold;
+        }
+        
+        .active-tab {
+            border-bottom: 2px solid #4f46e5;
+            color: #4f46e5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800 antialiased selection:bg-amber-200 selection:text-amber-900">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-indigo-600">
+                        InnerDrive
+                    </span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="scrollToSection('hero')" class="text-stone-600 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition">Home</button>
+                    <button onclick="scrollToSection('motivation')" class="text-stone-600 hover:text-amber-600 px-3 py-2 text-sm font-medium transition">Motivation</button>
+                    <button onclick="scrollToSection('hierarchy')" class="text-stone-600 hover:text-orange-600 px-3 py-2 text-sm font-medium transition">Hierarchy</button>
+                    <button onclick="scrollToSection('emotion')" class="text-stone-600 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition">Emotion</button>
+                    <button onclick="scrollToSection('wellness')" class="text-stone-600 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition">Wellness</button>
+                </div>
+                <!-- Mobile menu button stub -->
+                <div class="flex items-center md:hidden">
+                    <button class="text-stone-600 hover:text-stone-900 focus:outline-none">
+                        <span class="text-2xl">☰</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- HERO SECTION -->
+        <section id="hero" class="text-center py-10 bg-white rounded-3xl shadow-sm border border-stone-100">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-stone-900 mb-6 tracking-tight">
+                The Mechanics of <span class="text-amber-600">Drive</span> & <span class="text-indigo-600">Feeling</span>
+            </h1>
+            <p class="max-w-3xl mx-auto text-lg text-stone-600 leading-relaxed mb-8">
+                To understand human experience, we must look at how behavior is energized and regulated. 
+                Imagine a ship: <span class="font-bold text-amber-600">Motivation</span> is the wind—the force that moves you. 
+                <span class="font-bold text-indigo-600">Emotion</span> acts as the sails—catching that energy and adjusting to the changing environment.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <div class="p-6 bg-amber-50 rounded-xl border border-amber-100">
+                    <h3 class="font-bold text-amber-800 text-xl mb-2">Motivation</h3>
+                    <p class="text-sm text-amber-900">Derived from <em>movere</em>. The internal force of instincts, drives, needs, and goals that predicts behavior.</p>
+                </div>
+                <div class="p-6 bg-indigo-50 rounded-xl border border-indigo-100">
+                    <h3 class="font-bold text-indigo-800 text-xl mb-2">Emotion</h3>
+                    <p class="text-sm text-indigo-900">A subjective pattern of physiological arousal, feelings, and cognitive labels that moves us physically and psychologically.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MOTIVATION SECTION -->
+        <section id="motivation" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-stone-800 border-l-4 border-amber-500 pl-4">The Engine Room: Motivation</h2>
+                <p class="mt-4 text-stone-600">
+                    Motivation allows for the prediction of behavior. It follows a cyclical process to restore balance (homeostasis) and is driven by both biological necessities and psychosocial desires.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- The Motivational Cycle -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+                    <h3 class="text-xl font-semibold text-stone-800 mb-6 flex items-center">
+                        <span class="bg-amber-100 text-amber-600 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">↻</span>
+                        The Motivational Cycle
+                    </h3>
+                    
+                    <!-- Cycle Visualizer -->
+                    <div class="relative">
+                        <div class="flex flex-wrap justify-between items-center mb-8 relative z-10">
+                            <!-- Steps generated by JS -->
+                            <button onclick="setCycleStep(0)" id="step-0" class="step-btn w-full md:w-auto mb-2 px-4 py-2 rounded-lg border-2 border-stone-200 text-stone-500 font-semibold hover:bg-stone-50 transition text-center">1. Need</button>
+                            <span class="hidden md:block text-stone-300 text-xl">➔</span>
+                            <button onclick="setCycleStep(1)" id="step-1" class="step-btn w-full md:w-auto mb-2 px-4 py-2 rounded-lg border-2 border-stone-200 text-stone-500 font-semibold hover:bg-stone-50 transition text-center">2. Drive</button>
+                            <span class="hidden md:block text-stone-300 text-xl">➔</span>
+                            <button onclick="setCycleStep(2)" id="step-2" class="step-btn w-full md:w-auto mb-2 px-4 py-2 rounded-lg border-2 border-stone-200 text-stone-500 font-semibold hover:bg-stone-50 transition text-center">3. Arousal</button>
+                            <span class="hidden md:block text-stone-300 text-xl">➔</span>
+                            <button onclick="setCycleStep(3)" id="step-3" class="step-btn w-full md:w-auto mb-2 px-4 py-2 rounded-lg border-2 border-stone-200 text-stone-500 font-semibold hover:bg-stone-50 transition text-center">4. Goal</button>
+                            <span class="hidden md:block text-stone-300 text-xl">➔</span>
+                            <button onclick="setCycleStep(4)" id="step-4" class="step-btn w-full md:w-auto mb-2 px-4 py-2 rounded-lg border-2 border-stone-200 text-stone-500 font-semibold hover:bg-stone-50 transition text-center">5. Balance</button>
+                        </div>
+
+                        <!-- Dynamic Content Area -->
+                        <div id="cycle-content" class="bg-stone-50 p-6 rounded-xl border border-stone-200 min-h-[160px] transition-all duration-300">
+                            <!-- Content injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Biological Motives Control Panel -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-stone-200 flex flex-col">
+                    <h3 class="text-xl font-semibold text-stone-800 mb-4 flex items-center">
+                        <span class="bg-red-100 text-red-600 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">🧠</span>
+                        Biological Regulation
+                    </h3>
+                    <p class="text-sm text-stone-500 mb-6">Physiological motives like hunger and thirst are regulated by the hypothalamus.</p>
+                    
+                    <div class="space-y-4 flex-grow">
+                        <!-- Hunger Simulation -->
+                        <div class="border border-stone-200 rounded-lg p-4 hover:shadow-md transition">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-bold text-stone-700">Hunger System</span>
+                                <span id="hunger-status" class="text-xs font-mono bg-stone-200 px-2 py-1 rounded">RESTING</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="triggerHypothalamus('LH')" class="bg-green-100 hover:bg-green-200 text-green-800 py-2 rounded text-sm font-medium transition">
+                                    Stimulate LH<br><span class="text-xs opacity-75">(Lateral Hypothalamus)</span>
+                                </button>
+                                <button onclick="triggerHypothalamus('VMH')" class="bg-red-100 hover:bg-red-200 text-red-800 py-2 rounded text-sm font-medium transition">
+                                    Stimulate VMH<br><span class="text-xs opacity-75">(Ventro-Medial)</span>
+                                </button>
+                            </div>
+                            <p id="hunger-output" class="mt-3 text-sm text-stone-600 italic border-l-2 border-stone-300 pl-3">
+                                System awaiting input...
+                            </p>
+                        </div>
+
+                        <!-- Thirst & Sex Cards -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-blue-50 p-3 rounded-lg">
+                                <h4 class="font-bold text-blue-800 text-sm">Thirst</h4>
+                                <p class="text-xs text-blue-900 mt-1">Cellular-dehydration. Osmoreceptors in anterior hypothalamus detect water loss.</p>
+                            </div>
+                            <div class="bg-pink-50 p-3 rounded-lg">
+                                <h4 class="font-bold text-pink-800 text-sm">Sex Drive</h4>
+                                <p class="text-xs text-pink-900 mt-1">Non-survival. Gonads (hormones) + Cultural learning.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Psychosocial Motives -->
+            <div class="mt-8 bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+                 <h3 class="text-xl font-semibold text-stone-800 mb-6 flex items-center">
+                    <span class="bg-indigo-100 text-indigo-600 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">🤝</span>
+                    Psychosocial Motives
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-100 hover:border-indigo-200 transition">
+                        <div class="font-bold text-indigo-700 mb-2">Need for Affiliation</div>
+                        <p class="text-sm text-stone-600">Seeking company and friendly relationships. Intensifies during threat or happiness.</p>
+                    </div>
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-100 hover:border-indigo-200 transition">
+                        <div class="font-bold text-indigo-700 mb-2">Need for Achievement (n-Ach)</div>
+                        <p class="text-sm text-stone-600">The drive to meet standards of excellence. Preference for moderately difficult tasks and feedback.</p>
+                    </div>
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-100 hover:border-indigo-200 transition">
+                        <div class="font-bold text-indigo-700 mb-2">Curiosity</div>
+                        <p class="text-sm text-stone-600">Innate tendency to seek novel experiences and sensory stimulation without a specific goal.</p>
+                    </div>
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-100 hover:border-indigo-200 transition">
+                        <div class="font-bold text-indigo-700 mb-2">Need for Power</div>
+                        <p class="text-sm text-stone-600 mb-2">Desire to control or influence.</p>
+                         <div class="chart-container" style="height: 120px;">
+                            <canvas id="powerChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HIERARCHY & CONFLICT SECTION -->
+        <section id="hierarchy" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-stone-800 border-l-4 border-orange-500 pl-4">Hierarchy & Blockages</h2>
+                <p class="mt-4 text-stone-600">Motivations are often prioritized, as in Maslow's pyramid. When these motives are blocked or opposed, frustration and conflict arise.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                
+                <!-- Maslow's Pyramid Interactive -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 flex flex-col items-center">
+                    <h3 class="text-xl font-semibold text-stone-800 mb-4 w-full text-center">Maslow's Hierarchy of Needs</h3>
+                    <p class="text-xs text-stone-500 mb-6 text-center">Click a level to reveal its definition.</p>
+                    
+                    <div class="relative w-full max-w-sm h-64 flex flex-col justify-end items-center space-y-1">
+                        <!-- Pyramid Levels (CSS Shapes) -->
+                        <div onclick="showMaslow('self')" class="pyramid-level pyr-top w-full h-12 bg-orange-200 hover:bg-orange-300 flex items-center justify-center text-xs font-bold text-orange-900 shadow-sm z-50">Self-Actualisation</div>
+                        <div onclick="showMaslow('esteem')" class="pyramid-level pyr-mid-top w-full h-12 bg-amber-200 hover:bg-amber-300 flex items-center justify-center text-xs font-bold text-amber-900 shadow-sm z-40">Esteem</div>
+                        <div onclick="showMaslow('love')" class="pyramid-level pyr-mid w-full h-12 bg-yellow-200 hover:bg-yellow-300 flex items-center justify-center text-xs font-bold text-yellow-900 shadow-sm z-30">Belongingness</div>
+                        <div onclick="showMaslow('safety')" class="pyramid-level pyr-mid-bot w-full h-12 bg-lime-200 hover:bg-lime-300 flex items-center justify-center text-xs font-bold text-lime-900 shadow-sm z-20">Safety</div>
+                        <div onclick="showMaslow('physio')" class="pyramid-level pyr-bot w-full h-12 bg-emerald-200 hover:bg-emerald-300 flex items-center justify-center text-xs font-bold text-emerald-900 shadow-sm z-10">Physiological</div>
+                    </div>
+
+                    <div id="maslow-info" class="mt-6 w-full bg-orange-50 p-4 rounded-lg border border-orange-100 text-center min-h-[100px] flex items-center justify-center">
+                        <p class="text-stone-700">Select a level of the pyramid to understand the progression of needs.</p>
+                    </div>
+                </div>
+
+                <!-- Conflict & Frustration -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+                    <h3 class="text-xl font-semibold text-stone-800 mb-6">Conflict & Frustration</h3>
+                    
+                    <!-- Frustration Tabs -->
+                    <div class="mb-6">
+                        <h4 class="font-bold text-stone-700 mb-2">Frustration Responses</h4>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="text-center p-2 bg-stone-100 rounded text-sm text-stone-600">Aggression</div>
+                            <div class="text-center p-2 bg-stone-100 rounded text-sm text-stone-600">Fixation</div>
+                            <div class="text-center p-2 bg-stone-100 rounded text-sm text-stone-600">Escape</div>
+                        </div>
+                    </div>
+
+                    <h4 class="font-bold text-stone-700 mb-3">Types of Conflict</h4>
+                    <div class="space-y-3">
+                        <div class="group cursor-pointer" onclick="toggleConflict('approach-approach')">
+                            <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100 hover:bg-green-100 transition">
+                                <div class="flex items-center">
+                                    <span class="text-xl mr-3">😍 ↔️ 😍</span>
+                                    <span class="font-semibold text-green-900">Approach-Approach</span>
+                                </div>
+                                <span class="text-green-600 text-sm">Info ▾</span>
+                            </div>
+                            <div id="conflict-approach-approach" class="hidden p-3 text-sm text-stone-600 bg-white border-x border-b border-green-100 rounded-b-lg">
+                                Choosing between two positive options. Usually the easiest to resolve (e.g., choosing between pizza or burgers).
+                            </div>
+                        </div>
+
+                        <div class="group cursor-pointer" onclick="toggleConflict('avoidance-avoidance')">
+                            <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100 hover:bg-red-100 transition">
+                                <div class="flex items-center">
+                                    <span class="text-xl mr-3">🤢 ↔️ 🤢</span>
+                                    <span class="font-semibold text-red-900">Avoidance-Avoidance</span>
+                                </div>
+                                <span class="text-red-600 text-sm">Info ▾</span>
+                            </div>
+                            <div id="conflict-avoidance-avoidance" class="hidden p-3 text-sm text-stone-600 bg-white border-x border-b border-red-100 rounded-b-lg">
+                                Choosing between two negative options. Leads to vacillation or escape (e.g., doing homework you hate or failing the class).
+                            </div>
+                        </div>
+
+                        <div class="group cursor-pointer" onclick="toggleConflict('approach-avoidance')">
+                            <div class="flex items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-100 hover:bg-amber-100 transition">
+                                <div class="flex items-center">
+                                    <span class="text-xl mr-3">😍 ↔️ 🤢</span>
+                                    <span class="font-semibold text-amber-900">Approach-Avoidance</span>
+                                </div>
+                                <span class="text-amber-600 text-sm">Info ▾</span>
+                            </div>
+                            <div id="conflict-approach-avoidance" class="hidden p-3 text-sm text-stone-600 bg-white border-x border-b border-amber-100 rounded-b-lg">
+                                A single goal has both positive and negative traits. Causes ambivalence (e.g., a high-paying job with terrible hours).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EMOTION SECTION -->
+        <section id="emotion" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-stone-800 border-l-4 border-indigo-500 pl-4">The Architecture of Emotion</h2>
+                <p class="mt-4 text-stone-600">Emotion involves physiological arousal, feelings (pleasure/pain), and cognitive labels. It is regulated by the nervous system and interpreted through various theoretical frameworks.</p>
+            </div>
+
+            <!-- Theory Simulator -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-indigo-900">Emotion Theory Simulator</h3>
+                        <p class="text-sm text-stone-500">Select a theory to see how it processes the event: "Seeing a Bear".</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 space-x-2">
+                        <button onclick="simulateTheory('jl')" class="px-3 py-1 bg-stone-100 hover:bg-indigo-100 text-stone-700 hover:text-indigo-800 rounded text-sm transition font-medium">James-Lange</button>
+                        <button onclick="simulateTheory('cb')" class="px-3 py-1 bg-stone-100 hover:bg-indigo-100 text-stone-700 hover:text-indigo-800 rounded text-sm transition font-medium">Cannon-Bard</button>
+                        <button onclick="simulateTheory('ss')" class="px-3 py-1 bg-stone-100 hover:bg-indigo-100 text-stone-700 hover:text-indigo-800 rounded text-sm transition font-medium">Schachter-Singer</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-8 min-h-[200px] flex items-center justify-center relative overflow-hidden">
+                    <div id="theory-display" class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 w-full justify-center transition-all">
+                        <div class="text-stone-400 italic">Select a theory to start simulation...</div>
+                    </div>
+                </div>
+                <div id="theory-desc" class="mt-4 text-sm text-stone-600 bg-indigo-50 p-3 rounded-lg border border-indigo-100 hidden">
+                    <!-- populated by js -->
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Physiological Bases -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+                    <h3 class="text-lg font-bold text-stone-800 mb-4">Physiological Bases</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start">
+                            <div class="bg-indigo-100 p-2 rounded mr-3 text-xl">⚡</div>
+                            <div>
+                                <h4 class="font-bold text-stone-700">Autonomic Nervous System</h4>
+                                <p class="text-xs text-stone-500">Regulates "Fight or Flight" (Sympathetic) and calm restoration (Parasympathetic).</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-indigo-100 p-2 rounded mr-3 text-xl">🧠</div>
+                            <div>
+                                <h4 class="font-bold text-stone-700">Limbic System (Amygdala)</h4>
+                                <p class="text-xs text-stone-500">Center for emotional memory and control.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-indigo-100 p-2 rounded mr-3 text-xl">📡</div>
+                            <div>
+                                <h4 class="font-bold text-stone-700">Thalamus</h4>
+                                <p class="text-xs text-stone-500">Sensory relay station.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expression & Culture -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+                    <h3 class="text-lg font-bold text-stone-800 mb-4">Expression & Culture</h3>
+                    <ul class="list-disc list-inside text-sm text-stone-600 space-y-2">
+                        <li><strong>Universal Emotions:</strong> Joy, Fear, etc. are recognized globally.</li>
+                        <li><strong>Display Rules:</strong> Cultural norms dictate <em>when</em> and <em>how</em> to show emotion.</li>
+                        <li><strong>Non-verbal Channels:</strong>
+                            <ul class="list-none pl-4 pt-1 space-y-1 text-xs text-stone-500">
+                                <li>• Paralanguage (Tone/Pitch)</li>
+                                <li>• Facial Expressions</li>
+                                <li>• Kinetic (Gestures)</li>
+                                <li>• Proximal (Distance)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- WELLNESS SECTION -->
+        <section id="wellness" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-stone-800 border-l-4 border-emerald-500 pl-4">Management & Wellness</h2>
+                <p class="mt-4 text-stone-600">Managing negative emotions is vital for health. Emotional Intelligence (EQ) and positive psychology offer tools for resilience.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- EQ Chart -->
+                <div class="lg:col-span-6 bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+                    <h3 class="text-xl font-semibold text-stone-800 mb-4">Emotional Intelligence (EQ)</h3>
+                    <p class="text-sm text-stone-500 mb-4">The ability to monitor emotions to guide thinking and action.</p>
+                    <div class="chart-container">
+                        <canvas id="eqChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Management Tools -->
+                <div class="lg:col-span-6 space-y-4">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200">
+                        <h4 class="font-bold text-stone-800 text-lg mb-2">Anger Management</h4>
+                        <p class="text-sm text-stone-600">Anger is often a self-induced choice based on thoughts. Control it by avoiding "self-talk that burns" and reframing the situation.</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200">
+                        <h4 class="font-bold text-stone-800 text-lg mb-2">Handling Anxiety</h4>
+                        <div class="grid grid-cols-2 gap-4 mt-2">
+                            <div class="bg-emerald-50 p-3 rounded border border-emerald-100">
+                                <span class="block font-bold text-emerald-800 text-sm">Monitoring</span>
+                                <span class="text-xs text-emerald-900">Preparation & Rehearsal</span>
+                            </div>
+                            <div class="bg-emerald-50 p-3 rounded border border-emerald-100">
+                                <span class="block font-bold text-emerald-800 text-sm">Blunting</span>
+                                <span class="text-xs text-emerald-900">Relaxation & Exercise</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200">
+                        <h4 class="font-bold text-stone-800 text-lg mb-2">Positive Psychology</h4>
+                        <p class="text-sm text-stone-600">Focuses on enhancing positive states like hope, optimism, and gratitude to improve overall well-being and coping mechanisms.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center text-stone-400 text-sm py-12 border-t border-stone-200 mt-12">
+            <p>Interactive dashboard based on source report on Motivation & Emotion.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // --- Motivational Cycle Logic ---
+        const cycleSteps = [
+            { title: "Need", desc: "A state of deficit (e.g., lack of food/water). The starting point of the cycle." },
+            { title: "Drive", desc: "A state of tension triggered by the need. This tension compels activity." },
+            { title: "Arousal", desc: "Increased physiological activity and readiness to act." },
+            { title: "Goal-Directed Behavior", desc: "Specific actions taken to satisfy the need and reduce tension." },
+            { title: "Balance (Homeostasis)", desc: "The goal is achieved, arousal is reduced, and the organism returns to a steady state." }
+        ];
+
+        function setCycleStep(index) {
+            // Update buttons
+            document.querySelectorAll('.step-btn').forEach((btn, idx) => {
+                if (idx === index) {
+                    btn.classList.add('active-step', 'text-amber-800', 'border-amber-300');
+                    btn.classList.remove('text-stone-500', 'border-stone-200');
+                } else {
+                    btn.classList.remove('active-step', 'text-amber-800', 'border-amber-300');
+                    btn.classList.add('text-stone-500', 'border-stone-200');
+                }
+            });
+
+            // Update Content with animation
+            const contentDiv = document.getElementById('cycle-content');
+            contentDiv.style.opacity = 0;
+            
+            setTimeout(() => {
+                contentDiv.innerHTML = `
+                    <h4 class="text-lg font-bold text-stone-800 mb-2">${cycleSteps[index].title}</h4>
+                    <p class="text-stone-600">${cycleSteps[index].desc}</p>
+                `;
+                contentDiv.style.opacity = 1;
+            }, 300);
+        }
+
+        // Initialize Step 0
+        setCycleStep(0);
+
+        // --- Hunger Simulation Logic ---
+        function triggerHypothalamus(part) {
+            const statusEl = document.getElementById('hunger-status');
+            const outputEl = document.getElementById('hunger-output');
+
+            if (part === 'LH') {
+                statusEl.textContent = "EATING...";
+                statusEl.className = "text-xs font-mono bg-green-100 text-green-800 px-2 py-1 rounded animate-pulse";
+                outputEl.innerHTML = "<strong>Lateral Hypothalamus (Excitatory) Activated:</strong><br> Signal sent to START eating. The organism perceives hunger.";
+            } else {
+                statusEl.textContent = "SATIATED";
+                statusEl.className = "text-xs font-mono bg-red-100 text-red-800 px-2 py-1 rounded";
+                outputEl.innerHTML = "<strong>Ventro-Medial Hypothalamus (Inhibitory) Activated:</strong><br> Signal sent to STOP eating. The organism feels full.";
+            }
+        }
+
+        // --- Maslow Logic ---
+        const maslowData = {
+            'self': "<strong>Self-Actualisation:</strong> The realization of one's full potential. The peak of the pyramid, pursued only after other needs are met.",
+            'esteem': "<strong>Esteem Needs:</strong> The need for achievement, status, responsibility, and reputation.",
+            'love': "<strong>Belongingness & Love:</strong> The need for friendship, intimacy, family, and a sense of connection.",
+            'safety': "<strong>Safety Needs:</strong> Security, safety, law, stability, and freedom from fear.",
+            'physio': "<strong>Physiological Needs:</strong> Basic survival needs: air, water, food, shelter, sleep, clothing, reproduction."
+        };
+
+        function showMaslow(level) {
+            document.getElementById('maslow-info').innerHTML = `<p class="text-stone-700 fade-in">${maslowData[level]}</p>`;
+        }
+
+        // --- Conflict Toggle Logic ---
+        function toggleConflict(id) {
+            const el = document.getElementById('conflict-' + id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        // --- Theory Simulator Logic ---
+        function simulateTheory(type) {
+            const display = document.getElementById('theory-display');
+            const desc = document.getElementById('theory-desc');
+            desc.classList.remove('hidden');
+            
+            let html = '';
+            let description = '';
+
+            const bearBox = `<div class="bg-stone-800 text-white p-3 rounded shadow-lg text-center w-32"><span class="text-2xl block">🐻</span>See Bear</div>`;
+            const arrow = `<div class="text-stone-400 text-2xl font-bold">→</div>`;
+            const bodyBox = `<div class="bg-blue-100 text-blue-900 p-3 rounded shadow-md text-center w-32 border border-blue-200"><span class="text-xl block">💓</span>Heart Races</div>`;
+            const emotionBox = `<div class="bg-indigo-600 text-white p-3 rounded shadow-md text-center w-32"><span class="text-xl block">😱</span>Feel Fear</div>`;
+            const brainBox = `<div class="bg-purple-100 text-purple-900 p-3 rounded shadow-md text-center w-32 border border-purple-200"><span class="text-xl block">🧠</span>Thalamus</div>`;
+            const labelBox = `<div class="bg-amber-100 text-amber-900 p-3 rounded shadow-md text-center w-32 border border-amber-200"><span class="text-sm block font-bold">Cognitive Label</span>'This is scary!'</div>`;
+
+            if (type === 'jl') {
+                // James-Lange: Stimulus -> Arousal -> Emotion
+                html = `${bearBox} ${arrow} ${bodyBox} ${arrow} ${emotionBox}`;
+                description = "<strong>James-Lange Theory:</strong> We feel emotion <em>after</em> we notice our physiological response. \"I am afraid because my heart is racing.\"";
+            } else if (type === 'cb') {
+                // Cannon-Bard: Stimulus -> Brain -> (Arousal + Emotion)
+                html = `
+                    ${bearBox} ${arrow} ${brainBox} 
+                    <div class="flex flex-col items-center justify-center mx-2">
+                        <div class="text-stone-400 text-2xl font-bold mb-1">↗</div>
+                        <div class="text-stone-400 text-2xl font-bold mt-1">↘</div>
+                    </div>
+                    <div class="flex flex-col space-y-2">
+                        ${bodyBox}
+                        ${emotionBox}
+                    </div>
+                `;
+                description = "<strong>Cannon-Bard Theory:</strong> The brain sends signals to the cortex (emotion) and body (arousal) <em>simultaneously</em>. They happen at the same time.";
+            } else if (type === 'ss') {
+                // Two-Factor: Stimulus -> Arousal -> Label -> Emotion
+                html = `${bearBox} ${arrow} ${bodyBox} ${arrow} ${labelBox} ${arrow} ${emotionBox}`;
+                description = "<strong>Schachter-Singer (Two-Factor):</strong> Emotion requires physical arousal AND a cognitive label based on the environment.";
+            }
+
+            display.innerHTML = html;
+            desc.innerHTML = description;
+        }
+
+
+        // --- Chart.js Implementations ---
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Need for Power Doughnut
+            const ctxPower = document.getElementById('powerChart').getContext('2d');
+            new Chart(ctxPower, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Role Models', 'Internal Mastery', 'Impact on Others', 'Leadership'],
+                    datasets: [{
+                        data: [25, 25, 25, 25],
+                        backgroundColor: ['#e0e7ff', '#c7d2fe', '#818cf8', '#4f46e5'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': Expression of Power';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            // 2. EQ Radar Chart
+            const ctxEQ = document.getElementById('eqChart').getContext('2d');
+            new Chart(ctxEQ, {
+                type: 'radar',
+                data: {
+                    labels: ['Self-Awareness', 'Self-Motivation', 'Social Awareness', 'Social Competence'],
+                    datasets: [{
+                        label: 'Emotional Intelligence Profile',
+                        data: [8, 9, 7, 8], // Illustrative high scores
+                        fill: true,
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)', // Emerald-500 transparent
+                        borderColor: 'rgb(16, 185, 129)',
+                        pointBackgroundColor: 'rgb(16, 185, 129)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(16, 185, 129)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e5e7eb' },
+                            grid: { color: '#e5e7eb' },
+                            pointLabels: {
+                                font: { size: 12, family: "'Segoe UI', sans-serif" },
+                                color: '#4b5563'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10,
+                            ticks: { display: false } // Hide numbers for cleaner look
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const descriptions = [
+                                        "Monitoring own emotions",
+                                        "Intrapersonal skill",
+                                        "Empathy/Interpersonal",
+                                        "Interpersonal skill"
+                                    ];
+                                    return context.label + ": " + descriptions[context.dataIndex];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
