@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Architecture of Self & Personality</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles for Chart Containers */
+        body { font-family: 'Inter', sans-serif; background-color: #fdfbf7; color: #4a4a4a; }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        /* Hide scrollbar for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Interactive Card Transitions */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Tab Active States */
+        .tab-active {
+            border-bottom: 2px solid #d97706; /* amber-600 */
+            color: #b45309; /* amber-700 */
+            font-weight: 600;
+        }
+        .tab-inactive {
+            color: #78716c; /* stone-500 */
+        }
+        .tab-inactive:hover {
+            color: #44403c; /* stone-700 */
+        }
+
+        /* Iceberg Visualization Styles */
+        .iceberg-level {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .iceberg-level:hover {
+            opacity: 0.9;
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals & Earth Tones (Stone, Amber, Teal) -->
+    <!-- Application Structure Plan: Dashboard-style thematic sections. 
+         1. Hero: Overview. 
+         2. The Self Construct: Tabbed interface for definitions, kinds, and cultural comparison.
+         3. Personality Architect: Grid for Type theories (filterable) & Radar Chart for Trait theories (Big Five).
+         4. The Depths: Interactive visuals for Psychodynamics (Freud).
+         5. Assessment Lab: Interactive list for measuring personality.
+         Why: Breaks dense theory into digestible modules. Prioritizes comparison (Traits) and structure (Psychodynamics).
+    -->
+    <!-- Visualization & Content Choices:
+         1. Big Five Radar Chart: Goal -> Compare traits. Viz -> Chart.js Radar. Interaction -> Toggle Profiles. Justification -> Perfect for showing multi-dimensional data.
+         2. Type Cards: Goal -> Inform about diverse theories. Viz -> Grid. Interaction -> Click to expand details. Justification -> Handles many small data points cleanly.
+         3. Freud's Structure: Goal -> Explain hierarchy. Viz -> HTML/CSS Stacked layout. Interaction -> Click levels to see Id/Ego/Superego. Justification -> Visual metaphor for 'depth'.
+         4. Assessment List: Goal -> Organize methods. Viz -> Styled List. Interaction -> Hover context.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-amber-700 tracking-tight">Psyche<span class="text-stone-600 font-light">Map</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="scrollToSection('hero')" class="text-stone-600 hover:text-amber-700 transition-colors text-sm font-medium">Home</button>
+                    <button onclick="scrollToSection('self-section')" class="text-stone-600 hover:text-amber-700 transition-colors text-sm font-medium">The Self</button>
+                    <button onclick="scrollToSection('personality-section')" class="text-stone-600 hover:text-amber-700 transition-colors text-sm font-medium">Personality Types</button>
+                    <button onclick="scrollToSection('traits-section')" class="text-stone-600 hover:text-amber-700 transition-colors text-sm font-medium">Traits (Big 5)</button>
+                    <button onclick="scrollToSection('freud-section')" class="text-stone-600 hover:text-amber-700 transition-colors text-sm font-medium">Psychodynamics</button>
+                </div>
+                <!-- Mobile menu button placeholder (simplified) -->
+                <div class="md:hidden text-amber-700 font-bold">
+                    ☰
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- Hero Section -->
+        <section id="hero" class="text-center py-12 bg-white rounded-2xl shadow-sm border border-stone-100">
+            <h1 class="text-4xl md:text-5xl font-bold text-stone-800 mb-4">The Architecture of <span class="text-amber-600">You</span></h1>
+            <p class="max-w-3xl mx-auto text-lg text-stone-600 leading-relaxed mb-8">
+                Explore the psychological frameworks that define human existence. From the cognitive construct of "Self" to the enduring patterns of "Personality," discover how science maps the complexity of who we are.
+            </p>
+            <div class="flex justify-center gap-4">
+                <button onclick="scrollToSection('self-section')" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-sm">
+                    Explore The Self
+                </button>
+                <button onclick="scrollToSection('personality-section')" class="bg-stone-200 hover:bg-stone-300 text-stone-700 px-6 py-3 rounded-lg font-medium transition-colors">
+                    Analyze Personality
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 1: THE SELF -->
+        <section id="self-section" class="scroll-mt-24">
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-stone-800 mb-2">The Construct of Self</h2>
+                <p class="text-stone-600">The "Self" is the totality of your conscious experience. This section breaks down how we perceive ourselves, from biological roots to cultural influences.</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+                <!-- Tabs -->
+                <div class="flex border-b border-stone-200 bg-stone-50 overflow-x-auto no-scrollbar">
+                    <button onclick="switchTab('self', 'definition')" id="tab-self-definition" class="tab-active px-6 py-4 text-sm font-medium whitespace-nowrap focus:outline-none">Definition & Dual Status</button>
+                    <button onclick="switchTab('self', 'kinds')" id="tab-self-kinds" class="tab-inactive px-6 py-4 text-sm font-medium whitespace-nowrap focus:outline-none">Kinds of Self</button>
+                    <button onclick="switchTab('self', 'cognitive')" id="tab-self-cognitive" class="tab-inactive px-6 py-4 text-sm font-medium whitespace-nowrap focus:outline-none">Cognitive Aspects</button>
+                    <button onclick="switchTab('self', 'culture')" id="tab-self-culture" class="tab-inactive px-6 py-4 text-sm font-medium whitespace-nowrap focus:outline-none">Culture & Self</button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="p-6 md:p-8 min-h-[300px]">
+                    
+                    <!-- Definition Content -->
+                    <div id="content-self-definition" class="block animate-fade-in">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-xl font-bold text-stone-800 mb-4">Subject vs. Object</h3>
+                                <p class="text-stone-600 mb-6 leading-relaxed">The self is unique because it is both the observer and the observed.</p>
+                                <div class="space-y-4">
+                                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4">
+                                        <h4 class="font-bold text-amber-800">Self as Subject (The Knower)</h4>
+                                        <p class="text-sm text-stone-700 mt-1">The entity that acts. <br><span class="italic text-stone-500">Example: "I am a dancer."</span></p>
+                                    </div>
+                                    <div class="bg-teal-50 border-l-4 border-teal-500 p-4">
+                                        <h4 class="font-bold text-teal-800">Self as Object (The Known)</h4>
+                                        <p class="text-sm text-stone-700 mt-1">The entity that is observed or affected. <br><span class="italic text-stone-500">Example: "I am easily hurt."</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-stone-100 p-6 rounded-lg text-center">
+                                <h3 class="text-lg font-semibold mb-4 text-stone-700">Identity Spectrum</h3>
+                                <div class="flex flex-col gap-4">
+                                    <div class="bg-white p-4 rounded shadow-sm">
+                                        <span class="block font-bold text-indigo-600 text-lg">Personal Identity</span>
+                                        <span class="text-sm text-stone-500">Attributes that make you unique.</span>
+                                        <div class="mt-2 text-xs text-stone-400">Name, Capabilities, Qualities</div>
+                                    </div>
+                                    <div class="h-8 border-l-2 border-dashed border-stone-300 mx-auto"></div>
+                                    <div class="bg-white p-4 rounded shadow-sm">
+                                        <span class="block font-bold text-rose-600 text-lg">Social Identity</span>
+                                        <span class="text-sm text-stone-500">Links to cultural/social groups.</span>
+                                        <div class="mt-2 text-xs text-stone-400">Religion, Caste, Region</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kinds Content -->
+                    <div id="content-self-kinds" class="hidden animate-fade-in">
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="bg-red-50 p-6 rounded-xl border border-red-100">
+                                <div class="text-3xl mb-3">🧬</div>
+                                <h3 class="font-bold text-red-800 mb-2">Biological Self</h3>
+                                <p class="text-sm text-stone-600">The most primitive layer. Develops first based on reflexes and physiological needs like hunger. It is later modified by the environment.</p>
+                            </div>
+                            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                                <div class="text-3xl mb-3">👤</div>
+                                <h3 class="font-bold text-blue-800 mb-2">Personal Self</h3>
+                                <p class="text-sm text-stone-600">Focuses on individual psychological concerns: personal freedom, responsibility, achievement, and comfort.</p>
+                            </div>
+                            <div class="bg-green-50 p-6 rounded-xl border border-green-100">
+                                <div class="text-3xl mb-3">🤝</div>
+                                <h3 class="font-bold text-green-800 mb-2">Social Self</h3>
+                                <p class="text-sm text-stone-600">Emerges through interaction. Values cooperation, sacrifice, unity, and sharing. Often called familial or relational self.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cognitive Content -->
+                    <div id="content-self-cognitive" class="hidden animate-fade-in">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-xl font-bold mb-4">Key Constructs</h3>
+                                <ul class="space-y-4">
+                                    <li class="p-4 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-colors" onclick="alert('Self-Concept: Our perception of our own competencies (e.g., athletic vs academic).')">
+                                        <strong class="text-amber-700">Self-Concept</strong>
+                                        <p class="text-sm text-stone-600">How we perceive ourselves and our competencies.</p>
+                                    </li>
+                                    <li class="p-4 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-colors" onclick="alert('Self-Efficacy: Belief in ability to control life outcomes. High efficacy = less fear.')">
+                                        <strong class="text-amber-700">Self-Efficacy (Bandura)</strong>
+                                        <p class="text-sm text-stone-600">Belief in one's ability to control life outcomes.</p>
+                                    </li>
+                                    <li class="p-4 bg-stone-50 rounded-lg cursor-pointer hover:bg-stone-100 transition-colors" onclick="alert('Self-Regulation: Monitoring own behavior. Includes self-control and delay of gratification.')">
+                                        <strong class="text-amber-700">Self-Regulation</strong>
+                                        <p class="text-sm text-stone-600">Organizing and monitoring one's own behavior.</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bg-stone-800 text-white p-6 rounded-xl">
+                                <h4 class="text-lg font-bold text-amber-400 mb-2">Focus: Self-Esteem</h4>
+                                <p class="text-sm text-stone-300 mb-4">A value judgment of one's own worth. By age 6-7, it forms in four distinct areas:</p>
+                                <div class="grid grid-cols-2 gap-3 mb-6">
+                                    <div class="bg-stone-700 p-2 text-center rounded text-xs">Academic Competence</div>
+                                    <div class="bg-stone-700 p-2 text-center rounded text-xs">Social Competence</div>
+                                    <div class="bg-stone-700 p-2 text-center rounded text-xs">Physical Competence</div>
+                                    <div class="bg-stone-700 p-2 text-center rounded text-xs">Physical Appearance</div>
+                                </div>
+                                <div class="text-xs text-stone-400 pt-4 border-t border-stone-700">
+                                    <strong>Impact:</strong> High esteem correlates with performance. Low esteem links to anxiety.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- Culture Content -->
+                     <div id="content-self-culture" class="hidden animate-fade-in">
+                        <div class="flex flex-col md:flex-row gap-0 md:gap-8">
+                            <div class="flex-1 bg-white border-2 border-stone-200 p-6 rounded-t-xl md:rounded-l-xl md:rounded-tr-none text-center">
+                                <h3 class="text-indigo-900 font-bold text-xl mb-2">Western Perspective</h3>
+                                <div class="text-4xl my-4">🧍 | 🌳</div>
+                                <h4 class="font-bold text-stone-700">Individualistic</h4>
+                                <ul class="text-left mt-4 text-sm text-stone-600 space-y-2 list-disc list-inside">
+                                    <li>Rigid boundary between Self and Group.</li>
+                                    <li>Clear dichotomy between Man and Nature.</li>
+                                    <li>Separation of Subject and Object.</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="flex items-center justify-center -my-4 md:-mx-4 z-10">
+                                <div class="bg-stone-200 text-stone-600 rounded-full p-2 text-xs font-bold">VS</div>
+                            </div>
+
+                            <div class="flex-1 bg-amber-50 border-2 border-amber-200 p-6 rounded-b-xl md:rounded-r-xl md:rounded-bl-none text-center">
+                                <h3 class="text-amber-900 font-bold text-xl mb-2">Indian Perspective</h3>
+                                <div class="text-4xl my-4">🧍‍♂️🤝🌍</div>
+                                <h4 class="font-bold text-stone-700">Collectivistic</h4>
+                                <ul class="text-left mt-4 text-sm text-stone-600 space-y-2 list-disc list-inside">
+                                    <li>Shifting boundaries.</li>
+                                    <li>Self expands to fuse with Cosmos/Others.</li>
+                                    <li>Harmonious coexistence of Self and Group.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: PERSONALITY TYPES -->
+        <section id="personality-section" class="scroll-mt-24">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-stone-800 mb-2">Personality Frameworks</h2>
+                    <p class="text-stone-600 max-w-2xl">Personality refers to stable qualities ("mask") characterizing behavior. Use the filter to explore historical approaches.</p>
+                </div>
+                <div class="mt-4 md:mt-0 bg-stone-200 p-1 rounded-lg inline-flex">
+                    <button onclick="filterTypes('all')" id="filter-all" class="px-4 py-1.5 rounded-md text-sm font-medium bg-white shadow text-stone-800">All</button>
+                    <button onclick="filterTypes('ancient')" id="filter-ancient" class="px-4 py-1.5 rounded-md text-sm font-medium text-stone-600 hover:bg-stone-100">Ancient</button>
+                    <button onclick="filterTypes('modern')" id="filter-modern" class="px-4 py-1.5 rounded-md text-sm font-medium text-stone-600 hover:bg-stone-100">Modern</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="types-grid">
+                <!-- Cards injected by JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 3: TRAIT APPROACH (BIG 5) -->
+        <section id="traits-section" class="scroll-mt-24">
+            <div class="bg-stone-900 text-stone-100 rounded-2xl p-6 md:p-10 shadow-xl overflow-hidden relative">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-amber-600 rounded-full filter blur-3xl opacity-10 -mr-16 -mt-16"></div>
+                
+                <h2 class="text-3xl font-bold mb-2 relative z-10">The Big Five (Five-Factor Model)</h2>
+                <p class="text-stone-400 mb-8 max-w-3xl relative z-10 text-sm leading-relaxed">
+                    Considered the most promising empirical approach, this model suggests personality exists along a continuum of five broad dimensions (O.C.E.A.N.). Unlike types, which are distinct categories, traits are degrees of attributes.
+                </p>
+
+                <div class="relative z-10 grid lg:grid-cols-12 gap-8">
+                    
+                    <!-- Left Column: Trait Explorer (O.C.E.A.N) -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="bg-stone-800/50 rounded-xl p-1 border border-stone-700/50 backdrop-blur-sm">
+                            <h4 class="text-xs uppercase tracking-widest text-stone-500 font-bold p-3">Trait Definitions</h4>
+                            <div class="space-y-1">
+                                <button onclick="explainTrait('openness')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-700 transition-all flex items-center gap-3 group focus:bg-stone-700 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                    <span class="bg-stone-800 text-amber-500 font-bold w-8 h-8 flex items-center justify-center rounded group-hover:bg-stone-600 transition-colors">O</span>
+                                    <span class="font-medium text-stone-300 group-hover:text-white">Openness to Experience</span>
+                                </button>
+                                <button onclick="explainTrait('conscientiousness')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-700 transition-all flex items-center gap-3 group focus:bg-stone-700 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                    <span class="bg-stone-800 text-amber-500 font-bold w-8 h-8 flex items-center justify-center rounded group-hover:bg-stone-600 transition-colors">C</span>
+                                    <span class="font-medium text-stone-300 group-hover:text-white">Conscientiousness</span>
+                                </button>
+                                <button onclick="explainTrait('extraversion')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-700 transition-all flex items-center gap-3 group focus:bg-stone-700 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                    <span class="bg-stone-800 text-amber-500 font-bold w-8 h-8 flex items-center justify-center rounded group-hover:bg-stone-600 transition-colors">E</span>
+                                    <span class="font-medium text-stone-300 group-hover:text-white">Extraversion</span>
+                                </button>
+                                <button onclick="explainTrait('agreeableness')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-700 transition-all flex items-center gap-3 group focus:bg-stone-700 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                    <span class="bg-stone-800 text-amber-500 font-bold w-8 h-8 flex items-center justify-center rounded group-hover:bg-stone-600 transition-colors">A</span>
+                                    <span class="font-medium text-stone-300 group-hover:text-white">Agreeableness</span>
+                                </button>
+                                <button onclick="explainTrait('neuroticism')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-700 transition-all flex items-center gap-3 group focus:bg-stone-700 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                    <span class="bg-stone-800 text-amber-500 font-bold w-8 h-8 flex items-center justify-center rounded group-hover:bg-stone-600 transition-colors">N</span>
+                                    <span class="font-medium text-stone-300 group-hover:text-white">Neuroticism</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Description Box -->
+                        <div id="trait-description-box" class="bg-amber-900/20 border border-amber-900/50 p-5 rounded-xl min-h-[120px]">
+                            <h5 id="trait-title" class="text-amber-500 font-bold mb-2">Select a Trait</h5>
+                            <p id="trait-text" class="text-sm text-stone-400">Click the buttons above to explore the detailed definitions of each factor in the model.</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Visualization & Controls -->
+                    <div class="lg:col-span-7 flex flex-col justify-between">
+                         <div class="bg-stone-800 rounded-xl p-4 border border-stone-700 chart-container mx-auto">
+                            <canvas id="bigFiveChart"></canvas>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-3 mt-6">
+                            <button onclick="updateChart('balanced')" class="py-2 px-3 bg-stone-800 hover:bg-stone-700 rounded text-xs text-stone-400 hover:text-white transition-colors border border-stone-700">
+                                Reset Profile
+                            </button>
+                            <button onclick="updateChart('leader')" class="py-2 px-3 bg-stone-800 hover:bg-stone-700 rounded text-xs text-stone-400 hover:text-white transition-colors border border-stone-700">
+                                View "Leader"
+                            </button>
+                            <button onclick="updateChart('creative')" class="py-2 px-3 bg-stone-800 hover:bg-stone-700 rounded text-xs text-stone-400 hover:text-white transition-colors border border-stone-700">
+                                View "Creative"
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: PSYCHODYNAMICS -->
+        <section id="freud-section" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-stone-800 mb-6">Psychodynamics: The Depths</h2>
+            <div class="grid lg:grid-cols-2 gap-8">
+                
+                <!-- The Iceberg Model -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                    <h3 class="font-bold text-lg mb-4 text-center">Freud's Structure of Personality</h3>
+                    <div class="relative h-80 w-full bg-sky-50 rounded-lg overflow-hidden border border-sky-100 flex flex-col items-center justify-end">
+                        <!-- Water Line -->
+                        <div class="absolute top-[30%] w-full h-0.5 bg-blue-300 z-20 border-t border-dashed border-blue-500"></div>
+                        <div class="absolute top-[26%] right-2 text-xs text-blue-600 italic font-medium z-30">Surface (Reality)</div>
+
+                        <!-- Superego (Left) -->
+                        <div onclick="showFreudDetail('superego')" class="absolute left-[10%] top-[10%] w-[30%] h-[80%] bg-yellow-200/80 rounded-tl-3xl rounded-bl-3xl border-2 border-yellow-400 z-10 cursor-pointer hover:bg-yellow-300 transition-colors flex items-center justify-center">
+                            <span class="text-yellow-900 font-bold -rotate-90">Superego (Moral)</span>
+                        </div>
+
+                        <!-- Ego (Center Top) -->
+                        <div onclick="showFreudDetail('ego')" class="absolute left-[42%] top-[5%] w-[20%] h-[35%] bg-blue-200/90 rounded-t-full border-2 border-blue-400 z-10 cursor-pointer hover:bg-blue-300 transition-colors flex items-center justify-center">
+                            <span class="text-blue-900 font-bold">Ego</span>
+                        </div>
+
+                        <!-- Id (Bottom) -->
+                        <div onclick="showFreudDetail('id')" class="absolute left-[42%] top-[42%] w-[40%] h-[55%] bg-red-200/90 rounded-b-3xl rounded-tr-3xl border-2 border-red-400 z-10 cursor-pointer hover:bg-red-300 transition-colors flex items-center justify-center">
+                            <span class="text-red-900 font-bold">Id (Instinct)</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-center mt-3 text-stone-500">Click distinct areas to see definitions</p>
+                    <div id="freud-detail-box" class="mt-4 p-4 bg-stone-100 rounded text-sm text-stone-700 min-h-[5rem]">
+                        Select a part of the structure above to learn more about its function.
+                    </div>
+                </div>
+
+                <!-- Psychosexual Stages -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 flex flex-col">
+                    <h3 class="font-bold text-lg mb-4">Developmental Stages</h3>
+                    <p class="text-sm text-stone-600 mb-4">Fixation at any stage can cause regression or personality issues.</p>
+                    
+                    <div class="space-y-3 flex-grow">
+                        <div class="group relative">
+                            <div class="w-full bg-stone-100 rounded-lg p-3 cursor-pointer hover:bg-amber-50 transition-colors border border-transparent hover:border-amber-200">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-stone-700">Oral Stage</span>
+                                    <span class="text-xs bg-stone-200 px-2 py-1 rounded text-stone-600">Mouth Focus</span>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-1 hidden group-hover:block">Pleasure focused on the mouth.</p>
+                            </div>
+                        </div>
+
+                        <div class="group relative">
+                            <div class="w-full bg-stone-100 rounded-lg p-3 cursor-pointer hover:bg-amber-50 transition-colors border border-transparent hover:border-amber-200">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-stone-700">Anal Stage</span>
+                                    <span class="text-xs bg-stone-200 px-2 py-1 rounded text-stone-600">Control</span>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-1 hidden group-hover:block">Focus on bowel control; Id/Ego conflict.</p>
+                            </div>
+                        </div>
+
+                        <div class="group relative">
+                            <div class="w-full bg-stone-100 rounded-lg p-3 cursor-pointer hover:bg-amber-50 transition-colors border border-transparent hover:border-amber-200">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-stone-700">Phallic Stage</span>
+                                    <span class="text-xs bg-stone-200 px-2 py-1 rounded text-stone-600">Oedipus/Electra</span>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-1 hidden group-hover:block">Focus on genitals. Complex interactions with parents.</p>
+                            </div>
+                        </div>
+
+                        <div class="group relative">
+                            <div class="w-full bg-stone-100 rounded-lg p-3 cursor-pointer hover:bg-amber-50 transition-colors border border-transparent hover:border-amber-200">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-stone-700">Latency Stage</span>
+                                    <span class="text-xs bg-stone-200 px-2 py-1 rounded text-stone-600">Inactive</span>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-1 hidden group-hover:block">Sexual urges inactive; energy channeled into social/academic.</p>
+                            </div>
+                        </div>
+                         <div class="group relative">
+                            <div class="w-full bg-stone-100 rounded-lg p-3 cursor-pointer hover:bg-amber-50 transition-colors border border-transparent hover:border-amber-200">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-stone-700">Genital Stage</span>
+                                    <span class="text-xs bg-stone-200 px-2 py-1 rounded text-stone-600">Maturity</span>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-1 hidden group-hover:block">Maturity in psychosexual development.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Post Freudian Grid (Mini) -->
+            <div class="mt-8 bg-stone-50 p-6 rounded-xl border border-stone-200">
+                <h4 class="font-bold text-stone-700 mb-4">Post-Freudian Evolution</h4>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <div class="font-bold text-amber-700">Jung</div>
+                        <div class="text-xs text-stone-500">Collective Unconscious</div>
+                    </div>
+                     <div class="p-3 bg-white rounded shadow-sm">
+                        <div class="font-bold text-amber-700">Horney</div>
+                        <div class="text-xs text-stone-500">Basic Anxiety</div>
+                    </div>
+                     <div class="p-3 bg-white rounded shadow-sm">
+                        <div class="font-bold text-amber-700">Adler</div>
+                        <div class="text-xs text-stone-500">Inferiority Complex</div>
+                    </div>
+                     <div class="p-3 bg-white rounded shadow-sm">
+                        <div class="font-bold text-amber-700">Fromm</div>
+                        <div class="text-xs text-stone-500">Freedom & Justice</div>
+                    </div>
+                     <div class="p-3 bg-white rounded shadow-sm">
+                        <div class="font-bold text-amber-700">Erikson</div>
+                        <div class="text-xs text-stone-500">Identity Crisis</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: ASSESSMENT LAB -->
+        <section id="assessment-section" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-stone-800 mb-6">Assessment Laboratory</h2>
+            <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+                <div class="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-stone-200">
+                    
+                    <!-- Self-Report -->
+                    <div class="p-6 hover:bg-stone-50 transition-colors">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-amber-100 p-2 rounded text-amber-700">📝</div>
+                            <h3 class="font-bold text-lg">Self-Report</h3>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-4">Subjects answer structured questions. Prone to social desirability bias.</p>
+                        <ul class="text-sm space-y-2">
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">•</span>
+                                <span><strong>MMPI:</strong> Diagnoses psychopathology.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">•</span>
+                                <span><strong>EPQ:</strong> Introversion, Stability, Psychoticism.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">•</span>
+                                <span><strong>16PF:</strong> Career guidance (Source traits).</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Projective -->
+                    <div class="p-6 hover:bg-stone-50 transition-colors">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-indigo-100 p-2 rounded text-indigo-700">🎨</div>
+                            <h3 class="font-bold text-lg">Projective</h3>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-4">Unstructured stimuli to uncover unconscious motives.</p>
+                        <ul class="text-sm space-y-2">
+                            <li class="flex items-start gap-2">
+                                <span class="text-indigo-500 font-bold">•</span>
+                                <span><strong>Rorschach:</strong> Inkblot interpretation.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-indigo-500 font-bold">•</span>
+                                <span><strong>TAT:</strong> Storytelling from pictures.</span>
+                            </li>
+                             <li class="flex items-start gap-2">
+                                <span class="text-indigo-500 font-bold">•</span>
+                                <span><strong>Draw-a-Person:</strong> Omissions indicate issues.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Behavioral -->
+                    <div class="p-6 hover:bg-stone-50 transition-colors">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-emerald-100 p-2 rounded text-emerald-700">👁️</div>
+                            <h3 class="font-bold text-lg">Behavioral</h3>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-4">Direct observation of behavior. Can be structured or unstructured.</p>
+                        <ul class="text-sm space-y-2">
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 font-bold">•</span>
+                                <span><strong>Interview:</strong> Structured or Impressionistic.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 font-bold">•</span>
+                                <span><strong>Observation:</strong> Requires training.</span>
+                            </li>
+                             <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 font-bold">•</span>
+                                <span><strong>Nomination:</strong> Peer assessment.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-800 text-stone-400 py-12 text-center">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-2xl font-bold text-stone-200 mb-4">Psyche<span class="font-light">Map</span></h2>
+            <p class="mb-8 max-w-lg mx-auto text-sm">Interactive visualization based on "Concept of Self" and "Personality" source report. Designed for educational exploration.</p>
+            <div class="text-xs border-t border-stone-700 pt-8">
+                &copy; 2024 Psychology Interactive. No external SVG or Mermaid JS used.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA STORE ---
+        const personalityTypes = [
+            { id: 1, name: "Hippocrates", category: "ancient", desc: "Fluid/Humour based: Sanguine, Phlegmatic, Melancholic, Choleric." },
+            { id: 2, name: "Ayurveda (Tridosha)", category: "ancient", desc: "Temperament (Prakriti) based on humours: Vata, Pitta, Kapha." },
+            { id: 3, name: "Trigunas", category: "ancient", desc: "Attributes: Sattva (Truth), Rajas (Desire), Tamas (Anger)." },
+            { id: 4, name: "Sheldon", category: "modern", desc: "Body Build: Endomorphs (Fat/Relaxed), Mesomorphs (Muscular/Energetic), Ectomorphs (Thin/Brainy)." },
+            { id: 5, name: "Jung", category: "modern", desc: "Introverts (Withdrawn) vs Extraverts (Sociable)." },
+            { id: 6, name: "Friedman & Rosenman", category: "modern", desc: "Type-A (Impatient, Cardiac risk), Type-B (Relaxed), Type-C (Unassertive, Cancer risk), Type-D (Depression)." }
+        ];
+
+        // --- DOM ELEMENTS ---
+        const typesGrid = document.getElementById('types-grid');
+        const freudDetailBox = document.getElementById('freud-detail-box');
+
+        // --- NAVIGATION LOGIC ---
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function switchTab(group, tabId) {
+            // Hide all content in group
+            const contents = document.querySelectorAll(`[id^="content-${group}-"]`);
+            contents.forEach(el => el.classList.add('hidden'));
+            
+            // Deactivate all buttons in group
+            const buttons = document.querySelectorAll(`[id^="tab-${group}-"]`);
+            buttons.forEach(btn => {
+                btn.classList.remove('tab-active', 'border-b-2', 'border-amber-600', 'text-amber-700');
+                btn.classList.add('tab-inactive', 'text-stone-500');
+            });
+
+            // Activate Selected
+            document.getElementById(`content-${group}-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${group}-${tabId}`);
+            activeBtn.classList.remove('tab-inactive', 'text-stone-500');
+            activeBtn.classList.add('tab-active', 'border-b-2', 'border-amber-600', 'text-amber-700');
+        }
+
+        // --- PERSONALITY TYPES RENDERER ---
+        function renderTypes(filter) {
+            typesGrid.innerHTML = '';
+            const filtered = filter === 'all' 
+                ? personalityTypes 
+                : personalityTypes.filter(t => t.category === filter);
+
+            filtered.forEach(type => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-xl shadow-sm border border-stone-200 card-hover cursor-pointer group';
+                card.onclick = () => alert(`Detail for ${type.name}:\n${type.desc}`); // Simple interaction
+                
+                let icon = type.category === 'ancient' ? '📜' : '🧠';
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">${icon}</span>
+                        <span class="text-xs font-bold uppercase tracking-wide text-stone-400 border border-stone-200 px-2 py-0.5 rounded">${type.category}</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-stone-800 mb-2 group-hover:text-amber-700 transition-colors">${type.name}</h3>
+                    <p class="text-sm text-stone-600 leading-relaxed">${type.desc}</p>
+                `;
+                typesGrid.appendChild(card);
+            });
+        }
+
+        function filterTypes(category) {
+            renderTypes(category);
+            
+            // Update buttons
+            ['all', 'ancient', 'modern'].forEach(c => {
+                const btn = document.getElementById(`filter-${c}`);
+                if (c === category) {
+                    btn.className = "px-4 py-1.5 rounded-md text-sm font-medium bg-white shadow text-stone-800 ring-1 ring-stone-200";
+                } else {
+                    btn.className = "px-4 py-1.5 rounded-md text-sm font-medium text-stone-600 hover:bg-stone-100";
+                }
+            });
+        }
+
+        // --- FREUD INTERACTIVITY ---
+        function showFreudDetail(part) {
+            const details = {
+                'id': "<strong>Id (The Instinct):</strong> Source of instinctual energy (libido). Operates on the 'Pleasure Principle' - seeks immediate gratification regardless of reality.",
+                'ego': "<strong>Ego (The Reality):</strong> Operates on the 'Reality Principle'. Satisfies the Id's needs in socially appropriate ways. The executive branch.",
+                'superego': "<strong>Superego (The Moral):</strong> The moral branch. Internalizes social standards and conscience. Strives for perfection, not pleasure."
+            };
+            freudDetailBox.innerHTML = details[part];
+            freudDetailBox.className = "mt-4 p-4 bg-amber-50 rounded text-sm text-stone-800 border-l-4 border-amber-400 animate-fade-in";
+        }
+
+        // --- CHART.JS LOGIC (BIG FIVE) ---
+        let bigFiveChart;
+        
+        // Detailed definitions dictionary
+        const traitDefinitions = {
+            openness: {
+                title: "Openness to Experience",
+                desc: "Reflects the degree of intellectual curiosity, creativity, and a preference for novelty. High scorers are imaginative and independent; low scorers prefer routine and familiar experiences."
+            },
+            conscientiousness: {
+                title: "Conscientiousness",
+                desc: "A tendency to be organized and dependable. High scorers show self-discipline, act dutifully, and aim for achievement. Low scorers are more spontaneous and potentially disorganized."
+            },
+            extraversion: {
+                title: "Extraversion",
+                desc: "Characterized by high energy, positive emotions, surgency, and the tendency to seek stimulation in the company of others. Introverts are more withdrawn and deliberate."
+            },
+            agreeableness: {
+                title: "Agreeableness",
+                desc: "A tendency to be compassionate and cooperative rather than suspicious and antagonistic towards others. It is also a measure of one's trusting and helpful nature."
+            },
+            neuroticism: {
+                title: "Neuroticism",
+                desc: "The tendency to experience unpleasant emotions easily, such as anger, anxiety, depression, or vulnerability. Low scorers are calm and emotionally stable."
+            }
+        };
+
+        function explainTrait(traitKey) {
+            const data = traitDefinitions[traitKey];
+            const titleEl = document.getElementById('trait-title');
+            const textEl = document.getElementById('trait-text');
+            const box = document.getElementById('trait-description-box');
+            
+            // Animate out
+            titleEl.style.opacity = '0';
+            textEl.style.opacity = '0';
+            
+            setTimeout(() => {
+                titleEl.textContent = data.title;
+                textEl.textContent = data.desc;
+                
+                // Animate in
+                titleEl.style.opacity = '1';
+                textEl.style.opacity = '1';
+                
+                // Highlight box briefly
+                box.classList.remove('bg-amber-900/20');
+                box.classList.add('bg-amber-900/40');
+                setTimeout(() => {
+                    box.classList.remove('bg-amber-900/40');
+                    box.classList.add('bg-amber-900/20');
+                }, 300);
+            }, 150);
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('bigFiveChart').getContext('2d');
+            
+            const data = {
+                labels: ['Openness', 'Conscientiousness', 'Extraversion', 'Agreeableness', 'Neuroticism'],
+                datasets: [{
+                    label: 'Selected Profile',
+                    data: [50, 50, 50, 50, 50], // Initial
+                    fill: true,
+                    backgroundColor: 'rgba(217, 119, 6, 0.2)', // amber-600
+                    borderColor: 'rgb(217, 119, 6)',
+                    pointBackgroundColor: 'rgb(217, 119, 6)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(217, 119, 6)'
+                }]
+            };
+
+            const config = {
+                type: 'radar',
+                data: data,
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    let val = context.parsed.r;
+                                    let desc = val > 70 ? "High" : val < 30 ? "Low" : "Moderate";
+                                    return `${label}${desc} (${val})`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: {
+                                color: '#a8a29e', // stone-400
+                                font: { size: 11, family: 'Inter' }
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false }
+                        }
+                    }
+                }
+            };
+
+            bigFiveChart = new Chart(ctx, config);
+        }
+
+        function updateChart(profile) {
+            let newData;
+            if (profile === 'balanced') newData = [50, 50, 50, 50, 50];
+            if (profile === 'leader') newData = [60, 90, 80, 40, 30]; // High C, High E, Low N
+            if (profile === 'creative') newData = [95, 40, 60, 60, 60]; // Very High O
+
+            bigFiveChart.data.datasets[0].data = newData;
+            bigFiveChart.update();
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTypes('all');
+            initChart();
+        });
+
+    </script>
+</body>
+</html>
