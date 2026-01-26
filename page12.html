@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress: Nature, Meaning & Management</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Calm Focus (Warm Stone, Soft Teal, Terracotta) -->
+    <!-- Application Structure Plan: 
+         - Transformed into a Single Page Long-Scroll layout.
+         - Sticky Header with Anchor Links.
+         - Sections stacked vertically with scroll-margin offsets for smooth navigation.
+         - Intersection Observer added to auto-highlight navigation based on scroll position.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calm: {
+                            50: '#fcfaf8',
+                            100: '#f5f0eb',
+                            200: '#e6dcd3',
+                            300: '#d0c0b0',
+                            800: '#5a524a',
+                            900: '#3c3632',
+                        },
+                        teal: {
+                            500: '#5e9ca0',
+                            600: '#4a8589',
+                        },
+                        terra: {
+                            500: '#cd7e67',
+                            600: '#b56650',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fcfaf8; color: #3c3632; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+        
+        /* Navigation Active State */
+        .nav-link.active {
+            background-color: #e6dcd3;
+            color: #3c3632;
+            font-weight: 600;
+            border-bottom: 3px solid #cd7e67;
+        }
+
+        .interactive-card {
+            transition: all 0.3s ease;
+        }
+        .interactive-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Simple reveal animation for sections */
+        section {
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-calm-50 min-h-screen flex flex-col">
+
+    <!-- Sticky Header -->
+    <header class="bg-white/95 backdrop-blur-sm border-b border-calm-200 sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
+            <h1 class="text-2xl font-bold text-calm-900 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                <span class="text-terra-500 text-3xl">⦿</span> Stress Awareness Hub
+            </h1>
+            <nav class="mt-3 md:mt-0 overflow-x-auto w-full md:w-auto">
+                <ul class="flex space-x-1 md:space-x-4 min-w-max">
+                    <li><a href="#dashboard" class="nav-link px-4 py-2 rounded-t-md hover:bg-calm-100 transition-colors block text-sm md:text-base">Overview</a></li>
+                    <li><a href="#physiology" class="nav-link px-4 py-2 rounded-t-md hover:bg-calm-100 transition-colors block text-sm md:text-base">Physiology</a></li>
+                    <li><a href="#sources" class="nav-link px-4 py-2 rounded-t-md hover:bg-calm-100 transition-colors block text-sm md:text-base">Sources</a></li>
+                    <li><a href="#toolkit" class="nav-link px-4 py-2 rounded-t-md hover:bg-calm-100 transition-colors block text-sm md:text-base">Toolkit</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 py-8 flex-grow space-y-24">
+
+        <!-- SECTION 1: DASHBOARD (Overview, Definition, Appraisal) -->
+        <section id="dashboard" class="scroll-mt-32">
+            <div class="mb-8 border-b border-calm-200 pb-6">
+                <h2 class="text-4xl font-bold text-calm-900 mb-4">The Nature of Stress</h2>
+                <p class="text-xl text-calm-800 leading-relaxed max-w-4xl">
+                    Stress is not just an external event; it is a transactional process between you and your environment. 
+                    This section explores what stress actually is, distinguishing between beneficial challenges (Eustress) and harmful strain (Distress).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <!-- Card 1: Definition & Etymology -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-calm-200">
+                    <div class="flex items-start justify-between mb-6">
+                        <h3 class="text-2xl font-semibold text-teal-600">What is Stress?</h3>
+                        <span class="text-3xl">⚡</span>
+                    </div>
+                    <p class="text-gray-700 mb-6 text-lg">
+                        It is a pattern of responses to a stimulus that disturbs equilibrium and exceeds coping abilities.
+                    </p>
+                    <div class="bg-calm-50 p-5 rounded-lg text-calm-800 mb-6">
+                        <p><strong>Etymology:</strong> From Latin <em>strictus</em> (tight) & <em>stringere</em> (to tighten). Reflects the internal feeling of constriction.</p>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded border-l-4 border-green-400">
+                            <span class="font-bold text-green-800 text-lg">Eustress</span>
+                            <span class="text-sm text-green-700">"Good Stress" • Peak performance</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-red-50 rounded border-l-4 border-red-400">
+                            <span class="font-bold text-red-800 text-lg">Distress</span>
+                            <span class="text-sm text-red-700">"Bad Stress" • Wear and tear</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Interactive Appraisal Theory -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-calm-200">
+                    <div class="flex items-start justify-between mb-6">
+                        <h3 class="text-2xl font-semibold text-teal-600">Cognitive Appraisal Theory</h3>
+                        <span class="text-3xl">🧠</span>
+                    </div>
+                    <p class="text-gray-600 mb-6">Proposed by Lazarus: Stress depends on how an event is interpreted. Click the buttons below to trace the process.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="border rounded-lg p-4 bg-calm-50 cursor-pointer hover:bg-white hover:shadow transition-all group" onclick="toggleAppraisal('step1')">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-lg group-hover:text-teal-600 transition-colors">1. The Stressor Event</span>
+                                <span class="text-xs bg-gray-200 px-2 py-1 rounded uppercase tracking-wide">Start</span>
+                            </div>
+                            <div id="step1" class="hidden mt-3 text-gray-700 border-t pt-3 border-gray-200">
+                                Something happens (e.g., a new project, a loud noise). The mind asks: "What is this?"
+                            </div>
+                        </div>
+
+                        <div class="border rounded-lg p-4 bg-calm-50 cursor-pointer hover:bg-white hover:shadow transition-all group" onclick="toggleAppraisal('step2')">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-lg group-hover:text-teal-600 transition-colors">2. Primary Appraisal</span>
+                                <span class="text-xs bg-terra-100 text-terra-800 px-2 py-1 rounded uppercase tracking-wide">Does it matter?</span>
+                            </div>
+                            <div id="step2" class="hidden mt-3 text-gray-700 border-t pt-3 border-gray-200">
+                                Perception of the environment:
+                                <ul class="list-disc ml-5 mt-2 space-y-1">
+                                    <li><strong>Positive/Neutral:</strong> No stress.</li>
+                                    <li><strong>Negative:</strong> Evaluated as Harm (damage done), Threat (future damage), or Challenge (opportunity).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="border rounded-lg p-4 bg-calm-50 cursor-pointer hover:bg-white hover:shadow transition-all group" onclick="toggleAppraisal('step3')">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-lg group-hover:text-teal-600 transition-colors">3. Secondary Appraisal</span>
+                                <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded uppercase tracking-wide">Can I cope?</span>
+                            </div>
+                            <div id="step3" class="hidden mt-3 text-gray-700 border-t pt-3 border-gray-200">
+                                Assessing resources (mental, physical, social).
+                                <br>
+                                <span class="block mt-2 font-medium text-teal-700">Outcome: If resources > demand, stress is low. If resources < demand, stress is high.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reaction Chart -->
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-calm-200">
+                <h3 class="text-2xl font-semibold text-teal-600 mb-4">Four Dimensions of Stress Reaction</h3>
+                <p class="text-gray-600 mb-8 max-w-3xl">Stress manifests differently across four key dimensions. The chart below visualizes the intensity of impact across these areas.</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                         <div class="chart-container">
+                            <canvas id="reactionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center space-y-4">
+                        <div class="p-4 bg-gray-50 rounded border-l-4 border-yellow-400">
+                            <strong class="text-yellow-900 block mb-1">Physiological</strong>
+                            <span class="text-sm text-gray-600">Heart rate, BP, metabolism changes.</span>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded border-l-4 border-blue-400">
+                            <strong class="text-blue-900 block mb-1">Emotional</strong>
+                            <span class="text-sm text-gray-600">Fear, anxiety, anger, depression.</span>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded border-l-4 border-red-400">
+                            <strong class="text-red-900 block mb-1">Behavioral</strong>
+                            <span class="text-sm text-gray-600">Fight/flight, sleep disruption, eating habits.</span>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded border-l-4 border-purple-400">
+                            <strong class="text-purple-900 block mb-1">Cognitive</strong>
+                            <span class="text-sm text-gray-600">Intrusive thoughts, lack of concentration.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: PHYSIOLOGY (GAS, Bio-pathways) -->
+        <section id="physiology" class="scroll-mt-32">
+            <div class="mb-8 border-b border-calm-200 pb-6">
+                <h2 class="text-4xl font-bold text-calm-900 mb-4">The Biology of Stress</h2>
+                <p class="text-xl text-calm-800 leading-relaxed max-w-4xl">
+                    When a stressor is perceived, the body initiates a complex chain of reactions involving the nervous and endocrine systems. 
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- Pathway Diagram -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-calm-200">
+                    <h3 class="text-2xl font-semibold text-teal-600 mb-6">Two Pathways of Response</h3>
+                    <div class="flex flex-col md:flex-row gap-4 justify-center items-stretch h-full">
+                        <!-- Path 1 -->
+                        <div class="flex-1 bg-red-50 p-6 rounded-lg border border-red-100 flex flex-col items-center text-center transition hover:shadow-md">
+                            <div class="w-14 h-14 rounded-full bg-red-200 flex items-center justify-center text-2xl mb-4">⚡</div>
+                            <h4 class="font-bold text-red-900 mb-2 text-lg">Autonomic Nervous System</h4>
+                            <div class="text-xs text-red-800 bg-white px-3 py-1 rounded-full mb-3 w-full border border-red-100">Adrenal Gland</div>
+                            <div class="text-2xl mb-2 text-red-300">↓</div>
+                            <p class="text-sm text-red-800 mb-4">Releases <strong>Catecholamines</strong> (Epinephrine / Norepinephrine)</p>
+                            <div class="mt-auto pt-4 font-black text-red-900 tracking-wider">FIGHT OR FLIGHT</div>
+                        </div>
+                        <!-- Path 2 -->
+                        <div class="flex-1 bg-blue-50 p-6 rounded-lg border border-blue-100 flex flex-col items-center text-center transition hover:shadow-md">
+                            <div class="w-14 h-14 rounded-full bg-blue-200 flex items-center justify-center text-2xl mb-4">💧</div>
+                            <h4 class="font-bold text-blue-900 mb-2 text-lg">Pituitary Gland</h4>
+                            <div class="text-xs text-blue-800 bg-white px-3 py-1 rounded-full mb-3 w-full border border-blue-100">Corticosteroids</div>
+                            <div class="text-2xl mb-2 text-blue-300">↓</div>
+                            <p class="text-sm text-blue-800 mb-4">Secretes <strong>Cortisol</strong> to provide energy</p>
+                            <div class="mt-auto pt-4 font-black text-blue-900 tracking-wider">ENERGY MOBILIZATION</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Psychoneuroimmunology -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-calm-200">
+                    <h3 class="text-2xl font-semibold text-teal-600 mb-6">Psychoneuroimmunology</h3>
+                    <p class="text-gray-700 mb-6 text-lg">
+                        The study of the mind, brain, and immune system link. Stress impairs <strong>White Blood Cells (Leucocytes)</strong>.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-gray-50 rounded hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-100 transition">
+                            <span class="text-3xl mr-4">🛡️</span>
+                            <div>
+                                <strong class="block text-lg text-gray-800">T Cells</strong>
+                                <span class="text-gray-600">Destroy invaders.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-4 bg-gray-50 rounded hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-100 transition">
+                            <span class="text-3xl mr-4">🏭</span>
+                            <div>
+                                <strong class="block text-lg text-gray-800">B Cells</strong>
+                                <span class="text-gray-600">Produce antibodies.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-4 bg-red-50 rounded border border-red-100">
+                            <span class="text-3xl mr-4">⚔️</span>
+                            <div>
+                                <strong class="block text-lg text-red-900">Natural Killer Cells</strong>
+                                <span class="text-red-700">Fight viruses & tumors. <br><em class="text-sm">(Significantly impaired by Stress Cytotoxicity)</em></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAS Chart -->
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-calm-200">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-teal-600">General Adaptation Syndrome (GAS)</h3>
+                        <p class="text-gray-500 mt-1">Hans Selye's 3-Stage Model of prolonged stress response.</p>
+                    </div>
+                    <div class="flex gap-2 text-sm mt-4 md:mt-0 font-medium">
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full">1. Alarm</span>
+                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full">2. Resistance</span>
+                        <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full">3. Exhaustion</span>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="gasChart"></canvas>
+                </div>
+                <div class="mt-6 text-gray-600 bg-calm-50 p-5 rounded-lg border border-calm-100">
+                    <strong class="text-teal-700">Chart Interpretation:</strong> The body initially dips in resistance (shock), then rallies resources to cope (Resistance), but if stress persists, resources deplete leading to Exhaustion and disease susceptibility (burnout, high BP).
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: SOURCES & TYPES -->
+        <section id="sources" class="scroll-mt-32">
+             <div class="mb-8 border-b border-calm-200 pb-6">
+                <h2 class="text-4xl font-bold text-calm-900 mb-4">Sources & Types of Stress</h2>
+                <p class="text-xl text-calm-800 leading-relaxed max-w-4xl">
+                    Stress originates from various quarters—internal thoughts, external environments, or social interactions. 
+                    Filter the cards below to explore different categories.
+                </p>
+            </div>
+
+            <!-- Tabs for Categories -->
+            <div class="flex flex-wrap gap-3 mb-8 sticky top-20 z-40 bg-calm-50/90 p-2 rounded-lg backdrop-blur">
+                <button onclick="filterSources('all')" class="px-5 py-2 rounded-full bg-teal-600 text-white hover:bg-teal-700 transition-all shadow-md active:scale-95 text-sm font-semibold source-btn" data-filter="all">All Sources</button>
+                <button onclick="filterSources('psych')" class="px-5 py-2 rounded-full bg-white text-gray-700 border hover:bg-gray-50 transition-all shadow-sm active:scale-95 text-sm font-semibold source-btn" data-filter="psych">Psychological</button>
+                <button onclick="filterSources('social')" class="px-5 py-2 rounded-full bg-white text-gray-700 border hover:bg-gray-50 transition-all shadow-sm active:scale-95 text-sm font-semibold source-btn" data-filter="social">Social/Environmental</button>
+                <button onclick="filterSources('nature')" class="px-5 py-2 rounded-full bg-white text-gray-700 border hover:bg-gray-50 transition-all shadow-sm active:scale-95 text-sm font-semibold source-btn" data-filter="nature">Nature of Event</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="sourcesGrid">
+                <!-- Content injected via JS -->
+            </div>
+
+            <!-- Burnout Section -->
+            <div class="mt-16 bg-gray-900 text-white p-10 rounded-2xl relative overflow-hidden shadow-xl">
+                <div class="relative z-10 grid md:grid-cols-3 gap-8 items-center">
+                    <div class="md:col-span-2">
+                        <div class="inline-block bg-terra-600 text-xs font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Warning</div>
+                        <h3 class="text-3xl font-bold mb-4">Chronic Stress Consequence: Burnout</h3>
+                        <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                            A state of physical, emotional, and psychological exhaustion. Characterized by chronic fatigue, irritability, and feelings of hopelessness.
+                        </p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                        <strong class="text-terra-400 block mb-2 text-lg">Examination Anxiety</strong>
+                        <p class="text-sm text-gray-400">A specific evaluative stress causing "evaluative apprehension" that interferes with preparation and performance.</p>
+                    </div>
+                </div>
+                <div class="absolute right-0 top-0 text-9xl text-gray-800 opacity-30 transform translate-x-10 -translate-y-10 pointer-events-none">🔥</div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: TOOLKIT (Coping & Resilience) -->
+        <section id="toolkit" class="scroll-mt-32 pb-20">
+             <div class="mb-8 border-b border-calm-200 pb-6">
+                <h2 class="text-4xl font-bold text-calm-900 mb-4">Coping & Resilience Toolkit</h2>
+                <p class="text-xl text-calm-800 leading-relaxed max-w-4xl">
+                    Coping is dynamic and situation-specific. Here you can explore strategies to manage stress and build "Hardiness" to bounce back from trauma.
+                </p>
+            </div>
+
+            <!-- Resilience Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-calm-200">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-6">Building Resilience</h3>
+                    <p class="text-gray-600 mb-6">Resilience is the capacity to "bounce back". It relies on three sets of resources:</p>
+                    <div class="space-y-5">
+                        <div class="flex items-start">
+                            <div class="w-14 h-14 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-lg mr-5 shrink-0 shadow-inner">HAV</div>
+                            <div>
+                                <strong class="text-gray-900 text-lg">I HAVE</strong>
+                                <p class="text-gray-600">Social & interpersonal strengths (trusting relationships).</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-14 h-14 rounded-full bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-lg mr-5 shrink-0 shadow-inner">AM</div>
+                            <div>
+                                <strong class="text-gray-900 text-lg">I AM</strong>
+                                <p class="text-gray-600">Inner strengths (self-esteem, self-respect).</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-14 h-14 rounded-full bg-pink-100 text-pink-800 flex items-center justify-center font-bold text-lg mr-5 shrink-0 shadow-inner">CAN</div>
+                            <div>
+                                <strong class="text-gray-900 text-lg">I CAN</strong>
+                                <p class="text-gray-600">Interpersonal & problem-solving skills.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-calm-200 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-6">Stress Resistant Personality</h3>
+                    <p class="text-gray-600 mb-6">People with high stress but low illness often possess <strong class="text-gray-900">Hardiness</strong>, characterized by the "3 Cs":</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="p-4 bg-calm-50 rounded-lg border-l-4 border-teal-500 hover:bg-teal-50 transition-colors">
+                            <strong class="block text-teal-800 mb-1">1. Commitment</strong>
+                            <span class="text-sm text-gray-700">Personal commitment to work, family, hobbies.</span>
+                        </div>
+                        <div class="p-4 bg-calm-50 rounded-lg border-l-4 border-teal-500 hover:bg-teal-50 transition-colors">
+                            <strong class="block text-teal-800 mb-1">2. Control</strong>
+                            <span class="text-sm text-gray-700">Sense of purpose and direction in life.</span>
+                        </div>
+                        <div class="p-4 bg-calm-50 rounded-lg border-l-4 border-teal-500 hover:bg-teal-50 transition-colors">
+                            <strong class="block text-teal-800 mb-1">3. Challenge</strong>
+                            <span class="text-sm text-gray-700">Viewing change as normal/positive, not threatening.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Management Techniques Grid -->
+            <h3 class="text-2xl font-bold text-calm-900 mb-6 px-1">Management Techniques</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+                <!-- Technique Cards -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 interactive-card">
+                    <div class="text-4xl mb-4">🧘</div>
+                    <h4 class="font-bold text-gray-800 text-lg">Relaxation & Meditation</h4>
+                    <p class="text-gray-600 mt-2">Deep breathing, muscle relaxation, and attention-refocusing to lower arousal.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-gray-200 interactive-card">
+                    <div class="text-4xl mb-4">📈</div>
+                    <h4 class="font-bold text-gray-800 text-lg">Biofeedback</h4>
+                    <p class="text-gray-600 mt-2">Monitoring physiological aspects (like heart rate) to learn to control them.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-gray-200 interactive-card">
+                    <div class="text-4xl mb-4">🧠</div>
+                    <h4 class="font-bold text-gray-800 text-lg">CBT / Inoculation</h4>
+                    <p class="text-gray-600 mt-2">Replacing negative thoughts with rational ones. Stress Inoculation Training.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-gray-200 interactive-card">
+                    <div class="text-4xl mb-4">🏃</div>
+                    <h4 class="font-bold text-gray-800 text-lg">Exercise</h4>
+                    <p class="text-gray-600 mt-2">Active outlet for physiological arousal. Improves heart, lungs, and immunity.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-gray-200 interactive-card">
+                    <div class="text-4xl mb-4">🎨</div>
+                    <h4 class="font-bold text-gray-800 text-lg">Creative Visualization</h4>
+                    <p class="text-gray-600 mt-2">Using imagery and imagination to set realistic goals and build confidence.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-gray-200 interactive-card">
+                    <div class="text-4xl mb-4">🤝</div>
+                    <h4 class="font-bold text-gray-800 text-lg">Life Skills</h4>
+                    <p class="text-gray-600 mt-2">Assertiveness, Time Management, Rational Thinking, Self-care.</p>
+                </div>
+            </div>
+
+            <!-- Life Facilitators -->
+            <div class="bg-gradient-to-r from-teal-50 to-calm-100 p-8 rounded-2xl border border-teal-100">
+                <h3 class="text-2xl font-bold text-teal-800 mb-6 text-center">Facilitators of Positive Health</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                        <span class="block text-4xl mb-3">🥗</span>
+                        <span class="text-lg font-semibold text-gray-800">Diet</span>
+                        <p class="text-xs text-gray-500 mt-1">Balanced nutrition</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                        <span class="block text-4xl mb-3">🚴</span>
+                        <span class="text-lg font-semibold text-gray-800">Exercise</span>
+                        <p class="text-xs text-gray-500 mt-1">Stress buffer</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                        <span class="block text-4xl mb-3">😊</span>
+                        <span class="text-lg font-semibold text-gray-800">Attitude</span>
+                        <p class="text-xs text-gray-500 mt-1">Optimism & Humor</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                        <span class="block text-4xl mb-3">🤲</span>
+                        <span class="text-lg font-semibold text-gray-800">Support</span>
+                        <p class="text-xs text-gray-500 mt-1">Social network</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-calm-200 py-8">
+        <div class="container mx-auto px-4 text-center text-sm text-gray-500">
+            <p class="mb-2 font-semibold">Psychology & Health</p>
+            <p>Based on "The Nature and Meaning of Stress" Report. <br>Designed for interactive exploration.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Interactive Appraisal Logic ---
+        function toggleAppraisal(stepId) {
+            const el = document.getElementById(stepId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                // Simple animation
+                el.style.opacity = '0';
+                setTimeout(() => el.style.opacity = '1', 10);
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        // --- Source Data & Rendering Logic ---
+        const sourceData = [
+            { type: 'psych', icon: '😡', title: 'Frustration', desc: 'Blocking of needs or goals (e.g., low grades, discrimination).' },
+            { type: 'psych', icon: '⚔️', title: 'Conflicts', desc: 'Incompatible needs/motives (e.g., Dance vs. Study).' },
+            { type: 'psych', icon: '🎯', title: 'Internal Pressure', desc: 'Perfectionism. "I must do everything perfectly".' },
+            { type: 'social', icon: '👥', title: 'Social Pressure', desc: 'Excessive demands from others or interpersonal clashes.' },
+            { type: 'social', icon: '💔', title: 'Social Stress', desc: 'Death of loved one, strained relationships, neighbor trouble.' },
+            { type: 'nature', icon: '📦', title: 'Life Events', desc: 'Major changes (moving, breakups). Planned or unpredicted.' },
+            { type: 'nature', icon: '🚦', title: 'Hassles', desc: 'Daily irritants (traffic, noise). High frequency = poor well-being.' },
+            { type: 'nature', icon: '🌪️', title: 'Traumatic Events', desc: 'Extreme events (tsunami, robbery). Can cause flashbacks.' },
+            { type: 'social', icon: '🔊', title: 'Environmental', desc: 'Noise, pollution, crowding, catastrophic events.' },
+        ];
+
+        function filterSources(filter) {
+            const grid = document.getElementById('sourcesGrid');
+            grid.innerHTML = ''; // Clear current
+
+            const filtered = filter === 'all' ? sourceData : sourceData.filter(item => item.type === filter);
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-xl border border-gray-200 interactive-card fade-in flex flex-col h-full';
+                card.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <span class="text-4xl mr-4 bg-gray-50 p-2 rounded-full">${item.icon}</span>
+                        <h4 class="font-bold text-gray-800 text-lg leading-tight">${item.title}</h4>
+                    </div>
+                    <p class="text-gray-600 flex-grow leading-relaxed">${item.desc}</p>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <span class="inline-block px-3 py-1 bg-gray-100 text-xs font-semibold text-gray-500 rounded-full uppercase tracking-wider">${item.type}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Update buttons
+            document.querySelectorAll('.source-btn').forEach(btn => {
+                if(btn.dataset.filter === filter) {
+                    btn.classList.remove('bg-white', 'text-gray-700', 'border');
+                    btn.classList.add('bg-teal-600', 'text-white', 'shadow-md');
+                } else {
+                    btn.classList.add('bg-white', 'text-gray-700', 'border');
+                    btn.classList.remove('bg-teal-600', 'text-white', 'shadow-md');
+                }
+            });
+        }
+
+        // --- Intersection Observer for Scroll Spy ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '-20% 0px -60% 0px', // Trigger when section is near top
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        
+                        // Add visible class for fade-in effect
+                        entry.target.classList.add('visible');
+
+                        // Update Navigation
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Render Initial Source Grid
+            filterSources('all');
+
+            // --- Charts Initialization ---
+            
+            // 1. Stress Reactions Radar Chart
+            const reactionCtx = document.getElementById('reactionChart').getContext('2d');
+            new Chart(reactionCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Physiological (Heart/BP)', 'Emotional (Fear/Anger)', 'Behavioral (Sleep/Eating)', 'Cognitive (Focus)'],
+                    datasets: [{
+                        label: 'Stress Impact Intensity',
+                        data: [85, 70, 60, 75],
+                        backgroundColor: 'rgba(205, 126, 103, 0.2)', // Terra color transparent
+                        borderColor: '#cd7e67',
+                        pointBackgroundColor: '#b56650',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#cd7e67',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e5e7eb' },
+                            grid: { color: '#e5e7eb' },
+                            pointLabels: {
+                                font: { size: 12, family: 'Inter', weight: 'bold' },
+                                color: '#4b5563'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // 2. GAS Line Chart
+            const gasCtx = document.getElementById('gasChart').getContext('2d');
+            new Chart(gasCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Normal State', 'Alarm Reaction', 'Resistance Stage', 'Exhaustion'],
+                    datasets: [{
+                        label: 'Resistance to Stress',
+                        data: [50, 40, 85, 10], // Hypothetical curve based on theory
+                        borderColor: '#4a8589', // Teal
+                        backgroundColor: 'rgba(74, 133, 137, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: ['#9ca3af', '#fbbf24', '#34d399', '#f87171']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#1f2937',
+                            bodyColor: '#4b5563',
+                            borderColor: '#e5e7eb',
+                            borderWidth: 1,
+                            padding: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    const descriptions = [
+                                        "Homeostasis",
+                                        "Fight or Flight activated. Temp drop in resistance.",
+                                        "Body copes. Parasympathetic system aids caution.",
+                                        "Resources drained. Disease susceptibility increases."
+                                    ];
+                                    return descriptions[context.dataIndex];
+                                }
+                            }
+                        },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Resistance Level' },
+                            grid: { color: '#f3f4f6' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
