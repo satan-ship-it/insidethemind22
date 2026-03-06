@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Therapeutic Approaches: A Visual Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Chart Container Styles */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        /* Animations */
+        .fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Utilities */
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-link.active {
+            color: #0d9488; /* teal-600 */
+            border-bottom-color: #0d9488;
+        }
+
+        /* Hide scrollbar for nav but allow scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals & Calming Teal (Updated for Scroll Layout) -->
+    <!-- Application Structure Plan: Continuous Vertical Scroll (Scrolly-telling).
+         1. Sticky Header with Scroll Spy Navigation.
+         2. Section 1 (Hero/Foundations): White bg. Large typography.
+         3. Section 2 (Systems): Warm Grey bg. Integrated Interactive Comparator.
+         4. Section 3 (Deep Dive): White bg. Side-by-side interactive master-detail view.
+         5. Section 4 (Holistic): Teal/Dark bg for visual break/conclusion.
+         Why: Scrolling is more natural for storytelling. Alternating backgrounds separate distinct concepts without harsh lines. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased selection:bg-teal-100 selection:text-teal-900">
+
+    <!-- Sticky Header & Nav -->
+    <header class="fixed top-0 inset-x-0 bg-white/95 backdrop-blur-sm shadow-sm border-b border-stone-200 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center h-auto md:h-16 py-2 md:py-0">
+                <div class="font-bold text-xl text-teal-900 tracking-tight mb-2 md:mb-0">
+                    Psychotherapy<span class="font-light text-stone-500">Guide</span>
+                </div>
+                
+                <nav class="w-full md:w-auto overflow-x-auto no-scrollbar">
+                    <div class="flex space-x-6 md:space-x-8 border-b md:border-b-0 border-stone-100 min-w-max pb-1 md:pb-0 px-1">
+                        <a href="#foundations" class="nav-link text-sm font-medium text-stone-500 hover:text-teal-600 transition-colors py-2 border-b-2 border-transparent">The Basics</a>
+                        <a href="#systems" class="nav-link text-sm font-medium text-stone-500 hover:text-teal-600 transition-colors py-2 border-b-2 border-transparent">System Comparison</a>
+                        <a href="#deep-dive" class="nav-link text-sm font-medium text-stone-500 hover:text-teal-600 transition-colors py-2 border-b-2 border-transparent">Deep Dive</a>
+                        <a href="#holistic" class="nav-link text-sm font-medium text-stone-500 hover:text-teal-600 transition-colors py-2 border-b-2 border-transparent">Holistic View</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-12">
+
+        <!-- SECTION 1: FOUNDATIONS (White Background) -->
+        <section id="foundations" class="scroll-mt-28 mb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="max-w-3xl mx-auto text-center mb-12 fade-in-up">
+                <span class="text-teal-600 font-semibold tracking-wider text-xs uppercase mb-2 block">Introduction</span>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-stone-900 mb-6 leading-tight">Nature & Process of <br class="hidden md:block" />Psychotherapy</h1>
+                <p class="text-lg text-stone-600 leading-relaxed">
+                    A voluntary, systematic relationship aimed at modifying maladaptive behaviors and fostering growth. It is not just a cure, but a journey toward self-awareness.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 fade-in-up" style="animation-delay: 0.1s;">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 card-hover transition-all">
+                    <div class="w-12 h-12 bg-teal-50 rounded-full flex items-center justify-center text-2xl mb-4">🤝</div>
+                    <h3 class="font-bold text-stone-900 mb-2">Voluntary Partnership</h3>
+                    <p class="text-stone-500 text-sm">A conscious contract between client and therapist to solve problems.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 card-hover transition-all">
+                    <div class="w-12 h-12 bg-teal-50 rounded-full flex items-center justify-center text-2xl mb-4">🎓</div>
+                    <h3 class="font-bold text-stone-900 mb-2">Systematic Application</h3>
+                    <p class="text-stone-500 text-sm">Structured use of psychological principles by trained experts.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 card-hover transition-all">
+                    <div class="w-12 h-12 bg-teal-50 rounded-full flex items-center justify-center text-2xl mb-4">🌟</div>
+                    <h3 class="font-bold text-stone-900 mb-2">The Alliance</h3>
+                    <p class="text-stone-500 text-sm">The relationship itself is the primary vehicle for healing.</p>
+                </div>
+            </div>
+
+            <div class="bg-stone-900 rounded-3xl p-8 md:p-12 text-white shadow-xl overflow-hidden relative fade-in-up" style="animation-delay: 0.2s;">
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4 text-teal-300">The Therapeutic Alliance</h2>
+                        <p class="text-stone-300 mb-6 leading-relaxed">
+                            Distinct from friendship, this bond is contractual, limited in duration, and built on specific properties that create a safe space for unburdening.
+                        </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="bg-stone-800 p-1 rounded mr-3 text-teal-400 text-xl">🛡️</span>
+                                <div>
+                                    <strong class="block text-white">Strict Confidentiality</strong>
+                                    <span class="text-stone-400 text-sm">Trust is the foundation.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-stone-800 p-1 rounded mr-3 text-teal-400 text-xl">❤️</span>
+                                <div>
+                                    <strong class="block text-white">Empathy vs Sympathy</strong>
+                                    <span class="text-stone-400 text-sm">Feeling <em>like</em> the person, not just <em>for</em> them.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-stone-800 p-1 rounded mr-3 text-teal-400 text-xl">👐</span>
+                                <div>
+                                    <strong class="block text-white">Unconditional Positive Regard</strong>
+                                    <span class="text-stone-400 text-sm">Total acceptance without judgment.</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-stone-800/50 rounded-2xl p-6 backdrop-blur-sm border border-stone-700">
+                        <h3 class="text-lg font-semibold mb-4 text-center">Clinical Formulation Flow</h3>
+                        <div class="flex flex-col gap-2">
+                            <div class="bg-stone-700 p-3 rounded text-center text-sm">Patient Distress</div>
+                            <div class="text-center text-teal-500 text-xl">↓</div>
+                            <div class="bg-teal-900/40 border border-teal-800 p-3 rounded text-center text-sm font-semibold text-teal-300">
+                                Clinical Formulation
+                                <div class="text-xs font-normal text-teal-400/70 mt-1">Identify Targets & Timing</div>
+                            </div>
+                            <div class="text-center text-teal-500 text-xl">↓</div>
+                            <div class="bg-stone-700 p-3 rounded text-center text-sm">Treatment Execution</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: SYSTEMS COMPARISON (Warm Grey Background) -->
+        <section id="systems" class="scroll-mt-16 bg-stone-100 py-20 border-y border-stone-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-stone-900 mb-4">Three Major Systems</h2>
+                    <p class="text-stone-600 max-w-2xl mx-auto">
+                        Psychotherapies differ fundamentally in how they view the cause of the problem, the method of treatment, and the role of the therapist.
+                    </p>
+                </div>
+
+                <!-- Interactive Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Left: Interactive Card Deck -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <!-- Controls -->
+                        <div class="flex flex-wrap gap-2 justify-center lg:justify-start">
+                            <span class="text-sm font-semibold text-stone-400 uppercase tracking-wide py-2 mr-2">Compare:</span>
+                            <button onclick="updateComparison('cause')" class="comp-btn px-4 py-2 rounded-full text-sm font-medium bg-white border border-stone-200 shadow-sm hover:border-teal-400 transition-all focus:ring-2 focus:ring-teal-500 text-teal-800 ring-2 ring-teal-500" data-criteria="cause">Cause of Problem</button>
+                            <button onclick="updateComparison('method')" class="comp-btn px-4 py-2 rounded-full text-sm font-medium bg-white border border-stone-200 shadow-sm hover:border-teal-400 transition-all focus:ring-2 focus:ring-teal-500 text-stone-600" data-criteria="method">Treatment Method</button>
+                            <button onclick="updateComparison('relationship')" class="comp-btn px-4 py-2 rounded-full text-sm font-medium bg-white border border-stone-200 shadow-sm hover:border-teal-400 transition-all focus:ring-2 focus:ring-teal-500 text-stone-600" data-criteria="relationship">Therapist Role</button>
+                        </div>
+
+                        <!-- Dynamic Content Area -->
+                        <div id="comparison-container" class="grid grid-cols-1 gap-4">
+                            <!-- Cards injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Right: Radar Chart Visualization -->
+                    <div class="lg:col-span-5">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 sticky top-24">
+                            <div class="mb-4 pb-4 border-b border-stone-100">
+                                <h3 class="font-bold text-stone-800">System Profiles</h3>
+                                <p class="text-xs text-stone-500">Comparing qualitative attributes</p>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="comparisonChart"></canvas>
+                            </div>
+                            <div class="mt-4 flex flex-wrap gap-3 text-xs justify-center">
+                                <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-indigo-500 mr-2"></span>Psychodynamic</span>
+                                <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-amber-500 mr-2"></span>Behavioral</span>
+                                <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>Existential</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: DEEP DIVE (White Background) -->
+        <section id="deep-dive" class="scroll-mt-20 py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-10">
+                <span class="text-teal-600 font-semibold tracking-wider text-xs uppercase mb-2 block">Detailed Analysis</span>
+                <h2 class="text-3xl font-bold text-stone-900">Therapy Deep Dive</h2>
+                <p class="text-stone-600 mt-2">Select a methodology to explore its specific techniques and theoretical underpinnings.</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8 min-h-[600px]">
+                <!-- Interactive Sidebar/Menu -->
+                <div class="w-full lg:w-1/4 flex-shrink-0 z-10">
+                    <div class="bg-stone-50 rounded-xl p-2 sticky top-24 border border-stone-100 shadow-sm">
+                        <div class="flex flex-col space-y-1">
+                            <button onclick="renderDeepDive('psychodynamic')" class="dive-btn w-full text-left px-4 py-3 rounded-lg text-sm font-semibold transition-all shadow-sm bg-white text-teal-800 ring-1 ring-stone-200" data-target="psychodynamic">
+                                1. Psychodynamic
+                            </button>
+                            <button onclick="renderDeepDive('behavioral')" class="dive-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-stone-500 hover:bg-white hover:text-stone-800 transition-all" data-target="behavioral">
+                                2. Behavioral
+                            </button>
+                            <button onclick="renderDeepDive('cognitive')" class="dive-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-stone-500 hover:bg-white hover:text-stone-800 transition-all" data-target="cognitive">
+                                3. Cognitive (CBT/RET)
+                            </button>
+                            <button onclick="renderDeepDive('existential')" class="dive-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-stone-500 hover:bg-white hover:text-stone-800 transition-all" data-target="existential">
+                                4. Humanistic-Existential
+                            </button>
+                        </div>
+                        <div class="mt-6 p-4 bg-teal-50 rounded-lg text-xs text-teal-800 border border-teal-100 hidden lg:block">
+                            <strong>Tip:</strong> These approaches are often combined in modern practice, but understanding their distinct roots is crucial.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Display Area -->
+                <div class="w-full lg:w-3/4 relative">
+                    <div id="deep-dive-content" class="bg-white rounded-2xl border border-stone-200 shadow-xl p-8 lg:p-10 transition-all min-h-full">
+                        <!-- Content Injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: HOLISTIC & ALTERNATIVE (Dark Teal Background) -->
+        <section id="holistic" class="bg-teal-900 text-teal-50 py-20 scroll-mt-0">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Beyond Talk Therapy</h2>
+                        <p class="text-teal-100 text-lg leading-relaxed mb-8">
+                            Healing is multidimensional. It involves biological interventions, lifestyle changes like Yoga and Meditation, and rehabilitation for severe conditions.
+                        </p>
+                        
+                        <div class="bg-teal-800/50 rounded-xl p-6 border border-teal-700 mb-8">
+                            <h3 class="font-bold text-white mb-4 flex items-center"><span class="text-2xl mr-2">💊</span> Biomedical & Rehab</h3>
+                            <div class="space-y-4 text-sm">
+                                <div class="flex gap-4">
+                                    <div class="w-1/2 bg-teal-900/50 p-3 rounded">
+                                        <strong class="block text-teal-300">Medication</strong>
+                                        <span class="text-teal-200/70">Anti-psychotics, Anti-depressants</span>
+                                    </div>
+                                    <div class="w-1/2 bg-teal-900/50 p-3 rounded">
+                                        <strong class="block text-teal-300">ECT</strong>
+                                        <span class="text-teal-200/70">For severe depression when drugs fail</span>
+                                    </div>
+                                </div>
+                                <div class="border-t border-teal-700 pt-4">
+                                    <strong class="block text-teal-300 mb-2">Rehabilitation Focus</strong>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="px-2 py-1 bg-teal-900 rounded text-xs text-teal-200">Occupational Therapy</span>
+                                        <span class="px-2 py-1 bg-teal-900 rounded text-xs text-teal-200">Social Skills</span>
+                                        <span class="px-2 py-1 bg-teal-900 rounded text-xs text-teal-200">Vocational Training</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-bold text-white mb-4">Alternative Therapies</h3>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="text-center group cursor-pointer">
+                                    <div class="w-16 h-16 mx-auto bg-teal-800 rounded-full flex items-center justify-center text-3xl mb-2 group-hover:bg-white group-hover:scale-110 transition-all">🧘</div>
+                                    <div class="text-xs font-bold text-teal-300">SKY Yoga</div>
+                                </div>
+                                <div class="text-center group cursor-pointer">
+                                    <div class="w-16 h-16 mx-auto bg-teal-800 rounded-full flex items-center justify-center text-3xl mb-2 group-hover:bg-white group-hover:scale-110 transition-all">🐍</div>
+                                    <div class="text-xs font-bold text-teal-300">Kundalini</div>
+                                </div>
+                                <div class="text-center group cursor-pointer">
+                                    <div class="w-16 h-16 mx-auto bg-teal-800 rounded-full flex items-center justify-center text-3xl mb-2 group-hover:bg-white group-hover:scale-110 transition-all">👁️</div>
+                                    <div class="text-xs font-bold text-teal-300">Vipassana</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Healing Factors Chart -->
+                    <div class="bg-white text-stone-900 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                        <h3 class="font-bold text-stone-800 mb-2 text-center">What Actually Heals?</h3>
+                        <p class="text-xs text-stone-500 text-center mb-6">Factors contributing to therapeutic success</p>
+                        <div class="chart-container">
+                            <canvas id="healingChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-900 text-stone-500 py-10 border-t border-stone-800">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm">© Psychology Learning Module. Based on "Therapeutic Approaches" text.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA STORE ---
+        const comparisonData = {
+            cause: [
+                { title: "Psychodynamic", content: "Intrapsychic conflicts (Id, Ego, Superego). Often rooted in childhood.", icon: "🧠", color: "indigo" },
+                { title: "Behavioral", content: "Faulty learning. Focus on present antecedents & consequences.", icon: "⚡", color: "amber" },
+                { title: "Existential", content: "Questions of meaning, loneliness. Curbing of self-actualization.", icon: "🌱", color: "emerald" }
+            ],
+            method: [
+                { title: "Psychodynamic", content: "Free association & Dream interpretation to uncover the unconscious.", icon: "🛋️", color: "indigo" },
+                { title: "Behavioral", content: "Correcting conditioning via Reinforcement, Desensitization, Modelling.", icon: "🔄", color: "amber" },
+                { title: "Existential", content: "Providing an empathic environment for personal growth.", icon: "🤲", color: "emerald" }
+            ],
+            relationship: [
+                { title: "Psychodynamic", content: "Therapist interprets. Understands transference/resistance.", icon: "👨‍⚕️", color: "indigo" },
+                { title: "Behavioral", content: "Therapist is a trainer/coach. Directive approach.", icon: "📋", color: "amber" },
+                { title: "Existential", content: "Therapist is a facilitator. Warm, genuine, non-directive.", icon: "🤝", color: "emerald" }
+            ]
+        };
+
+        const deepDiveData = {
+            psychodynamic: `
+                <div class="animate-fade-in">
+                    <div class="flex items-center gap-4 mb-8 border-b border-indigo-100 pb-6">
+                        <div class="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-3xl text-indigo-600 shadow-sm">🧠</div>
+                        <div>
+                            <h2 class="text-3xl font-bold text-stone-900">Psychodynamic Therapy</h2>
+                            <p class="text-indigo-600 font-medium text-lg">Uncovering the Unconscious</p>
+                        </div>
+                    </div>
+                    
+                    <div class="prose prose-stone max-w-none">
+                        <p class="text-lg leading-relaxed text-stone-600 mb-8">
+                            Pioneered by Freud, this approach views distress as a result of conflicts between the <strong>Id</strong> (instincts), <strong>Ego</strong> (reality), and <strong>Superego</strong> (morality). The goal is <em>Emotional Insight</em>.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                            <div class="bg-stone-50 p-6 rounded-xl border border-stone-100">
+                                <h4 class="font-bold text-indigo-800 mb-3 text-lg">Eliciting Conflict</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex gap-3"><span class="font-bold text-indigo-400">1.</span> <span><strong>Free Association:</strong> Speaking freely to bypass the "watchful ego".</span></li>
+                                    <li class="flex gap-3"><span class="font-bold text-indigo-400">2.</span> <span><strong>Dream Interpretation:</strong> Decoding symbols of unfulfilled desires.</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-stone-50 p-6 rounded-xl border border-stone-100">
+                                <h4 class="font-bold text-indigo-800 mb-3 text-lg">Modality</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex gap-3"><span class="font-bold text-indigo-400">1.</span> <span><strong>Transference:</strong> Projecting feelings for past figures onto the therapist.</span></li>
+                                    <li class="flex gap-3"><span class="font-bold text-indigo-400">2.</span> <span><strong>Resistance:</strong> Unconscious opposition to progress (e.g., silence).</span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-50 rounded-xl p-8 text-center border border-indigo-100">
+                            <h4 class="font-bold text-indigo-900 mb-6 uppercase tracking-widest text-sm">The Process of Change</h4>
+                            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                                <div class="bg-white px-6 py-3 rounded-lg shadow-sm font-semibold text-stone-700 w-full">Confrontation</div>
+                                <div class="text-indigo-300 text-xl">→</div>
+                                <div class="bg-white px-6 py-3 rounded-lg shadow-sm font-semibold text-stone-700 w-full">Clarification</div>
+                                <div class="text-indigo-300 text-xl">→</div>
+                                <div class="bg-white px-6 py-3 rounded-lg shadow-sm font-semibold text-stone-700 w-full">Interpretation</div>
+                                <div class="text-indigo-300 text-xl">→</div>
+                                <div class="bg-white px-6 py-3 rounded-lg shadow-sm font-bold text-indigo-600 w-full border border-indigo-200">Insight</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            behavioral: `
+                 <div class="animate-fade-in">
+                    <div class="flex items-center gap-4 mb-8 border-b border-amber-100 pb-6">
+                        <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl text-amber-600 shadow-sm">⚡</div>
+                        <div>
+                            <h2 class="text-3xl font-bold text-stone-900">Behaviour Therapy</h2>
+                            <p class="text-amber-600 font-medium text-lg">Modifying Faulty Learning</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 p-6 rounded-xl border border-amber-200 mb-8">
+                        <h4 class="font-bold text-amber-900 mb-2">Core Principle</h4>
+                        <p class="text-amber-800/80">
+                            Psychological distress arises from faulty learning. The focus is on the <strong>Present</strong>. Therapists analyze Antecedents (triggers) and Consequences (reinforcers) to design interventions.
+                        </p>
+                    </div>
+
+                    <h3 class="font-bold text-stone-800 text-xl mb-4">Technique: Systematic Desensitisation</h3>
+                    <div class="relative pl-8 border-l-2 border-stone-200 space-y-8 mb-10">
+                        <div class="relative">
+                            <span class="absolute -left-[41px] bg-white border-2 border-amber-500 w-6 h-6 rounded-full"></span>
+                            <strong class="block text-stone-800">1. Interview & Assessment</strong>
+                            <p class="text-stone-500 text-sm">Understanding the specific fear.</p>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute -left-[41px] bg-white border-2 border-amber-500 w-6 h-6 rounded-full"></span>
+                            <strong class="block text-stone-800">2. Hierarchy Building</strong>
+                            <p class="text-stone-500 text-sm">Listing fears from least to most anxiety-provoking.</p>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute -left-[41px] bg-white border-2 border-amber-500 w-6 h-6 rounded-full"></span>
+                            <strong class="block text-stone-800">3. Relaxation Training</strong>
+                            <p class="text-stone-500 text-sm">Learning deep muscle relaxation (Reciprocal Inhibition).</p>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute -left-[41px] bg-amber-500 border-2 border-amber-500 w-6 h-6 rounded-full"></span>
+                            <strong class="block text-stone-800">4. Visualization</strong>
+                            <p class="text-stone-500 text-sm">Imagining hierarchy items while maintaining relaxation.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-stone-50 p-3 rounded text-center border border-stone-100">
+                            <div class="text-2xl mb-1">🎟️</div>
+                            <div class="font-bold text-xs text-stone-700">Token Economy</div>
+                        </div>
+                        <div class="bg-stone-50 p-3 rounded text-center border border-stone-100">
+                            <div class="text-2xl mb-1">🚫</div>
+                            <div class="font-bold text-xs text-stone-700">Aversive Cond.</div>
+                        </div>
+                        <div class="bg-stone-50 p-3 rounded text-center border border-stone-100">
+                            <div class="text-2xl mb-1">👀</div>
+                            <div class="font-bold text-xs text-stone-700">Modelling</div>
+                        </div>
+                         <div class="bg-stone-50 p-3 rounded text-center border border-stone-100">
+                            <div class="text-2xl mb-1">➕</div>
+                            <div class="font-bold text-xs text-stone-700">Positive Reinf.</div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            cognitive: `
+                <div class="animate-fade-in">
+                    <div class="flex items-center gap-4 mb-8 border-b border-sky-100 pb-6">
+                        <div class="w-16 h-16 bg-sky-50 rounded-2xl flex items-center justify-center text-3xl text-sky-600 shadow-sm">🧩</div>
+                        <div>
+                            <h2 class="text-3xl font-bold text-stone-900">Cognitive Therapies</h2>
+                            <p class="text-sky-600 font-medium text-lg">Challenging Irrational Thoughts</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                            <h3 class="font-bold text-stone-800 mb-4 border-b pb-2">Rational Emotive Therapy (RET)</h3>
+                            <p class="text-xs text-stone-500 mb-4 uppercase">Albert Ellis</p>
+                            <div class="space-y-3">
+                                <div class="flex items-center bg-sky-50 p-2 rounded">
+                                    <span class="w-8 font-bold text-sky-800">A</span>
+                                    <span class="text-sm">Antecedent Event</span>
+                                </div>
+                                <div class="flex items-center bg-red-50 p-2 rounded border border-red-100">
+                                    <span class="w-8 font-bold text-red-600">B</span>
+                                    <span class="text-sm font-semibold text-red-800">Irrational Beliefs ("Musts")</span>
+                                </div>
+                                <div class="flex items-center bg-sky-50 p-2 rounded">
+                                    <span class="w-8 font-bold text-sky-800">C</span>
+                                    <span class="text-sm">Consequence (Distress)</span>
+                                </div>
+                            </div>
+                            <p class="mt-4 text-sm text-stone-600">Therapy involves vigorously disputing 'B'.</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                            <h3 class="font-bold text-stone-800 mb-4 border-b pb-2">Cognitive Therapy</h3>
+                            <p class="text-xs text-stone-500 mb-4 uppercase">Aaron Beck</p>
+                            <ul class="text-sm space-y-3 text-stone-600">
+                                <li><strong>Core Schemas:</strong> Deep beliefs formed in childhood.</li>
+                                <li><strong>Negative Automatic Thoughts:</strong> "I am useless," triggered by events.</li>
+                                <li><strong>Cognitive Restructuring:</strong> Using gentle questioning to provide evidence against negative thoughts.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-800 text-white p-6 rounded-xl">
+                        <h4 class="font-bold text-teal-400 mb-2">CBT (Cognitive Behaviour Therapy)</h4>
+                        <p class="text-stone-300">The modern gold standard. A short-term, bio-psychosocial approach that combines <strong>Cognitive Restructuring</strong> with <strong>Behavioral Techniques</strong>.</p>
+                    </div>
+                </div>
+            `,
+            existential: `
+                 <div class="animate-fade-in">
+                    <div class="flex items-center gap-4 mb-8 border-b border-emerald-100 pb-6">
+                        <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-3xl text-emerald-600 shadow-sm">🌱</div>
+                        <div>
+                            <h2 class="text-3xl font-bold text-stone-900">Humanistic-Existential</h2>
+                            <p class="text-emerald-600 font-medium text-lg">Self-Actualization & Meaning</p>
+                        </div>
+                    </div>
+
+                    <p class="text-lg text-stone-600 mb-8">
+                        Distress occurs when the innate drive for <strong>Self-Actualization</strong> is curbed by society. The therapist provides a supportive environment for the client to find their own way.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="group p-5 rounded-xl border border-emerald-100 hover:bg-emerald-50/50 transition-colors cursor-default">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-stone-800 text-lg">Logotherapy</h3>
+                                    <span class="text-xs text-stone-400">Victor Frankl</span>
+                                </div>
+                                <span class="text-2xl">🕊️</span>
+                            </div>
+                            <p class="mt-2 text-stone-600">"Healing through meaning." Addresses existential anxiety arising from meaninglessness. Even suffering has meaning.</p>
+                        </div>
+
+                        <div class="group p-5 rounded-xl border border-emerald-100 hover:bg-emerald-50/50 transition-colors cursor-default">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-stone-800 text-lg">Client-Centred Therapy</h3>
+                                    <span class="text-xs text-stone-400">Carl Rogers</span>
+                                </div>
+                                <span class="text-2xl">🤲</span>
+                            </div>
+                            <p class="mt-2 text-stone-600">Key ingredients: <strong>Empathy</strong>, <strong>Unconditional Positive Regard</strong>, and <strong>Genuineness</strong>. The therapist acts as a mirror (reflection).</p>
+                        </div>
+
+                         <div class="group p-5 rounded-xl border border-emerald-100 hover:bg-emerald-50/50 transition-colors cursor-default">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-stone-800 text-lg">Gestalt Therapy</h3>
+                                    <span class="text-xs text-stone-400">Fritz Perls</span>
+                                </div>
+                                <span class="text-2xl">🎭</span>
+                            </div>
+                            <p class="mt-2 text-stone-600">Focus on "wholeness" and bodily awareness. Encourages acting out blocked emotions and fantasies.</p>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        // --- FUNCTIONS ---
+
+        // Comparator
+        function updateComparison(criteria) {
+            const container = document.getElementById('comparison-container');
+            const buttons = document.querySelectorAll('.comp-btn');
+            
+            // Button Styles
+            buttons.forEach(btn => {
+                if(btn.dataset.criteria === criteria) {
+                    btn.classList.add('bg-white', 'text-teal-800', 'ring-2', 'ring-teal-500', 'shadow-sm');
+                    btn.classList.remove('text-stone-600', 'border-stone-200');
+                } else {
+                    btn.classList.remove('bg-white', 'text-teal-800', 'ring-2', 'ring-teal-500', 'shadow-sm');
+                    btn.classList.add('text-stone-600', 'border-stone-200');
+                }
+            });
+
+            // Card Injection
+            container.innerHTML = '';
+            comparisonData[criteria].forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = `p-6 rounded-xl bg-white border border-stone-200 shadow-sm flex items-start gap-4 transition-all hover:border-teal-300 fade-in-up`;
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.innerHTML = `
+                    <div class="flex-shrink-0 w-12 h-12 bg-${item.color}-50 rounded-full flex items-center justify-center text-2xl">${item.icon}</div>
+                    <div>
+                        <h4 class="font-bold text-stone-900 text-lg">${item.title}</h4>
+                        <p class="text-stone-600 mt-1 leading-relaxed">${item.content}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Deep Dive
+        function renderDeepDive(target) {
+            const container = document.getElementById('deep-dive-content');
+            container.innerHTML = deepDiveData[target];
+
+            const buttons = document.querySelectorAll('.dive-btn');
+            buttons.forEach(btn => {
+                if(btn.dataset.target === target) {
+                    btn.classList.remove('text-stone-500', 'hover:bg-white');
+                    btn.classList.add('bg-white', 'text-teal-800', 'shadow-sm', 'ring-1', 'ring-stone-200', 'font-semibold');
+                } else {
+                    btn.classList.add('text-stone-500', 'hover:bg-white');
+                    btn.classList.remove('bg-white', 'text-teal-800', 'shadow-sm', 'ring-1', 'ring-stone-200', 'font-semibold');
+                }
+            });
+        }
+
+        // Scroll Spy Logic
+        function initScrollSpy() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, {
+                rootMargin: "-20% 0px -60% 0px" // Adjusts the "trigger zone" to the top part of screen
+            });
+
+            sections.forEach(section => observer.observe(section));
+        }
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateComparison('cause');
+            renderDeepDive('psychodynamic');
+            initScrollSpy();
+
+            // Charts
+            const ctxComp = document.getElementById('comparisonChart').getContext('2d');
+            new Chart(ctxComp, {
+                type: 'radar',
+                data: {
+                    labels: ['Past Focus', 'Present Focus', 'Directive', 'Duration', 'Self-Growth'],
+                    datasets: [
+                        { label: 'Psychodynamic', data: [5, 1, 4, 5, 2], backgroundColor: 'rgba(99, 102, 241, 0.2)', borderColor: 'rgba(99, 102, 241, 1)' },
+                        { label: 'Behavioral', data: [1, 5, 4, 2, 2], backgroundColor: 'rgba(245, 158, 11, 0.2)', borderColor: 'rgba(245, 158, 11, 1)' },
+                        { label: 'Existential', data: [2, 4, 1, 2, 5], backgroundColor: 'rgba(16, 185, 129, 0.2)', borderColor: 'rgba(16, 185, 129, 1)' }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    scales: { r: { ticks: { display: false }, grid: { color: '#e5e7eb' }, pointLabels: { font: { size: 10 } } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            const ctxHeal = document.getElementById('healingChart').getContext('2d');
+            new Chart(ctxHeal, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Patient Motivation', 'Therapeutic Alliance', 'Technique', 'Placebo/Hope'],
+                    datasets: [{ data: [40, 30, 15, 15], backgroundColor: ['#134e4a', '#0d9488', '#5eead4', '#ccfbf1'], borderWidth: 0 }]
+                },
+                options: { maintainAspectRatio: false, responsive: true, plugins: { legend: { position: 'bottom', labels: { padding: 20 } } } }
+            });
+        });
+    </script>
+</body>
+</html>
