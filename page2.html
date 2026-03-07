@@ -4,48 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>An Introduction to Psychology</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="tooplate-inner-peace.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutrals & Sage -->
     <!-- Application Structure Plan: A thematic, single, long-scrolling page (LSP) with a sticky top navigation bar for smooth scrolling to different sections. This structure is chosen to allow continuous consumption of content while still providing quick jump navigation. Content is logically divided into: 1) Core Concepts (interactive cards), 2) Dual Perspectives (side-by-side comparison), 3) Evolution of Thought (tabbed interface), 4) Branches of Psychology (Doughnut Chart + Clickable List), and 5) Psychology in India (interactive timeline). This LSP design prioritizes flow and simple access to all information. -->
     <!-- Visualization & Content Choices: 1. Core Concepts: Report Info -> 3 Components of Psych. Goal -> Organize/Inform. Viz -> Interactive Cards. Interaction -> Click to reveal details. Justification -> Breaks down a foundational concept into digestible, user-initiated pieces. Method -> HTML/CSS/JS. 2. Evolution of Thought: Report Info -> Schools of Psych. Goal -> Organize. Viz -> Tabbed Content. Interaction -> Click tab to show content. Justification -> Manages multiple distinct descriptions in a clean, space-efficient UI. Method -> HTML/CSS/JS. 3. Branches of Psychology: Report Info -> List of branches. Goal -> Inform/Organize. Viz -> Doughnut Chart + Clickable List. Interaction -> Click list item to update text display. Justification -> Chart provides a visual metaphor for the field's diversity, while the list allows for detailed exploration. Library -> Chart.js (Canvas). 4. Psychology in India: Report Info -> Four historical phases. Goal -> Show Change/History. Viz -> Interactive Timeline. Interaction -> Click phase to see description. Justification -> Timeline is the most intuitive representation of historical progression. Method -> HTML/CSS/JS. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
+        /* Override and extend the tooplate styles for this page */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FDFBF8;
-            color: #4A4A4A;
+            background-color: var(--light);
+            color: var(--dark);
         }
+        
         .nav-link {
             transition: color 0.3s, border-bottom-color 0.3s;
             border-bottom: 2px solid transparent;
         }
+        
         .nav-link:hover, .nav-link.active {
-            color: #3A6B6F;
-            border-bottom-color: #3A6B6F;
+            color: var(--primary);
+            border-bottom-color: var(--primary);
         }
-        /* No more .content-section.active or hidden logic for main sections */
         
         .tab-btn.active {
-            background-color: #3A6B6F;
+            background-color: var(--primary);
             color: #FFFFFF;
         }
+        
         .phase.active .phase-dot {
-            background-color: #3A6B6F;
+            background-color: var(--primary);
             transform: scale(1.5);
         }
+        
         .phase.active .phase-label {
-            color: #3A6B6F;
+            color: var(--primary);
             font-weight: 700;
         }
+        
         .branch-btn.active {
-            background-color: #E0EBEA;
-            border-left-color: #3A6B6F;
-            color: #3A6B6F;
+            background-color: rgba(45, 90, 135, 0.1);
+            border-left-color: var(--primary);
+            color: var(--primary);
         }
+        
         .chart-container {
             position: relative; 
             width: 100%; 
@@ -55,10 +57,33 @@
             height: 300px; 
             max-height: 400px;
         }
+        
         @media (min-width: 768px) {
             .chart-container {
                 height: 400px;
             }
+        }
+        
+        /* Additional overrides to match index.html theme */
+        h1, h2, h3 {
+            color: var(--dark) !important;
+        }
+        
+        .text-gray-800 {
+            color: var(--dark) !important;
+        }
+        
+        .text-gray-600, .text-gray-700 {
+            color: #666 !important;
+        }
+        
+        .bg-white {
+            background-color: white !important;
+        }
+        
+        /* Update primary color references */
+        .text-\[#3A6B6F\] {
+            color: var(--primary) !important;
         }
     </style>
 </head>
@@ -96,7 +121,7 @@
             <div class="w-full">
                 <h2 class="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4">Understanding the <br><span class="text-[#3A6B6F]">Science of the Mind</span></h2>
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl">
-                    Psychology is a fascinating, ever-evolving field that dives deep into our mental processes, behaviours, and experiences. It's not just about mental health; it’s about understanding the very essence of how we think, feel, act, and interact with the world around us. This guide provides an interactive exploration of its core principles.
+                    Psychology is a fascinating, ever-evolving field that dives deep into our mental processes, behaviours, and experiences. It's not just about mental health; it's about understanding the very essence of how we think, feel, act, and interact with the world around us. This guide provides an interactive exploration of its core principles.
                 </p>
             </div>
         </section>
@@ -360,7 +385,7 @@
             const schoolDetails = document.getElementById('school-details');
             function updateSchoolContent(schoolKey) {
                 const school = contentData.schools[schoolKey];
-                schoolDetails.innerHTML = `<h3 class="text-2xl font-bold text-[#3A6B6F] mb-3">${school.title}</h3><p class="text-gray-700">${school.content}</p>`;
+                schoolDetails.innerHTML = `<h3 class="text-2xl font-bold text-[var(--primary)] mb-3">${school.title}</h3><p class="text-gray-700">${school.content}</p>`;
             }
             tabBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -409,9 +434,9 @@
                             label: 'Branches of Psychology',
                             data: [1, 1, 1, 1, 1, 1, 1],
                             backgroundColor: [
-                                '#6E9E95', '#8AB6AC', '#A6CDC3', '#3A6B6F', '#568A8E', '#72A9AD', '#8EC8CD'
+                                '#6E9E95', '#8AB6AC', '#A6CDC3', '#2D5A87', '#568A8E', '#72A9AD', '#8EC8CD'
                             ],
-                            borderColor: '#FDFBF8',
+                            borderColor: '#F7F7F7',
                             borderWidth: 4
                         }]
                     },
