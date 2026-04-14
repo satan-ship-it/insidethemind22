@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploring Social Behaviour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 350px; 
+            max-height: 400px; 
+        }
+        @media (min-width: 768px) { 
+            .chart-container { height: 400px; } 
+        }
+        
+        .nav-active {
+            background-color: #fce7f3;
+            color: #be185d;
+            border-right: 4px solid #be185d;
+        }
+        
+        .triangle-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+        }
+        
+        .node {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #fff;
+            border: 2px solid #334155;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 10;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        
+        #node-p { top: 0; left: 100px; }
+        #node-o { bottom: 0; left: 0; }
+        #node-x { bottom: 0; right: 0; }
+        
+        .edge {
+            position: absolute;
+            background-color: #cbd5e1;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+            font-weight: bold;
+            user-select: none;
+        }
+        
+        .edge:hover {
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        #edge-po { width: 141px; height: 10px; top: 100px; left: 17px; transform: rotate(60deg); }
+        #edge-px { width: 141px; height: 10px; top: 100px; left: 91px; transform: rotate(-60deg); }
+        #edge-ox { width: 150px; height: 10px; bottom: 20px; left: 50px; }
+
+        .edge.positive { background-color: #86efac; color: #166534; }
+        .edge.negative { background-color: #fca5a5; color: #991b1b; }
+        
+        .section-content {
+            padding-bottom: 5rem;
+            scroll-margin-top: 2rem;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans h-screen flex flex-col md:flex-row overflow-hidden selection:bg-pink-200">
+
+    <!-- Chosen Palette: Warm Cognition (Stone backgrounds, Pink/Rose accents for interaction, Slate for structure) -->
+    <!-- Application Structure Plan: The SPA uses a fixed-sidebar layout facilitating continuous scrolling. Each section is a major module of the source report. Navigation uses IntersectionObserver to highlight current sections. The Attribution Engine is now a stateful mini-game with multiple scenarios to encourage replayability and deeper understanding of bias. -->
+    <!-- Visualization & Content Choices: 
+         - Continuous Scroll -> Goal: Organize -> Linear flow with quick navigation -> Enhanced readability and spatial memory.
+         - Attribution Engine -> Goal: Comparison/Self-awareness -> Randomized scenarios -> Replayability to show universality of cognitive errors.
+         - Attitude Components -> Goal: Inform -> Interactive Grid -> Visual hierarchy of ABC components.
+         - Heider's Balance Theory -> Goal: Change/Systemic relation -> Interactive Network Diagram (HTML/CSS) -> Toggling edge valence to visualize logic.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <aside class="w-full md:w-64 bg-white border-r border-stone-200 flex-shrink-0 flex flex-col h-auto md:h-full z-20 shadow-[2px_0_8px_-4px_rgba(0,0,0,0.1)]">
+        <div class="p-6">
+            <h1 class="text-2xl font-black text-slate-800 tracking-tight leading-tight">Social<br><span class="text-pink-600">Behaviour</span></h1>
+            <p class="text-sm text-stone-500 mt-2">Interactive Explorer</p>
+        </div>
+        <nav class="flex-1 overflow-x-auto md:overflow-y-auto flex md:flex-col px-4 pb-4 md:px-0 scrollbar-hide" id="sidebar-nav">
+            <button onclick="scrollToSection('intro')" id="nav-intro" class="nav-btn nav-active text-left px-6 py-3 text-sm font-medium text-stone-600 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal">Overview</button>
+            <button onclick="scrollToSection('attitudes')" id="nav-attitudes" class="nav-btn text-left px-6 py-3 text-sm font-medium text-stone-600 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal">1. Anatomy of Attitudes</button>
+            <button onclick="scrollToSection('change')" id="nav-change" class="nav-btn text-left px-6 py-3 text-sm font-medium text-stone-600 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal">2. Changing Minds</button>
+            <button onclick="scrollToSection('cognition')" id="nav-cognition" class="nav-btn text-left px-6 py-3 text-sm font-medium text-stone-600 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal">3. Social Cognition</button>
+            <button onclick="scrollToSection('groups')" id="nav-groups" class="nav-btn text-left px-6 py-3 text-sm font-medium text-stone-600 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal">4. Group Influence</button>
+        </nav>
+    </aside>
+
+    <main id="scroll-container" class="flex-1 h-full overflow-y-auto relative scroll-smooth bg-stone-50/50">
+        <div class="max-w-4xl mx-auto p-6 md:p-12">
+
+            <!-- INTRO SECTION -->
+            <section id="sec-intro" class="section-content">
+                <header class="mb-10">
+                    <span class="inline-block py-1 px-3 rounded-full bg-slate-100 text-slate-600 text-xs font-bold tracking-wider uppercase mb-4">Introduction</span>
+                    <h2 class="text-4xl font-extrabold text-slate-800 mb-4">Navigating the Social World</h2>
+                    <p class="text-xl text-stone-600 leading-relaxed">How our thoughts, emotions, and actions are shaped by the actual, imagined, or implied presence of others.</p>
+                </header>
+                
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-stone-200 mb-8">
+                    <p class="text-lg text-stone-700 leading-relaxed mb-6">
+                        Every day, we engage in mental activities to interpret our social environment—a process known as <strong>social cognition</strong>. This fundamental human drive helps us make sense of the world.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                        <div class="bg-stone-50 p-6 rounded-xl border border-stone-100">
+                            <div class="text-3xl mb-3">🧠</div>
+                            <h3 class="font-bold text-slate-800 mb-2">Form Views</h3>
+                            <p class="text-sm text-stone-600">Developing attitudes and evaluations about specific topics, people, or objects.</p>
+                        </div>
+                        <div class="bg-stone-50 p-6 rounded-xl border border-stone-100">
+                            <div class="text-3xl mb-3">👤</div>
+                            <h3 class="font-bold text-slate-800 mb-2">Make Inferences</h3>
+                            <p class="text-sm text-stone-600">Forming impressions of people's personal qualities based on limited data.</p>
+                        </div>
+                        <div class="bg-stone-50 p-6 rounded-xl border border-stone-100">
+                            <div class="text-3xl mb-3">🔍</div>
+                            <h3 class="font-bold text-slate-800 mb-2">Assign Causes</h3>
+                            <p class="text-sm text-stone-600">Using attribution to figure out why people behave the way they do.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ATTITUDES SECTION -->
+            <section id="sec-attitudes" class="section-content">
+                <header class="mb-10 pt-10 border-t border-stone-200">
+                    <span class="inline-block py-1 px-3 rounded-full bg-pink-100 text-pink-700 text-xs font-bold tracking-wider uppercase mb-4">Module 1</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-4">The Anatomy of Attitudes</h2>
+                    <p class="text-lg text-stone-600 leading-relaxed">
+                        An attitude is a state of mind or a set of views regarding a specific topic (the 'attitude object') that has an evaluative feature.
+                    </p>
+                </header>
+
+                <div class="mb-12">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                        The A-B-C Components
+                        <span class="ml-4 h-px flex-1 bg-stone-200"></span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-t-4 border-stone-200 border-t-red-400 group hover:-translate-y-1 transition-transform">
+                            <h4 class="text-xl font-black text-slate-800 mb-2 flex items-center justify-between">Affective <span class="text-red-400">A</span></h4>
+                            <p class="text-sm text-stone-600">The <strong>emotional</strong> component. Feelings like happiness, anger, or fear associated with the object.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-t-4 border-stone-200 border-t-blue-400 group hover:-translate-y-1 transition-transform">
+                            <h4 class="text-xl font-black text-slate-800 mb-2 flex items-center justify-between">Behavioural <span class="text-blue-400">B</span></h4>
+                            <p class="text-sm text-stone-600">The <strong>conative</strong> aspect. The tendency to act toward the attitude object.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-t-4 border-stone-200 border-t-green-400 group hover:-translate-y-1 transition-transform">
+                            <h4 class="text-xl font-black text-slate-800 mb-2 flex items-center justify-between">Cognitive <span class="text-green-400">C</span></h4>
+                            <p class="text-sm text-stone-600">The <strong>thought</strong> component. Individual knowledge, beliefs, and logic about the object.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-stone-200 mb-12 overflow-hidden">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Attitude Profile Simulator</h3>
+                    <p class="text-sm text-stone-500 mb-6">How do specific features change an attitude's impact?</p>
+                    
+                    <div class="flex flex-col md:flex-row gap-8 items-center">
+                        <div class="w-full md:w-1/2 space-y-5">
+                            <div>
+                                <label class="flex justify-between text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Valence</label>
+                                <input type="range" id="range-valence" min="0" max="100" value="50" class="w-full accent-pink-600" oninput="updateChart()">
+                            </div>
+                            <div>
+                                <label class="flex justify-between text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Extremeness</label>
+                                <input type="range" id="range-extreme" min="0" max="100" value="50" class="w-full accent-slate-600" oninput="updateChart()">
+                            </div>
+                            <div>
+                                <label class="flex justify-between text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Complexity</label>
+                                <input type="range" id="range-complex" min="0" max="100" value="50" class="w-full accent-slate-600" oninput="updateChart()">
+                            </div>
+                            <div>
+                                <label class="flex justify-between text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Centrality</label>
+                                <input type="range" id="range-central" min="0" max="100" value="50" class="w-full accent-slate-600" oninput="updateChart()">
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/2">
+                            <div class="chart-container">
+                                <canvas id="attitudeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHANGE SECTION -->
+            <section id="sec-change" class="section-content">
+                 <header class="mb-10 pt-10 border-t border-stone-200">
+                    <span class="inline-block py-1 px-3 rounded-full bg-pink-100 text-pink-700 text-xs font-bold tracking-wider uppercase mb-4">Module 2</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-4">Changing Minds</h2>
+                    <p class="text-lg text-stone-600 leading-relaxed">
+                        Attitudes, especially in formative stages, can be modified through balance, dissonance, and admiration.
+                    </p>
+                </header>
+
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-stone-200 mb-12">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2 text-center md:text-left">Heider's Balance Simulator (P-O-X)</h3>
+                    <p class="text-stone-600 mb-8 text-sm text-center md:text-left">Click the lines (+ / -) to find a logically balanced triangle.</p>
+                    
+                    <div class="bg-stone-50 rounded-xl p-8 border border-stone-100 flex flex-col items-center">
+                        <div class="triangle-container mb-8">
+                            <div class="node" id="node-p">P</div>
+                            <div class="node" id="node-o">O</div>
+                            <div class="node" id="node-x">X</div>
+                            
+                            <div class="edge positive" id="edge-po" onclick="toggleEdge('po')">+</div>
+                            <div class="edge positive" id="edge-px" onclick="toggleEdge('px')">+</div>
+                            <div class="edge positive" id="edge-ox" onclick="toggleEdge('ox')">+</div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div id="balance-status" class="text-2xl font-black text-green-600 mb-2">BALANCED STATE</div>
+                            <p id="balance-desc" class="text-stone-600 text-sm max-w-md">The system is logically comfortable.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                        <h4 class="text-xl font-bold text-slate-800 mb-3">Cognitive Dissonance</h4>
+                        <div class="bg-red-50 p-4 rounded-lg border border-red-100 mb-4 text-sm text-red-900">
+                            <strong>Dissonance:</strong> Holding two conflicting cognitions (e.g., smoking is bad vs. I smoke).
+                        </div>
+                        <p class="text-sm text-stone-600">Resolution requires changing one cognition, usually by altering behaviour.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                        <h4 class="text-xl font-bold text-slate-800 mb-3">Two-Step Concept</h4>
+                        <p class="text-sm text-stone-600 mb-3">1. Identification with an admired source.</p>
+                        <p class="text-sm text-stone-600">2. Source changes own behavior; Target observes and imitates.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COGNITION SECTION -->
+            <section id="sec-cognition" class="section-content">
+                <header class="mb-10 pt-10 border-t border-stone-200">
+                    <span class="inline-block py-1 px-3 rounded-full bg-pink-100 text-pink-700 text-xs font-bold tracking-wider uppercase mb-4">Module 3</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-4">Social Cognition</h2>
+                    <p class="text-lg text-stone-600 leading-relaxed">
+                        Gathering and processing information about the social world via schemas, stereotypes, and attributions.
+                    </p>
+                </header>
+
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-stone-200 border-t-4 border-t-pink-500 mb-8">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-1">The Attribution Engine</h3>
+                            <p class="text-stone-500 text-sm">Test your bias across multiple scenarios.</p>
+                        </div>
+                        <div id="game-stats" class="text-right mt-2 md:mt-0 text-xs font-bold text-stone-400 uppercase tracking-widest">
+                            Scenario <span id="current-scenario-idx">1</span> / 4
+                        </div>
+                    </div>
+                    
+                    <div id="attr-game-container" class="min-h-[200px] flex flex-col justify-center">
+                        <div id="attr-scenario" class="bg-stone-50 p-6 rounded-xl text-center mb-6 border border-stone-200">
+                            <p id="scenario-text" class="text-xl font-medium text-slate-800">Scenario text goes here...</p>
+                            <p class="text-sm text-stone-500 mt-2">Why did this happen?</p>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center" id="attr-buttons">
+                            <button id="btn-internal" onclick="checkAttribution('internal')" class="px-6 py-4 bg-white border-2 border-slate-300 text-slate-700 font-bold rounded-xl hover:border-slate-500 transition-all text-center">
+                                <span id="internal-label">Personality</span> <br><span class="text-xs font-normal">(Internal)</span>
+                            </button>
+                            <button id="btn-external" onclick="checkAttribution('external')" class="px-6 py-4 bg-white border-2 border-slate-300 text-slate-700 font-bold rounded-xl hover:border-slate-500 transition-all text-center">
+                                <span id="external-label">Situation</span> <br><span class="text-xs font-normal">(External)</span>
+                            </button>
+                        </div>
+
+                        <div id="attr-result" class="hidden mt-6 p-6 rounded-xl bg-pink-50 border border-pink-100 fade-in">
+                            <h4 class="font-bold text-pink-800 mb-2" id="attr-result-title">Result Title</h4>
+                            <p class="text-sm text-pink-900 leading-relaxed mb-4" id="attr-result-text">Explanation...</p>
+                            <button onclick="nextScenario()" class="px-5 py-2 bg-pink-600 text-white text-sm font-bold rounded-lg hover:bg-pink-700 transition-colors shadow-sm">
+                                Try Another Scenario
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-white rounded-lg shadow-sm border border-stone-200">
+                        <strong class="text-slate-900 text-sm block mb-1">Primacy Effect</strong>
+                        <p class="text-xs text-stone-600">First impressions dominate the final judgment.</p>
+                    </div>
+                    <div class="p-4 bg-white rounded-lg shadow-sm border border-stone-200">
+                        <strong class="text-slate-900 text-sm block mb-1">Halo Effect</strong>
+                        <p class="text-xs text-stone-600">One positive trait leads to assuming others.</p>
+                    </div>
+                    <div class="p-4 bg-white rounded-lg shadow-sm border border-stone-200">
+                        <strong class="text-slate-900 text-sm block mb-1">Kernel of Truth</strong>
+                        <p class="text-xs text-stone-600">Stereotypes persist due to small perceived truths.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GROUPS SECTION -->
+            <section id="sec-groups" class="section-content">
+                <header class="mb-10 pt-10 border-t border-stone-200">
+                    <span class="inline-block py-1 px-3 rounded-full bg-pink-100 text-pink-700 text-xs font-bold tracking-wider uppercase mb-4">Module 4</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800 mb-4">Presence of Others</h2>
+                    <p class="text-lg text-stone-600 leading-relaxed">
+                        Performance and helping behavior are deeply influenced by the collective environment.
+                    </p>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+                        <div class="text-4xl mb-4">👀</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Social Facilitation</h3>
+                        <p class="text-sm text-stone-600 mb-4">Performance peaks on simple tasks when observed, but may dip on complex ones (Inhibition).</p>
+                        <ul class="text-xs text-stone-500 space-y-1 italic">
+                            <li>• Evaluation Apprehension</li>
+                            <li>• Psychological Arousal</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
+                        <div class="text-4xl mb-4">👥</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Social Loafing</h3>
+                        <p class="text-sm text-stone-600">Occurs when individual effort isn't identified, leading to a <strong>Diffusion of Responsibility</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-3xl p-8 shadow-xl text-white relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 text-slate-700 text-9xl font-black select-none opacity-20">HELP</div>
+                    <h3 class="text-2xl font-bold mb-4 text-pink-300 relative z-10">Pro-social Behaviour</h3>
+                    <p class="text-slate-300 text-sm mb-6 relative z-10">Voluntary action to benefit others at a personal cost. Driven by empathy and social norms.</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 relative z-10">
+                        <div class="bg-slate-700/50 p-4 rounded-xl border border-slate-600">
+                            <span class="text-pink-400 block font-bold mb-1">Reciprocity</span>
+                            <p class="text-xs text-slate-400">Helping those who helped us.</p>
+                        </div>
+                        <div class="bg-slate-700/50 p-4 rounded-xl border border-slate-600">
+                            <span class="text-pink-400 block font-bold mb-1">Equity</span>
+                            <p class="text-xs text-slate-400">Helping when it feels fair.</p>
+                        </div>
+                        <div class="bg-slate-700/50 p-4 rounded-xl border border-slate-600">
+                            <span class="text-pink-400 block font-bold mb-1">Responsibility</span>
+                            <p class="text-xs text-slate-400">Helping anyone in need.</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-slate-700 flex flex-col md:flex-row items-center gap-6">
+                        <div class="w-16 h-16 rounded-full bg-red-400/20 flex items-center justify-center text-3xl">🔕</div>
+                        <div>
+                            <h4 class="font-bold text-pink-200">The Bystander Effect</h4>
+                            <p class="text-sm text-slate-400">The presence of many witnesses reduces the likelihood of help being offered by any single person.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <footer class="py-20 text-center text-stone-400 text-sm">
+                End of Explorer • Created for Social Psychology Analysis
+            </footer>
+
+        </div>
+    </main>
+
+    <script>
+        // --- Navigation & Scroll Logic ---
+        const scrollContainer = document.getElementById('scroll-container');
+        const sections = document.querySelectorAll('.section-content');
+        const navButtons = document.querySelectorAll('.nav-btn');
+
+        function scrollToSection(id) {
+            const target = document.getElementById('sec-' + id);
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Highlight nav on scroll using IntersectionObserver
+        const observerOptions = {
+            root: scrollContainer,
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id.replace('sec-', '');
+                    navButtons.forEach(btn => {
+                        btn.classList.toggle('nav-active', btn.id === 'nav-' + id);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+
+        // --- Module 1: Chart.js Radar logic ---
+        let attitudeChart;
+        function initChart() {
+            const ctx = document.getElementById('attitudeChart').getContext('2d');
+            attitudeChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Valence', 'Extremeness', 'Complexity', 'Centrality'],
+                    datasets: [{
+                        label: 'Attitude profile',
+                        data: [50, 50, 50, 50],
+                        backgroundColor: 'rgba(219, 39, 119, 0.2)',
+                        borderColor: 'rgba(219, 39, 119, 1)',
+                        pointBackgroundColor: 'rgba(219, 39, 119, 1)',
+                        pointBorderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                            pointLabels: { font: { size: 10, weight: 'bold' }, color: '#475569' },
+                            ticks: { display: false, min: 0, max: 100 }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateChart() {
+            const v = document.getElementById('range-valence').value;
+            const e = document.getElementById('range-extreme').value;
+            const c = document.getElementById('range-complex').value;
+            const t = document.getElementById('range-central').value;
+            attitudeChart.data.datasets[0].data = [v, e, c, t];
+            attitudeChart.update();
+        }
+
+        // --- Module 2: Heider P-O-X logic ---
+        const edges = { po: 1, px: 1, ox: 1 };
+        function toggleEdge(id) {
+            const el = document.getElementById('edge-' + id);
+            edges[id] *= -1;
+            el.className = `edge ${edges[id] === 1 ? 'positive' : 'negative'}`;
+            el.innerText = edges[id] === 1 ? '+' : '-';
+            checkBalance();
+        }
+        function checkBalance() {
+            const product = edges.po * edges.px * edges.ox;
+            const s = document.getElementById('balance-status');
+            const d = document.getElementById('balance-desc');
+            if (product === 1) {
+                s.innerText = "BALANCED STATE";
+                s.className = "text-2xl font-black text-green-600 mb-2";
+                d.innerText = "The system is logically comfortable.";
+            } else {
+                s.innerText = "IMBALANCED STATE";
+                s.className = "text-2xl font-black text-red-600 mb-2";
+                d.innerText = "The mind will strive to shift an attitude to resolve this tension.";
+            }
+        }
+
+        // --- Module 3: Replayable Attribution Engine Game ---
+        const scenarios = [
+            {
+                text: "Scenario: A coworker is late to an important team meeting.",
+                internal: "They are disorganized.",
+                external: "Traffic was terrible."
+            },
+            {
+                text: "Scenario: A student fails a simple mathematics test.",
+                internal: "They lack ability.",
+                external: "The test was unfairly difficult."
+            },
+            {
+                text: "Scenario: A driver cuts you off aggressively in traffic.",
+                internal: "They are a reckless person.",
+                external: "They might be rushing to an emergency."
+            },
+            {
+                text: "Scenario: Your friend didn't reply to your text for 24 hours.",
+                internal: "They are ignoring you.",
+                external: "They are overwhelmed at work."
+            }
+        ];
+        let currentScenarioIdx = 0;
+
+        function loadScenario() {
+            const s = scenarios[currentScenarioIdx];
+            document.getElementById('scenario-text').innerText = s.text;
+            document.getElementById('internal-label').innerText = `"${s.internal}"`;
+            document.getElementById('external-label').innerText = `"${s.external}"`;
+            document.getElementById('current-scenario-idx').innerText = currentScenarioIdx + 1;
+            
+            document.getElementById('attr-buttons').classList.remove('hidden', 'opacity-50', 'pointer-events-none');
+            document.getElementById('attr-result').classList.add('hidden');
+        }
+
+        function checkAttribution(choice) {
+            const resBox = document.getElementById('attr-result');
+            const title = document.getElementById('attr-result-title');
+            const text = document.getElementById('attr-result-text');
+            
+            document.getElementById('attr-buttons').classList.add('hidden');
+            resBox.classList.remove('hidden');
+
+            if(choice === 'internal') {
+                title.innerText = "Dispositional Bias detected!";
+                text.innerHTML = "By choosing the internal cause, you've demonstrated the <strong>Fundamental Attribution Error</strong>. We tend to blame people's character rather than their circumstances when things go wrong for them.";
+            } else {
+                title.innerText = "Situational Awareness!";
+                text.innerHTML = "You considered external factors. However, the <strong>Actor-Observer Effect</strong> suggests that while you give others the benefit of the doubt here, you are even more likely to blame external factors for your <em>own</em> mistakes!";
+            }
+        }
+
+        function nextScenario() {
+            currentScenarioIdx = (currentScenarioIdx + 1) % scenarios.length;
+            loadScenario();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            loadScenario();
+        });
+    </script>
+</body>
+</html>
