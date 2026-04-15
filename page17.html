@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Psychology: Mind & Milieu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        stonebg: '#f9f8f6',
+                        stonecard: '#f0ece3',
+                        stonetext: '#3d3832',
+                        accentgreen: '#6b8e4e',
+                        accentrust: '#c05c48',
+                        accentgold: '#d4a373'
+                    },
+                    fontFamily: {
+                        sans: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f9f8f6;
+            color: #3d3832;
+        }
+        /* Mandatory Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constrain max width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Controlled height */
+            max-height: 400px;
+        }
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 250px;
+            }
+        }
+        
+        /* Custom UI element transitions */
+        .interactive-card {
+            transition: all 0.3s ease;
+        }
+        .interactive-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Tab transitions */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Proxemics Diagram (HTML/CSS only, NO SVG) */
+        .proxemics-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .zone {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px dashed #d4a373;
+            background-color: rgba(212, 163, 115, 0.1);
+        }
+        .zone:hover {
+            background-color: rgba(212, 163, 115, 0.3);
+            border-style: solid;
+        }
+        .zone-public { width: 300px; height: 300px; z-index: 1; }
+        .zone-social { width: 220px; height: 220px; z-index: 2; border-color: #6b8e4e; background-color: rgba(107, 142, 78, 0.1); }
+        .zone-social:hover { background-color: rgba(107, 142, 78, 0.3); }
+        .zone-personal { width: 140px; height: 140px; z-index: 3; border-color: #c05c48; background-color: rgba(192, 92, 72, 0.1); }
+        .zone-personal:hover { background-color: rgba(192, 92, 72, 0.3); }
+        .zone-intimate { width: 60px; height: 60px; z-index: 4; border-style: solid; background-color: #3d3832; color: #f9f8f6; font-size: 1.5rem; }
+    </style>
+</head>
+<body class="antialiased font-sans flex flex-col min-h-screen">
+
+    <!-- Chosen Palette: Warm Neutrals (Stone/Cream) with Sage Green and Rust Accents -->
+    <!-- Application Structure Plan: The SPA uses a functional dashboard/thematic approach. It opens with an overarching definition, then guides the user through four logical modules: 1. Core Perspectives (Foundation), 2. Environmental Stressors (Interactive Explorer with Chart.js), 3. Broader Social Contexts (Tabbed Interface for complex topics), and 4. Actionable Pro-Environmental Behavior (Interactive Checklist). This transforms a dense text into an exploratory journey, separating theoretical framing from practical impacts and concluding with user agency. -->
+    <!-- Visualization & Content Choices: 
+         - Perspectives -> Interactive Cards -> Allows focused reading of distinct philosophies without clutter.
+         - Stressors -> Dynamic Radar Chart (Chart.js) -> Compares qualitative impact levels across different cognitive/physical domains, transforming text descriptions into a visual comparative profile.
+         - Crowding/Personal Space -> HTML/CSS Concentric Circles -> Visually represents the spatial concept of 'Proxemics' directly, avoiding SVG while demonstrating spatial relationships perfectly.
+         - Social Concerns -> Tabbed Panels -> Organizes dense, disparate topics (Poverty, Aggression, Health) into consumable chunks.
+         - Pro-Environmental Behavior -> Interactive Checklist with Progress Bar -> Converts a list of recommendations into an engaging, gamified action plan.
+         NO SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-stonebg/90 backdrop-blur-md border-b border-stonecard shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="font-bold text-xl text-stonetext tracking-tight">🌿 EnvPsych Explorer</div>
+            <div class="hidden md:flex space-x-6 text-sm font-medium">
+                <a href="#perspectives" class="hover:text-accentgreen transition-colors">Perspectives</a>
+                <a href="#stressors" class="hover:text-accentgreen transition-colors">Stressors</a>
+                <a href="#social" class="hover:text-accentgreen transition-colors">Social Concerns</a>
+                <a href="#action" class="hover:text-accentgreen transition-colors">Take Action</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header / Intro -->
+    <header class="max-w-4xl mx-auto px-4 py-16 text-center">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-stonetext mb-6 leading-tight">Humanity & Habitat:<br><span class="text-accentgreen">The Psychology of Our Environment</span></h1>
+        <p class="text-lg md:text-xl text-stone-600 mb-8 max-w-2xl mx-auto">
+            Environmental psychology explores the profound, reciprocal relationship between human beings and their surroundings. Whether interacting with the untouched natural world or our human-created built environments, our minds shape our spaces, and our spaces shape our minds.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 text-sm">
+            <span class="px-4 py-2 bg-stonecard rounded-full font-medium shadow-sm">🌳 Natural Environment</span>
+            <span class="px-4 py-2 bg-stonecard rounded-full font-medium shadow-sm">🏙️ Built Environment</span>
+            <span class="px-4 py-2 bg-stonecard rounded-full font-medium shadow-sm">📐 Environmental Design</span>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-6xl mx-auto px-4 space-y-24 pb-24">
+
+        <!-- SECTION 1: Perspectives -->
+        <section id="perspectives" class="pt-8">
+            <div class="mb-10 text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-stonetext mb-4">Core Perspectives</h2>
+                <p class="text-stone-600">
+                    This section breaks down the three primary psychological lenses through which humans view their relationship with the physical environment. Click each perspective to understand its fundamental assumptions and outcomes.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Minimalist -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 interactive-card cursor-default">
+                    <div class="text-4xl mb-4">⏸️</div>
+                    <h3 class="text-xl font-bold mb-2">The Minimalist</h3>
+                    <p class="text-stone-600 text-sm mb-4">Views the physical environment and humans as parallel, separate components.</p>
+                    <div class="p-3 bg-stone-50 rounded-lg text-sm border-l-4 border-stone-300">
+                        <strong>Assumption:</strong> The environment has minimal influence on human behavior. We exist alongside it, largely unaffected.
+                    </div>
+                </div>
+
+                <!-- Instrumental -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 interactive-card cursor-default">
+                    <div class="text-4xl mb-4">⚙️</div>
+                    <h3 class="text-xl font-bold mb-2">The Instrumental</h3>
+                    <p class="text-stone-600 text-sm mb-4">Views the environment primarily as a resource for human comfort, use, and progress.</p>
+                    <div class="p-3 bg-red-50 rounded-lg text-sm border-l-4 border-accentrust">
+                        <strong>Outcome:</strong> Often leads to environmental exploitation, pollution, and the depletion of natural resources to fulfill immediate human needs.
+                    </div>
+                </div>
+
+                <!-- Spiritual -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 interactive-card cursor-default ring-2 ring-accentgreen/20">
+                    <div class="text-4xl mb-4">🧘</div>
+                    <h3 class="text-xl font-bold mb-2 text-accentgreen">The Spiritual</h3>
+                    <p class="text-stone-600 text-sm mb-4">Recognizes a deeply interdependent relationship based on value and respect.</p>
+                    <div class="p-3 bg-green-50 rounded-lg text-sm border-l-4 border-accentgreen">
+                        <strong>Examples:</strong> The Bishnoi community and the Chipko movement in India actively protecting trees. Human happiness relies on a healthy ecosystem.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Environmental Stressors (Interactive Dashboard) -->
+        <section id="stressors" class="pt-8 bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+            <div class="mb-8 max-w-3xl">
+                <h2 class="text-3xl font-bold text-stonetext mb-4">Environmental Stressors Dashboard</h2>
+                <p class="text-stone-600">
+                    Humans exert influence to fulfill needs, often causing damage that bounces back as stressors—conditions creating tension and anxiety. Select a stressor below to explore its psychological characteristics, effects, and view a conceptual impact profile.
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Selectors -->
+                <div class="w-full lg:w-1/3 flex flex-col space-y-3">
+                    <button onclick="updateStressor('noise')" id="btn-noise" class="stressor-btn text-left px-5 py-4 rounded-xl border-2 border-accentrust bg-red-50 font-bold transition-colors">
+                        🔊 Noise
+                    </button>
+                    <button onclick="updateStressor('pollution')" id="btn-pollution" class="stressor-btn text-left px-5 py-4 rounded-xl border-2 border-transparent bg-stonecard hover:bg-stone-200 font-bold transition-colors">
+                        🏭 Pollution
+                    </button>
+                    <button onclick="updateStressor('crowding')" id="btn-crowding" class="stressor-btn text-left px-5 py-4 rounded-xl border-2 border-transparent bg-stonecard hover:bg-stone-200 font-bold transition-colors">
+                        🚶‍♂️ Crowding
+                    </button>
+                    <button onclick="updateStressor('disasters')" id="btn-disasters" class="stressor-btn text-left px-5 py-4 rounded-xl border-2 border-transparent bg-stonecard hover:bg-stone-200 font-bold transition-colors">
+                        🌪️ Natural Disasters
+                    </button>
+                </div>
+
+                <!-- Content Area -->
+                <div class="w-full lg:w-2/3 bg-stone-50 rounded-2xl p-6 border border-stone-200">
+                    <div id="stressor-text-content" class="mb-8">
+                        <!-- Dynamic Text Content Injected Here -->
+                    </div>
+                    
+                    <!-- Chart Container for Radar Chart -->
+                    <div id="radar-container" class="chart-container">
+                        <canvas id="stressorRadarChart"></canvas>
+                    </div>
+
+                    <!-- Proxemics Interactive Diagram (Only shows for Crowding) -->
+                    <div id="proxemics-diagram" class="hidden mt-8 text-center">
+                        <h4 class="font-bold mb-2">Interactive Proxemics: Zones of Personal Space</h4>
+                        <p class="text-xs text-stone-500 mb-6">Hover over the zones to see distance categorizations.</p>
+                        <div class="proxemics-container">
+                            <div class="zone zone-public" title="Public Distance: 10+ feet" onmouseover="showZoneInfo('Public Distance: 10 feet to infinity')"></div>
+                            <div class="zone zone-social" title="Social Distance: 4 - 10 feet" onmouseover="showZoneInfo('Social Distance: 4 to 10 feet')"></div>
+                            <div class="zone zone-personal" title="Personal Distance: 18 inches - 4 feet" onmouseover="showZoneInfo('Personal Distance: 18 inches to 4 feet')"></div>
+                            <div class="zone zone-intimate" title="Intimate Distance: 0 - 18 inches" onmouseover="showZoneInfo('Intimate: 0-18 in')">👤</div>
+                        </div>
+                        <div id="zone-info-display" class="mt-4 h-8 font-medium text-accentrust">Hover over a zone</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Social Concerns -->
+        <section id="social" class="pt-8">
+            <div class="mb-10 text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-stonetext mb-4">Beyond the Physical: Social Concerns</h2>
+                <p class="text-stone-600">
+                    Human behavior is profoundly shaped by broader societal issues. Use the tabs below to explore how social structures, media, and conceptualizations of health intersect with environmental psychology.
+                </p>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="flex flex-wrap border-b border-stone-300 mb-6">
+                <button onclick="switchTab('poverty')" id="tab-poverty" class="tab-btn active px-6 py-3 font-bold text-accentgreen border-b-2 border-accentgreen bg-white">Poverty & Inequality</button>
+                <button onclick="switchTab('aggression')" id="tab-aggression" class="tab-btn px-6 py-3 font-medium text-stone-500 hover:text-stone-800 transition-colors border-b-2 border-transparent">Aggression & Peace</button>
+                <button onclick="switchTab('health')" id="tab-health" class="tab-btn px-6 py-3 font-medium text-stone-500 hover:text-stone-800 transition-colors border-b-2 border-transparent">Health & Behavior</button>
+                <button onclick="switchTab('tv')" id="tab-tv" class="tab-btn px-6 py-3 font-medium text-stone-500 hover:text-stone-800 transition-colors border-b-2 border-transparent">Media Impact</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="bg-white p-6 md:p-8 rounded-b-2xl rounded-tr-2xl shadow-sm border border-stone-100">
+                
+                <!-- Poverty Tab -->
+                <div id="content-poverty" class="tab-content active">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-4">The Cycle of Poverty</h3>
+                            <p class="mb-4">Poverty is closely tied to <strong>deprivation</strong> (feeling one gets less than deserved) and <strong>social disadvantage</strong>. This creates discrimination.</p>
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-start"><span class="mr-2">📉</span> <strong>Psychological Impact:</strong> Lowers achievement motivation, self-esteem, and cognitive performance. Increases anxiety and risk of mental illness.</li>
+                                <li class="flex items-start"><span class="mr-2">🔄</span> <strong>The Poverty Cycle:</strong> Low income -> Poor health & education -> Continued low income.</li>
+                                <li class="flex items-start"><span class="mr-2">🧠</span> <strong>Culture of Poverty:</strong> A learned belief system that one is destined to remain poor.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-stone-50 p-6 rounded-xl flex flex-col justify-center border border-stone-200">
+                            <h4 class="font-bold text-accentgold mb-2 text-lg">Breaking the Cycle</h4>
+                            <p class="text-sm text-stone-700">Alleviation requires creating equitable educational opportunities, improving mental health, and empowering the poor through initiatives like <strong>Antyodaya</strong>, which focuses on uplifting the most disadvantaged members of society.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aggression Tab -->
+                <div id="content-aggression" class="tab-content">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-4">Aggression, Violence & Peace</h3>
+                            <div class="space-y-4">
+                                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
+                                    <h4 class="font-bold">Types of Aggression</h4>
+                                    <p class="text-sm mt-1"><strong>Instrumental:</strong> Aimed to obtain a specific goal/object.<br><strong>Hostile:</strong> Expression of anger meant purely to injure.</p>
+                                </div>
+                                <p class="text-sm"><strong>Frustration-Aggression Theory:</strong> Being prevented from reaching a goal causes frustration, triggering aggression (often leading to displacement against weaker targets).</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-3">Paths to Peace</h4>
+                            <ul class="space-y-2 text-sm text-stone-700 mb-4">
+                                <li>• Avoid rewarding violent behavior.</li>
+                                <li>• Reduce exposure to aggressive models.</li>
+                                <li>• Implement social justice to reduce mass frustration.</li>
+                            </ul>
+                            <div class="bg-green-50 p-4 rounded-lg border-l-4 border-accentgreen">
+                                <p class="text-sm">Establishing peace relies on internalizing non-violence, championed by <strong>Mahatma Gandhi</strong> as an active force of the spirit.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Tab -->
+                <div id="content-health" class="tab-content">
+                    <div class="max-w-2xl mx-auto text-center">
+                        <div class="text-5xl mb-4">❤️‍🩹</div>
+                        <h3 class="text-2xl font-bold mb-4">A Holistic View of Health</h3>
+                        <p class="mb-6 text-lg">Health is a state of complete <strong>biological, psychological, and social well-being</strong>, not merely the absence of disease.</p>
+                        
+                        <div class="grid grid-cols-3 gap-4 text-left">
+                            <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                <h4 class="font-bold mb-2">Cognitions</h4>
+                                <p class="text-xs text-stone-600">Individual beliefs about a disease's severity and its causes strongly influence health outcomes.</p>
+                            </div>
+                            <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                <h4 class="font-bold mb-2">Lifestyle</h4>
+                                <p class="text-xs text-stone-600">Diet, exercise, and avoiding substance abuse form the behavioral foundation of well-being.</p>
+                            </div>
+                            <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                <h4 class="font-bold mb-2">Behavior Medicine</h4>
+                                <p class="text-xs text-stone-600">A field seeking to alleviate disease-related stress strictly through beneficial modifications in behavior.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TV Tab -->
+                <div id="content-tv" class="tab-content">
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-4">Impact of Television</h3>
+                            <p class="mb-4">While TV provides vast amounts of attractive information and education, excessive consumption has profound psychological consequences.</p>
+                            <ul class="space-y-2 text-stone-700">
+                                <li>📉 Reduces reading and outdoor play.</li>
+                                <li>🧠 Negatively affects children's ability to concentrate.</li>
+                                <li>🛍️ Fosters a consumerist attitude.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-stone-800 text-white p-6 rounded-xl shadow-inner">
+                            <h4 class="font-bold text-accentgold mb-2 text-lg">The Catharsis Myth</h4>
+                            <p class="text-sm opacity-90 mb-3">Some hypothesize that viewing violence safely releases bottled-up aggression (catharsis).</p>
+                            <div class="bg-white/10 p-3 rounded border border-white/20">
+                                <p class="text-sm font-bold text-red-300">The Reality:</p>
+                                <p class="text-sm">Extensive research indicates watching televised violence, especially by young children, acts as a model that <strong>actively increases</strong> their aggressive behavior.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 4: Call to Action -->
+        <section id="action" class="pt-8">
+            <div class="bg-accentgreen text-white rounded-3xl p-8 shadow-md">
+                <div class="mb-8 text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-4">Pro-Environmental Behavior</h2>
+                    <p class="text-white/80">
+                        Human intervention shouldn't just be a stressor. We must engage in actions meant to protect the environment and promote its health. Commit to these actions to build your personal ecological impact score.
+                    </p>
+                </div>
+
+                <div class="max-w-2xl mx-auto bg-white/10 p-6 rounded-2xl backdrop-blur-sm border border-white/20">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-bold text-lg">Your Commitment Level:</span>
+                        <span id="progress-text" class="font-bold text-2xl text-accentgold">0%</span>
+                    </div>
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-stone-800/50 rounded-full h-4 mb-8 overflow-hidden">
+                        <div id="progress-bar" class="bg-accentgold h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+
+                    <!-- Checklist -->
+                    <div class="space-y-3">
+                        <label class="flex items-center p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors border border-transparent hover:border-white/20">
+                            <input type="checkbox" class="action-check w-5 h-5 text-accentgold bg-stone-800 border-white/30 rounded focus:ring-accentgold focus:ring-2">
+                            <span class="ml-3 font-medium">Reduce Air and Noise Pollution</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors border border-transparent hover:border-white/20">
+                            <input type="checkbox" class="action-check w-5 h-5 text-accentgold bg-stone-800 border-white/30 rounded focus:ring-accentgold focus:ring-2">
+                            <span class="ml-3 font-medium">Manage Garbage (Separate Biodegradable/Non-biodegradable)</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors border border-transparent hover:border-white/20">
+                            <input type="checkbox" class="action-check w-5 h-5 text-accentgold bg-stone-800 border-white/30 rounded focus:ring-accentgold focus:ring-2">
+                            <span class="ml-3 font-medium">Plant and Protect Trees</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors border border-transparent hover:border-white/20">
+                            <input type="checkbox" class="action-check w-5 h-5 text-accentgold bg-stone-800 border-white/30 rounded focus:ring-accentgold focus:ring-2">
+                            <span class="ml-3 font-medium">Refuse Single-Use Plastics</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors border border-transparent hover:border-white/20">
+                            <input type="checkbox" class="action-check w-5 h-5 text-accentgold bg-stone-800 border-white/30 rounded focus:ring-accentgold focus:ring-2">
+                            <span class="ml-3 font-medium">Follow Optimal Environmental Design Laws</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-800 text-stone-400 py-8 text-center text-sm">
+        <p>Interactive synthesis of Environmental Psychology concepts. Generated for educational exploration.</p>
+    </footer>
+
+    <!-- Interactive Logic -->
+    <script>
+        // --- Data Definitions ---
+        const stressorData = {
+            noise: {
+                title: "Noise",
+                desc: "Any annoying or unpleasant sound. Effects depend on intensity, predictability, and controllability.",
+                details: "People can adapt during simple tasks. However, intense, unpredictable noise lowers performance on difficult tasks, causes severe annoyance, and disrupts sleep.",
+                chartData: [8, 7, 5, 3], // Cognitive Disturbance, Emotional Annoyance, Physical Health, Social Disruption (Conceptual 1-10)
+                color: "#c05c48"
+            },
+            pollution: {
+                title: "Pollution",
+                desc: "Air, water, and soil pollution negatively impact physical and psychological health.",
+                details: "Toxic substances affect the nervous system, leading to tension, anxiety, and decreased work efficiency. Example: Inhaling tobacco smoke increases aggression levels.",
+                chartData: [6, 8, 9, 4],
+                color: "#5b5049"
+            },
+            crowding: {
+                title: "Crowding",
+                desc: "A feeling of discomfort resulting from too many people/things around, leading to restriction and loss of privacy.",
+                details: "Related to density. Consequences include abnormal behavior, aggression, lowered cognitive performance. Depends on crowding tolerance and competition tolerance.",
+                chartData: [7, 9, 4, 8],
+                color: "#d4a373"
+            },
+            disasters: {
+                title: "Natural Disasters",
+                desc: "Earthquakes, tsunamis, floods cause immense damage and arrive without warning.",
+                details: "Frequently lead to PTSD (physical exhaustion, emotional grief, cognitive confusion, withdrawal). Requires interventions emphasizing material relief, counseling, and building self-efficacy.",
+                chartData: [9, 10, 8, 7],
+                color: "#2a4365"
+            }
+        };
+
+        // --- Chart Initialization ---
+        let radarChart;
+        const ctx = document.getElementById('stressorRadarChart').getContext('2d');
+
+        function initChart() {
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Cognitive Disturbance', 'Emotional Stress', 'Physical Impact', 'Social Disruption'],
+                    datasets: [{
+                        label: 'Conceptual Severity Profile (1-10)',
+                        data: stressorData['noise'].chartData,
+                        backgroundColor: 'rgba(192, 92, 72, 0.2)',
+                        borderColor: '#c05c48',
+                        pointBackgroundColor: '#c05c48',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#c05c48',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0,0,0,0.1)' },
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            pointLabels: {
+                                font: { size: 12, family: 'system-ui' },
+                                color: '#3d3832'
+                            },
+                            ticks: {
+                                display: false, // Hide numeric ticks for cleaner look
+                                min: 0,
+                                max: 10
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Severity Score: ${context.raw}/10`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- UI Update Functions ---
+        function updateStressor(type) {
+            // Update Buttons UI
+            document.querySelectorAll('.stressor-btn').forEach(btn => {
+                btn.classList.remove('border-accentrust', 'bg-red-50');
+                btn.classList.add('border-transparent', 'bg-stonecard');
+            });
+            const activeBtn = document.getElementById(`btn-${type}`);
+            activeBtn.classList.remove('border-transparent', 'bg-stonecard');
+            activeBtn.classList.add('border-accentrust', 'bg-red-50');
+
+            // Update Text Content
+            const data = stressorData[type];
+            document.getElementById('stressor-text-content').innerHTML = `
+                <h3 class="text-2xl font-bold mb-2 text-stonetext">${data.title}</h3>
+                <p class="text-lg font-medium text-stone-800 mb-3">${data.desc}</p>
+                <div class="bg-white p-4 rounded-lg border-l-4" style="border-color: ${data.color}">
+                    <p class="text-sm text-stone-600">${data.details}</p>
+                </div>
+            `;
+
+            // Toggle Proxemics Diagram based on type
+            const proxemicsDiv = document.getElementById('proxemics-diagram');
+            const radarContainer = document.getElementById('radar-container');
+            
+            if (type === 'crowding') {
+                proxemicsDiv.classList.remove('hidden');
+                // Optional: make chart smaller when diagram is visible
+                radarContainer.style.height = '200px'; 
+            } else {
+                proxemicsDiv.classList.add('hidden');
+                radarContainer.style.height = '350px';
+            }
+
+            // Update Chart Data
+            radarChart.data.datasets[0].data = data.chartData;
+            radarChart.data.datasets[0].borderColor = data.color;
+            radarChart.data.datasets[0].pointBackgroundColor = data.color;
+            radarChart.data.datasets[0].pointHoverBorderColor = data.color;
+            
+            // Adjust background color opacity based on hex
+            let bgRgb = hexToRgb(data.color);
+            if(bgRgb) {
+                radarChart.data.datasets[0].backgroundColor = `rgba(${bgRgb.r}, ${bgRgb.g}, ${bgRgb.b}, 0.2)`;
+            }
+
+            radarChart.update();
+        }
+
+        // Helper for chart colors
+        function hexToRgb(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        // --- Tabs Logic ---
+        function switchTab(tabId) {
+            // Reset buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-accentgreen', 'border-accentgreen', 'font-bold', 'bg-white');
+                btn.classList.add('text-stone-500', 'border-transparent', 'font-medium');
+            });
+            // Reset contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Activate chosen
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.remove('text-stone-500', 'border-transparent', 'font-medium');
+            activeBtn.classList.add('text-accentgreen', 'border-accentgreen', 'font-bold', 'bg-white');
+            
+            document.getElementById(`content-${tabId}`).classList.add('active');
+        }
+
+        // --- Proxemics Hover Logic ---
+        function showZoneInfo(text) {
+            document.getElementById('zone-info-display').innerText = text;
+        }
+
+        // --- Checklist Progress Logic ---
+        const checkboxes = document.querySelectorAll('.action-check');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+
+        checkboxes.forEach(box => {
+            box.addEventListener('change', updateProgress);
+        });
+
+        function updateProgress() {
+            const total = checkboxes.length;
+            const checked = document.querySelectorAll('.action-check:checked').length;
+            const percentage = Math.round((checked / total) * 100);
+            
+            progressBar.style.width = `${percentage}%`;
+            progressText.innerText = `${percentage}%`;
+
+            if(percentage === 100) {
+                progressText.classList.add('text-green-300');
+                progressBar.classList.add('bg-green-400');
+            } else {
+                progressText.classList.remove('text-green-300');
+                progressBar.classList.remove('bg-green-400');
+            }
+        }
+
+        // Initialize on load
+        window.onload = () => {
+            initChart();
+            updateStressor('noise'); // Initial state
+        };
+
+    </script>
+</body>
+</html>
