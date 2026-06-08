@@ -1,17 +1,18 @@
-<!DOCTYPE html>
+<!DOCTYPE h>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Guide to Sensation, Attention, & Perception</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+ 	   <link href="tooplate-inner-peace.css" rel="stylesheet">
+   <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light); color: var(--dark);
         }
         /* Removed .nav-btn.active and panel display none/block logic */
         .interactive-card {
@@ -42,10 +43,11 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="text-gray-800">
+<a href="index.html" style="position:fixed;top:16px;left:16px;z-index:9999;display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.9);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.15);text-decoration:none;color:#374151;font-size:20px;transition:background 0.2s,box-shadow 0.2s;" title="Back to Home" onmouseover="this.style.background='rgba(240,240,240,0.98)';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.9)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'">&#8592;</a>
     <!-- Chosen Palette: Warm Neutral Academia -->
     <!-- Application Structure Plan: The SPA is now a continuous scrolling document. The original thematic sections (#overview, #sensation, #attention, #perception) are preserved as distinct, well-separated content blocks. This structure was chosen to allow users to read and interact linearly, similar to an online report, while retaining the interactive elements (clicking diagram parts, expanding theory cards) for active learning. Navigation is now handled by scrolling, prioritizing simplicity and ensuring no content is missed. -->
-    <!-- Visualization & Content Choices: 
+    <!-- Visualization & Content Choices:
         - Pipeline Diagram (Overview): Report Info: Core Sensation->Attention->Perception flow. Goal: Organize/Inform. Viz: HTML/CSS diagram. Interaction: Click to show definitions. Justification: Provides an immediate mental model of the core concepts. Method: HTML/Tailwind.
         - Gestalt Principles (Perception): Report Info: Definitions of Gestalt laws. Goal: Inform/Demonstrate. Viz: Grid of canvas drawings. Interaction: Click a canvas to highlight it and display its definition. Justification: Visual principles require visual examples; canvas is ideal for simple, dynamic drawings. Method: Native Canvas API.
         - Theories of Attention (Attention): Report Info: Descriptions of selection models. Goal: Compare/Inform. Viz: Interactive cards. Interaction: Click card to expand and show details/diagram. Justification: Allows for easy side-by-side comparison of complex theories in a digestible format. Method: HTML/Tailwind + JS.
@@ -54,7 +56,9 @@
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
+
     <div id="app" class="min-h-screen flex flex-col">
+
 
         <header class="bg-white shadow-md sticky top-0 z-10">
             <nav class="container mx-auto px-6 py-3">
@@ -64,6 +68,7 @@
             </nav>
         </header>
 
+
         <main class="flex-grow container mx-auto p-4 md:p-8">
             
             <!-- Overview Panel -->
@@ -72,6 +77,7 @@
                     <h2 class="text-3xl font-bold text-gray-800 mb-2">How We Experience the World</h2>
                     <p class="text-lg text-gray-600 max-w-3xl mx-auto">This guide explores the journey from raw sensory input to meaningful understanding. Explore the core processes of Sensation, Attention, and Perception and how they work together.</p>
                 </div>
+
 
                 <div class="mb-12">
                     <h3 class="text-2xl font-semibold text-center mb-6">The Cognitive Pipeline</h3>
@@ -91,7 +97,7 @@
                             <p class="text-gray-600">Interpreting & organizing.</p>
                         </div>
                     </div>
-                    <div id="pipeline-info" class="mt-6 bg-blue-50 p-6 rounded-lg text-center min-h-[100px] flex items-center justify-center">
+                    <div id="pipeline-info" class="mt-6 bg-amber-50 p-6 rounded-lg text-center min-h-[100px] flex items-center justify-center">
                         <p class="text-gray-700">Click on a step above to learn more about it.</p>
                     </div>
                 </div>
@@ -114,7 +120,9 @@
                 </div>
             </section>
 
+
             <hr class="my-16 border-gray-300">
+
 
             <!-- Sensation Panel -->
             <section id="sensation" class="content-panel">
@@ -153,7 +161,9 @@
                 </div>
             </section>
 
+
             <hr class="my-16 border-gray-300">
+
 
             <!-- Attention Panel -->
             <section id="attention" class="content-panel">
@@ -161,6 +171,7 @@
                     <h2 class="text-3xl font-bold text-gray-800 mb-2">Attention: The Gatekeeper</h2>
                     <p class="text-lg text-gray-600 max-w-3xl mx-auto">With a flood of sensory information available, attention is the cognitive process that selects which information to focus on and process further, while filtering out distractions.</p>
                 </div>
+
 
                 <div class="bg-white p-8 rounded-lg shadow-lg">
                     <h3 class="text-2xl font-bold mb-4">Theories of Selective Attention</h3>
@@ -194,6 +205,7 @@
                     </div>
                 </div>
 
+
                  <div class="mt-12 bg-white p-8 rounded-lg shadow-lg">
                     <h3 class="text-2xl font-bold mb-4">Facets of Attention</h3>
                      <div class="grid md:grid-cols-2 gap-8">
@@ -209,7 +221,9 @@
                 </div>
             </section>
 
+
             <hr class="my-16 border-gray-300">
+
 
             <!-- Perception Panel -->
             <section id="perception" class="content-panel">
@@ -217,6 +231,7 @@
                     <h2 class="text-3xl font-bold text-gray-800 mb-2">Perception: Creating Meaning</h2>
                     <p class="text-lg text-gray-600 max-w-3xl mx-auto">Perception is the active process of organizing, interpreting, and giving meaning to sensory information. It is here that raw data is transformed into our conscious experience of the world.</p>
                 </div>
+
 
                 <div class="bg-white p-8 rounded-lg shadow-lg mb-12">
                     <h3 class="text-2xl font-bold mb-4 text-center">Gestalt Principles of Perceptual Organization</h3>
@@ -250,6 +265,7 @@
                     </div>
                 </div>
 
+
                 <div class="grid md:grid-cols-2 gap-12">
                     <div class="bg-white p-8 rounded-lg shadow-lg">
                         <h3 class="text-2xl font-bold mb-4">Depth Perception</h3>
@@ -272,6 +288,7 @@
                         </div>
                     </div>
 
+
                     <div class="bg-white p-8 rounded-lg shadow-lg">
                         <h3 class="text-2xl font-bold mb-4">Perceptual Constancy & Illusions</h3>
                         <p class="mb-4 text-gray-600">Our perception of objects remains stable even as the sensory information we receive changes. This is called perceptual constancy.</p>
@@ -286,13 +303,15 @@
                              <div class="chart-container h-48 max-h-48">
                                 <canvas id="muller-lyer-canvas"></canvas>
                              </div>
-                             <p class="text-sm text-center text-gray-500 mt-2">Which horizontal line is longer? Both are exactly the same length. The inward or outward-facing fins trick our depth perception.</p>
+                             <p class="text-sm text-center text-gray-500 mt-2">Which horizontal line is longer? Both are the same length. The fins trick our depth cues.</p>
                         </div>
                     </div>
                 </div>
 
+
             </section>
         </main>
+
 
         <footer class="bg-white mt-12 py-6 border-t">
             <div class="container mx-auto text-center text-gray-500">
@@ -300,10 +319,13 @@
             </div>
         </footer>
 
+
     </div>
+
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+
 
         const pipelineContent = {
             sensation: {
@@ -319,6 +341,7 @@
                 text: 'The brain\'s process of organizing and interpreting sensory information to give it meaning. This is a constructive process influenced by memory, expectation, and context.'
             }
         };
+
 
         const gestaltContent = {
             proximity: {
@@ -343,11 +366,13 @@
             }
         };
 
+
         const pipelineSteps = document.querySelectorAll('.pipeline-step');
         const pipelineInfo = document.getElementById('pipeline-info');
         const theoryCards = document.querySelectorAll('[data-theory]');
         const gestaltCanvases = document.querySelectorAll('.gestalt-canvas-container');
         const gestaltInfo = document.getElementById('gestalt-info');
+
 
         pipelineSteps.forEach(step => {
             step.addEventListener('click', () => {
@@ -356,6 +381,7 @@
                 pipelineInfo.innerHTML = `<h4 class="text-lg font-bold mb-2">${content.title}</h4><p class="text-gray-700">${content.text}</p>`;
             });
         });
+
 
         theoryCards.forEach(card => {
             card.addEventListener('click', () => {
@@ -373,6 +399,7 @@
                  gestaltInfo.innerHTML = `<h4 class="text-lg font-bold mb-2">${content.title}</h4><p class="text-gray-700">${content.text}</p>`;
             });
         });
+
 
         function drawGestalt() {
             const proximityCanvas = document.querySelector('[data-gestalt="proximity"] canvas');
@@ -394,6 +421,7 @@
                     }
                 }
             }
+
 
             const similarityCanvas = document.querySelector('[data-gestalt="similarity"] canvas');
             if (similarityCanvas) {
@@ -429,63 +457,38 @@
                 continuityCtx.stroke();
             }
 
+
             const closureCanvas = document.querySelector('[data-gestalt="closure"] canvas');
             if (closureCanvas) {
                 const closureCtx = closureCanvas.getContext('2d');
-                closureCtx.clearRect(0, 0, 150, 100);
                 closureCtx.strokeStyle = '#4A5568';
                 closureCtx.lineWidth = 4;
                 closureCtx.beginPath();
-                const centerX = 75;
-                const centerY = 50;
-                const radius = 40;
-                // Draw an arc that leaves a gap from 0.2*PI to 1.8*PI
-                closureCtx.arc(centerX, centerY, radius, Math.PI * 0.2, Math.PI * 1.8);
+                closureCtx.arc(75, 50, 30, 0.4, Math.PI * 1.6);
                 closureCtx.stroke();
+                 closureCtx.beginPath();
+                 closureCtx.moveTo(75 + 30 * Math.cos(0.4), 50 + 30 * Math.sin(0.4));
+                 closureCtx.lineTo(95, 20);
+                 closureCtx.stroke();
             }
+
 
             const figureGroundCanvas = document.querySelector('[data-gestalt="figureground"] canvas');
             if (figureGroundCanvas) {
                 const figureGroundCtx = figureGroundCanvas.getContext('2d');
-                figureGroundCtx.clearRect(0, 0, 150, 100);
-                
-                const w = 150, h = 100;
-                const midX = w / 2;
-                
-                figureGroundCtx.fillStyle = '#1A202C'; // Dark gray/black for the faces/figure
-
-                // Draw the right face profile (filling the right half of the canvas)
+                figureGroundCtx.fillStyle = '#4A5568';
+                figureGroundCtx.fillRect(0,0,150,100);
+                figureGroundCtx.fillStyle = '#FFFFFF';
                 figureGroundCtx.beginPath();
-                figureGroundCtx.moveTo(midX, 0);
-                // Top curve (forehead)
-                figureGroundCtx.bezierCurveTo(midX + 20, 10, midX + 20, 30, midX + 15, 40);
-                // Nose curve
-                figureGroundCtx.bezierCurveTo(midX + 20, 50, midX + 15, 60, midX + 15, 70);
-                // Chin curve
-                figureGroundCtx.bezierCurveTo(midX + 10, 80, midX + 20, 90, midX, 90);
-                figureGroundCtx.lineTo(midX, h);
-                figureGroundCtx.lineTo(w, h);
-                figureGroundCtx.lineTo(w, 0);
+                figureGroundCtx.moveTo(40, 100);
+                figureGroundCtx.bezierCurveTo(20, 50, 100, 50, 60, 0);
+                figureGroundCtx.lineTo(90,0);
+                figureGroundCtx.bezierCurveTo(130,50, 50,50, 110,100);
                 figureGroundCtx.closePath();
                 figureGroundCtx.fill();
-                
-                // Draw the left face profile (filling the left half of the canvas)
-                figureGroundCtx.beginPath();
-                figureGroundCtx.moveTo(midX, 0);
-                // Top curve (forehead) - mirrored
-                figureGroundCtx.bezierCurveTo(midX - 20, 10, midX - 20, 30, midX - 15, 40);
-                // Nose curve - mirrored
-                figureGroundCtx.bezierCurveTo(midX - 20, 50, midX - 15, 60, midX - 15, 70);
-                // Chin curve - mirrored
-                figureGroundCtx.bezierCurveTo(midX - 10, 80, midX - 20, 90, midX, 90);
-                figureGroundCtx.lineTo(midX, h);
-                figureGroundCtx.lineTo(0, h);
-                figureGroundCtx.lineTo(0, 0);
-                figureGroundCtx.closePath();
-                figureGroundCtx.fill();
-                // The white vase shape is formed by the negative space in the center
             }
         }
+
 
         function drawMullerLyer() {
              const canvas = document.getElementById('muller-lyer-canvas');
@@ -499,31 +502,32 @@
                 
                 const width = canvas.width;
                 const height = canvas.height;
-                const lineLength = width * 0.5; 
+                const lineLength = width * 0.5;
                 const y1 = height * 0.3;
                 const y2 = height * 0.7;
                 const startX = (width - lineLength) / 2;
 
-                ctx.clearRect(0, 0, width, height); 
+
+                ctx.clearRect(0, 0, width, height);
                 ctx.strokeStyle = '#1A202C';
                 ctx.lineWidth = 3;
                  
-                // Top line (Line 1)
                 ctx.beginPath();
                 ctx.moveTo(startX, y1);
                 ctx.lineTo(startX + lineLength, y1);
                 ctx.stroke();
 
-                // Bottom line (Line 2)
+
                 ctx.beginPath();
                 ctx.moveTo(startX, y2);
                 ctx.lineTo(startX + lineLength, y2);
                 ctx.stroke();
 
-                const finLength = 30; // Fin length proportional to the canvas size
+
+                const finLength = 30;
                 const angle = Math.PI / 4;
 
-                // Fins on Line 1 (Inward)
+
                 ctx.beginPath();
                 ctx.moveTo(startX, y1);
                 ctx.lineTo(startX + finLength * Math.cos(angle), y1 + finLength * Math.sin(angle));
@@ -535,7 +539,7 @@
                 ctx.lineTo(startX + lineLength - finLength * Math.cos(-angle), y1 + finLength * Math.sin(-angle));
                 ctx.stroke();
 
-                // Fins on Line 2 (Outward)
+
                 ctx.beginPath();
                 ctx.moveTo(startX, y2);
                 ctx.lineTo(startX - finLength * Math.cos(angle), y2 - finLength * Math.sin(angle));
@@ -548,9 +552,12 @@
                 ctx.stroke();
              }
 
+
              resizeCanvas();
              window.addEventListener('resize', resizeCanvas);
         }
+
+
 
 
         drawGestalt();
