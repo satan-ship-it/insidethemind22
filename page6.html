@@ -1,730 +1,774 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Guide to Human Memory</title>
-    <!-- Chosen Palette: Warm Neutrals (Stone, Amber) -->
-    <!-- Application Structure Plan: Changed from tabbed SPA to a single-page continuous scroll application. This structure allows users to flow through the content naturally, from foundation to application, while the sticky scroll-spy navigation bar provides context and allows for quick jumps. This is more exploratory than the previous segmented approach. -->
-    <!-- Visualization & Content Choices: 1. (New) Working Memory: HTML/Tailwind diagram replacing a bullet list. Goal: Organize. Interaction: None (static diagram). Justification: Visually shows the central role of the Executive. 2. (New) Levels of Processing: HTML/Tailwind vertical step diagram. Goal: Show Change. Interaction: None. Justification: Clearly visualizes the concept of "depth". 3. (New) Interference: HTML/Tailwind side-by-side flow diagram. Goal: Compare. Interaction: None. Justification: Makes the abstract proactive/retroactive concept concrete. 4. (New) Keyword Method: HTML/Tailwind step diagram. Goal: Inform. Justification: Visualizes the mnemonic process. All other visualizations (3-col, hierarchy, chart) remain as they are highly effective. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-        .nav-btn {
-            @apply px-4 py-2 rounded-md text-sm font-medium text-stone-600 hover:bg-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all cursor-pointer;
-        }
-        .nav-btn.active {
-            @apply bg-amber-100 text-amber-800 shadow-inner;
-        }
-        /* Updated sub-nav-btn to be an outline pill button */
-        .sub-nav-btn {
-            @apply px-4 py-2 rounded-full text-sm font-medium text-stone-700 bg-transparent border-2 border-stone-400 hover:bg-stone-100 transition-all cursor-pointer;
-        }
-        /* Updated active state to be a filled pill */
-        .sub-nav-btn.active {
-            @apply bg-amber-600 text-white border-amber-600 shadow-md;
-        }
-        .memory-node {
-            @apply cursor-pointer p-3 rounded-lg hover:bg-stone-50 font-medium bg-white border border-stone-200 shadow-sm hover:shadow-md transition-all mb-2;
-        }
-        .memory-node.active {
-            @apply bg-amber-100 text-amber-800 border-amber-400 shadow-lg ring-2 ring-amber-300/50;
-        }
-        .memory-children {
-            @apply pl-4 border-l-2 border-stone-200 ml-2;
-        }
-        /* Updated mnemonic-btn to be an outline pill button */
-        .mnemonic-btn {
-            @apply w-full text-left p-4 rounded-full bg-transparent shadow-sm border-2 border-amber-500 text-amber-700 hover:bg-amber-50 hover:shadow-md transition-all cursor-pointer font-medium;
-        }
-        /* Updated active state to be a filled pill */
-        .mnemonic-btn.active {
-            @apply bg-amber-600 text-white border-amber-700 shadow-lg ring-2 ring-amber-300/50;
-        }
-        .diagram-box {
-            @apply border-2 border-amber-500 rounded-lg p-4 shadow-sm text-center;
-        }
-        .diagram-arrow {
-            @apply text-2xl font-bold text-amber-600 text-center;
-        }
-    </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Interactive Guide to Human Memory</title>
+   <!-- Chosen Palette: Warm Neutrals (Stone, Amber) -->
+   <!-- Application Structure Plan: Changed from tabbed SPA to a single-page continuous scroll application. This structure allows users to flow through the content naturally, from foundation to application, while the sticky scroll-spy navigation bar provides context and allows for quick jumps. This is more exploratory than the previous segmented approach. -->
+   <!-- Visualization & Content Choices: 1. (New) Working Memory: HTML/Tailwind diagram replacing a bullet list. Goal: Organize. Interaction: None (static diagram). Justification: Visually shows the central role of the Executive. 2. (New) Levels of Processing: HTML/Tailwind vertical step diagram. Goal: Show Change. Interaction: None. Justification: Clearly visualizes the concept of "depth". 3. (New) Interference: HTML/Tailwind side-by-side flow diagram. Goal: Compare. Interaction: None. Justification: Makes the abstract proactive/retroactive concept concrete. 4. (New) Keyword Method: HTML/Tailwind step diagram. Goal: Inform. Justification: Visualizes the mnemonic process. All other visualizations (3-col, hierarchy, chart) remain as they are highly effective. -->
+   <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <style>
+       body {
+           font-family: 'Inter', sans-serif;
+       }
+       .chart-container {
+           position: relative;
+           width: 100%;
+           max-width: 600px;
+           margin-left: auto;
+           margin-right: auto;
+           height: 300px;
+           max-height: 400px;
+       }
+       @media (min-width: 768px) {
+           .chart-container {
+               height: 350px;
+           }
+       }
+       .nav-btn {
+           @apply px-4 py-2 rounded-md text-sm font-medium text-stone-600 hover:bg-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all cursor-pointer;
+       }
+       .nav-btn.active {
+           @apply bg-amber-100 text-amber-800 shadow-inner;
+       }
+       /* Updated sub-nav-btn to be an outline pill button */
+       .sub-nav-btn {
+           @apply px-4 py-2 rounded-full text-sm font-medium text-stone-700 bg-transparent border-2 border-stone-400 hover:bg-stone-100 transition-all cursor-pointer;
+       }
+       /* Updated active state to be a filled pill */
+       .sub-nav-btn.active {
+           @apply bg-amber-600 text-white border-amber-600 shadow-md;
+       }
+       .memory-node {
+           @apply cursor-pointer p-3 rounded-lg hover:bg-stone-50 font-medium bg-white border border-stone-200 shadow-sm hover:shadow-md transition-all mb-2;
+       }
+       .memory-node.active {
+           @apply bg-amber-100 text-amber-800 border-amber-400 shadow-lg ring-2 ring-amber-300/50;
+       }
+       .memory-children {
+           @apply pl-4 border-l-2 border-stone-200 ml-2;
+       }
+       /* Updated mnemonic-btn to be an outline pill button */
+       .mnemonic-btn {
+           @apply w-full text-left p-4 rounded-full bg-transparent shadow-sm border-2 border-amber-500 text-amber-700 hover:bg-amber-50 hover:shadow-md transition-all cursor-pointer font-medium;
+       }
+       /* Updated active state to be a filled pill */
+       .mnemonic-btn.active {
+           @apply bg-amber-600 text-white border-amber-700 shadow-lg ring-2 ring-amber-300/50;
+       }
+       .diagram-box {
+           @apply border-2 border-amber-500 rounded-lg p-4 shadow-sm text-center;
+       }
+       .diagram-arrow {
+           @apply text-2xl font-bold text-amber-600 text-center;
+       }
+   </style>
 </head>
 <body class="bg-stone-50 text-stone-800 antialiased">
-
-    <header id="main-header" class="bg-white shadow-sm sticky top-0 z-10">
-        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <h1 class="text-xl font-bold text-amber-700">The Architecture of Memory</h1>
-                <div class="hidden sm:flex sm:space-x-2">
-                    <button class="nav-btn active" data-scroll-to="home-content">Home</button>
-                    <button class="nav-btn" data-scroll-to="models-content">Models of Memory</button>
-                    <button class="nav-btn" data-scroll-to="types-content">Types of Memory</button>
-                    <button class="nav-btn" data-scroll-to="forgetting-content">Forgetting & Flaws</button>
-                    <button class="nav-btn" data-scroll-to="enhancement-content">Enhancement</button>
-                </div>
-                <div class="sm:hidden">
-                    <select id="mobile-nav" class="rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
-                        <option value="home-content">Home</option>
-                        <option value="models-content">Models of Memory</option>
-                        <option value="types-content">Types of Memory</option>
-                        <option value="forgetting-content">Forgetting & Flaws</option>
-                        <option value="enhancement-content">Enhancement</option>
-                    </select>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <main id="content-area" class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
-
-        <!-- Home Content -->
-        <section id="home-content" class="space-y-6 pt-6" data-content>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold text-amber-700 mb-4">What is Memory?</h2>
-                <p class="text-lg text-stone-700 mb-4">
-                    This application provides an interactive exploration of human memory, based on established psychological concepts. Memory is the faculty that allows us to retain and recall information over time. It is central to nearly all cognitive processes, including perception, thinking, and problem-solving, and is fundamental to our sense of self.
-                </p>
-                <p class="text-stone-600">
-                    Psychologists study how information is committed to memory, the mechanisms by which it is retained, the reasons for its loss, and techniques for improvement. This guide breaks down these complex topics into key areas you can explore.
-                </p>
-            </div>
-
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold text-center text-amber-700 mb-6">The Three Foundational Processes</h2>
-                <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
-                    All information must pass through three interrelated stages to be successfully remembered. A failure at any stage can result in memory loss.
-                </p>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="border border-stone-200 p-6 rounded-lg bg-stone-50 hover:shadow-lg transition-shadow">
-                        <h3 class="text-xl font-semibold text-stone-800 mb-2">1. Encoding</h3>
-                        <p class="text-stone-600">
-                            The first stage where information is recorded and registered for the first time. External stimuli are received by sensory organs, converted into neural impulses, and represented in a way that the memory system can use.
-                        </p>
-                    </div>
-                    <div class="border border-stone-200 p-6 rounded-lg bg-stone-50 hover:shadow-lg transition-shadow">
-                        <h3 class="text-xl font-semibold text-stone-800 mb-2">2. Storage</h3>
-                        <p class="text-stone-600">
-                            The second stage. This is the process through which encoded information is retained and held over a period of time so that it can be put to use later.
-                        </p>
-                    </div>
-                    <div class="border border-stone-200 p-6 rounded-lg bg-stone-50 hover:shadow-lg transition-shadow">
-                        <h3 class="text-xl font-semibold text-stone-800 mb-2">3. Retrieval</h3>
-                        <p class="text-stone-600">
-                            The third stage. This refers to recovering the stored information and bringing it into awareness so it can be used for cognitive tasks like problem-solving or decision-making.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Models of Memory Content -->
-        <section id="models-content" class="space-y-6 pt-20" data-content>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold text-amber-700 mb-4">Models of Memory</h2>
-                <p class="text-stone-600">
-                    To understand how memory works, psychologists have proposed several models. These models provide a framework for how information is processed, stored, and retrieved. Select a model below to explore its structure and key concepts.
-                </p>
-            </div>
-
-            <div class="flex flex-wrap gap-2 mb-6">
-                <button class="sub-nav-btn active" data-model="stage">Stage Model</button>
-                <button class="sub-nav-btn" data-model="working">Working Memory</button>
-                <button class="sub-nav-btn" data-model="levels">Levels of Processing</button>
-            </div>
-
-            <div id="model-details-content" class="bg-white p-6 rounded-lg shadow-md min-h-[300px]">
-                <!-- Content injected by JS -->
-            </div>
-        </section>
-
-        <!-- Types of Memory Content -->
-        <section id="types-content" class="space-y-6 pt-20" data-content>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold text-amber-700 mb-4">Types of Memory</h2>
-                <p class="text-stone-600">
-                    Memory is not a single, unitary system. It is composed of distinct types, each with different functions, capacities, and durations. This section explores the hierarchical organization of memory systems. Click on an item in the hierarchy to learn more about it and to reveal its sub-types.
-                </p>
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6">
-                <div id="memory-hierarchy" class="w-full md:w-1/3 bg-stone-50 p-4 rounded-lg shadow-inner border border-stone-200">
-                    <div class="memory-node" data-key="memory">Memory Systems</div>
-                    <div class="memory-children" id="memory-children">
-                        <div class="memory-node" data-key="sensory">Sensory Memory</div>
-                        <div class="memory-node" data-key="stm">Short-Term Memory (STM)</div>
-                        <div class="memory-node" data-key="ltm">Long-Term Memory (LTM)</div>
-                        <div class="memory-children hidden" id="ltm-children">
-                            <div class="memory-node" data-key="declarative">Declarative Memory</div>
-                            <div class="memory-children hidden" id="declarative-children">
-                                <div class="memory-node" data-key="episodic">Episodic Memory</div>
-                                <div class="memory-node" data-key="semantic">Semantic Memory</div>
-                            </div>
-                            <div class="memory-node" data-key="procedural">Procedural Memory</div>
-                        </div>
-                        <div class="memory-node" data-key="implicit">Implicit Memory</div>
-                        <div class="memory-node" data-key="flashbulb">Flashbulb Memory</div>
-                    </div>
-                </div>
-                <div id="memory-type-details" class="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-stone-800 mb-2">Select a Memory Type</h3>
-                    <p class="text-stone-600">Click an item on the left to see its definition and characteristics.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Forgetting & Flaws Content -->
-        <section id="forgetting-content" class="space-y-6 pt-20" data-content>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold text-amber-700 mb-4">Forgetting & Memory Flaws</h2>
-                <p class="text-stone-600">
-                    Forgetting is the loss of stored information. The first systematic exploration of memory by Hermann Ebbinghaus revealed that forgetting happens rapidly at first and then levels off. Beyond simple decay, memory can also be distorted or fail due to interference or flawed retrieval processes.
-                </p>
-            </div>
-
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-center text-stone-800 mb-4">Ebbinghaus's Forgetting Curve</h3>
-                <p class="text-center text-stone-600 mb-6 max-w-2xl mx-auto">
-                    This chart illustrates the findings of Hermann Ebbinghaus, showing how quickly we forget new, meaningless information. The rate of forgetting is steepest in the first few hours and days.
-                </p>
-                <div class="chart-container">
-                    <canvas id="forgettingCurveChart"></canvas>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-stone-800 mb-4">Why We Forget: Theories & Flaws</h3>
-                <p class="text-stone-600 mb-6">
-                    Forgetting isn't just about time. Other factors, like interference from other memories or even the way a question is asked, can cause memory failure or distortion. Select a topic to learn more.
-                </p>
-                <div class="flex flex-wrap gap-2 mb-6">
-                    <button class="sub-nav-btn active" data-flaw="interference">Interference</button>
-                    <button class="sub-nav-btn" data-flaw="retrieval">Retrieval Failure</button>
-                    <button class="sub-nav-btn" data-flaw="eyewitness">Eyewitness Flaws</button>
-                    <button class="sub-nav-btn" data-flaw="false">False Memory</button>
-                </div>
-                <div id="flaw-details-content" class="min-h-[200px] p-4 bg-stone-50 rounded-lg">
-                    <!-- Content injected by JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Enhancement Content -->
-        <section id="enhancement-content" class="space-y-6 pt-20" data-content>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold text-amber-700 mb-4">Memory Enhancement Strategies</h2>
-                <p class="text-stone-600">
-                    Given that memory is a constructive process and subject to flaws, psychologists have developed strategies, known as mnemonics, to improve it. These techniques help organize information in a way that makes it easier to encode, store, and retrieve. Select a strategy from the list to see how it works.
-                </p>
-            </div>
-            
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="w-full md:w-1/3 space-y-3">
-                    <h3 class="text-lg font-semibold text-stone-800 mb-2">Choose a Technique:</h3>
-                    <button class="mnemonic-btn" data-mnemonic="processing">Deep Processing</button>
-                    <button class="mnemonic-btn" data-mnemonic="keyword">Keyword Method</button>
-                    <button class="mnemonic-btn" data-mnemonic="loci">Method of Loci</button>
-                    <button class="mnemonic-btn" data-mnemonic="chunking">Chunking</button>
-                    <button class="mnemonic-btn" data-mnemonic="firstletter">First Letter Technique</button>
-                    <button class="mnemonic-btn" data-mnemonic="pqrst">PQRST Method</button>
-                </div>
-                <div id="mnemonic-details" class="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold text-stone-800 mb-2">Select a Mnemonic</h3>
-                    <p class="text-stone-600">Click an item on the left to learn how to use that memory strategy.</p>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="text-center py-6 mt-8 text-stone-500 text-sm">
-        <p>An interactive exploration of the concepts of human memory.</p>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            const modelData = {
-                stage: {
-                    title: 'The Stage Model (Atkinson and Shiffrin, 1968)',
-                    content: `
-                        <h3 class="text-xl font-semibold text-stone-800 mb-4">The Stage Model</h3>
-                        <p class="text-stone-600 mb-6">This influential model proposed that memory consists of three distinct, sequential stores. Information must pass through each store to be remembered long-term.</p>
-                        <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 p-4 text-center">
-                            <div class="diagram-box w-48">
-                                <h4 class="font-bold">Sensory Memory</h4>
-                                <p class="text-sm">Large capacity<br>Duration: < 1 sec</p>
-                            </div>
-                            <div class="diagram-arrow">&rarr;</div>
-                            <div class="diagram-box w-48 relative">
-                                <h4 class="font-bold">Short-Term Memory (STM)</h4>
-                                <p class="text-sm">Capacity: 7±2 chunks<br>Duration: < 30 sec</p>
-                                <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm text-stone-600">Maintenance Rehearsal ↺</span>
-                            </div>
-                            <div class="diagram-arrow">&rarr;</div>
-                            <div class="diagram-box w-48">
-                                <h4 class="font-bold">Long-Term Memory (LTM)</h4>
-                                <p class="text-sm">Unlimited capacity<br>Duration: Lifetime</p>
-                            </div>
-                        </div>
-                        <p class="text-stone-600 mt-12"><strong>Control Processes</strong> like <strong>Selective Attention</strong> (decides what enters STM from Sensory) and <strong>Elaborative Rehearsal</strong> (moves info from STM to LTM by linking it to existing knowledge) regulate the flow of information.</p>
-                    `
-                },
-                working: {
-                    title: 'Working Memory (Baddeley, 1986)',
-                    content: `
-                        <h3 class="text-xl font-semibold text-stone-800 mb-4">Working Memory (Infographic)</h3>
-                        <p class="text-stone-600 mb-6">This model views short-term memory not as a passive store, but as an active "workbench" with multiple components managed by a Central Executive.</p>
-                        <div class="w-full p-4">
-                            <div class="flex flex-col items-center">
-                                <div class="grid grid-cols-2 gap-4 w-full max-w-md">
-                                    <div class="diagram-box bg-blue-50 border-blue-400">
-                                        <h4 class="font-bold text-blue-800">Phonological Loop</h4>
-                                        <p class="text-sm text-blue-700">(Sounds, Language)</p>
-                                    </div>
-                                    <div class="diagram-box bg-green-50 border-green-400">
-                                        <h4 class="font-bold text-green-800">Visuospatial Sketchpad</h4>
-                                        <p class="text-sm text-green-700">(Visual, Spatial Data)</p>
-                                    </div>
-                                </div>
-                                <div class="flex justify-center">
-                                    <div class="diagram-arrow transform -rotate-45 -mr-12">↳</div>
-                                    <div class="diagram-arrow transform rotate-45 -ml-12">↲</div>
-                                </div>
-                                <div class="diagram-box bg-amber-50 border-amber-500 w-full max-w-xs my-2">
-                                    <h4 class="font-bold text-amber-800">Central Executive</h4>
-                                    <p class="text-sm text-amber-700">(The "Manager" / Allocates Attention)</p>
-                                </div>
-                                <div class="diagram-arrow transform rotate-90">↕</div>
-                                <div class="diagram-box bg-stone-50 border-stone-400 w-full max-w-xs">
-                                    <h4 class="font-bold text-stone-800">Long-Term Memory</h4>
-                                    <p class="text-sm text-stone-700">(Integrates & Retrieves)</p>
-                                </div>
-                            </div>
-                        </div>
-                    `
-                },
-                levels: {
-                    title: 'Levels of Processing (Craik & Lockhart, 1972)',
-                    content: `
-                        <h3 class="text-xl font-semibold text-stone-800 mb-4">Levels of Processing (Infographic)</h3>
-                        <p class="text-stone-600 mb-6">This view argues that retention is determined by the *depth* of processing. Deeper analysis leads to stronger memories.</p>
-                        <div class="space-y-4 max-w-md mx-auto">
-                            <div class="p-4 border border-red-200 bg-red-50 rounded-lg shadow-sm">
-                                <strong class="text-red-700">1. Shallow Level (Structural)</strong>
-                                <p class="text-red-600 text-sm">Processing based on physical features (e.g., "The word is in capital letters.").</p>
-                                <p class="font-bold text-center mt-2">Leads to fragile, short-term memory.</p>
-                            </div>
-                            <div class="diagram-arrow text-center text-xl">↓</div>
-                            <div class="p-4 border border-yellow-200 bg-yellow-50 rounded-lg shadow-sm">
-                                <strong class="text-yellow-700">2. Intermediate Level (Phonetic)</strong>
-                                <p class="text-yellow-600 text-sm">Processing based on sound (e.g., "The word rhymes with 'cat'.").</p>
-                                <p class="font-bold text-center mt-2">Leads to slightly better memory.</p>
-                            </div>
-                            <div class="diagram-arrow text-center text-xl">↓</div>
-                            <div class="p-4 border border-green-200 bg-green-50 rounded-lg shadow-sm">
-                                <strong class="text-green-700">3. Deepest Level (Semantic)</strong>
-                                <p class="text-green-600 text-sm">Processing based on meaning (e.g., "This word means a type of animal. I have a pet cat.").</p>
-                                <p class="font-bold text-center mt-2">Leads to strong, long-term retention.</p>
-                            </div>
-                        </div>
-                    `
-                }
-            };
-
-            const memoryTypeData = {
-                memory: { title: 'Memory Systems', description: 'Memory is composed of multiple interacting systems, broadly divided by duration and content.' },
-                sensory: { title: 'Sensory Memory', description: 'The briefest form of memory. It acts as a register for all incoming sensory information (e.g., iconic memory for sight, echoic for sound) but decays in less than a second unless attended to.' },
-                stm: { title: 'Short-Term Memory (STM)', description: 'A memory store with a limited capacity (approx. 7±2 chunks) and a short duration (less than 30 seconds) without rehearsal. It holds information currently in awareness.' },
-                ltm: { title: 'Long-Term Memory (LTM)', description: 'The permanent and limitless storehouse of memory. Information is stored here primarily based on meaning (semantically) and can last a lifetime. Forgetting is often a failure of retrieval, not storage.' },
-                declarative: { title: 'Declarative Memory', description: 'A type of LTM that holds information pertaining to facts, names, and dates (also known as "explicit memory"). These are memories that can be consciously recalled and verbally described.' },
-                procedural: { title: 'Procedural Memory', description: 'A type of LTM (also "nondeclarative") for skills and procedures (e.g., how to ride a bike or play an instrument). These memories are retrieved automatically and are difficult to describe verbally.' },
-                episodic: { title: 'Episodic Memory', description: 'A sub-type of Declarative Memory. It contains biographical details and personal life experiences. These memories are "dated" (tied to a specific time and place) and often emotional.' },
-                semantic: { title: 'Semantic Memory', description: 'A sub-type of Declarative Memory. This is the memory of general awareness and knowledge, including concepts, facts, and rules of logic (e.g., knowing that Paris is the capital of France). It is not dated.' },
-                implicit: { title: 'Implicit Memory', description: 'Memory that remains outside a person\'s conscious awareness but still influences behavior. Procedural memory is a type of implicit memory. We are not aware a memory exists, but it affects us.' },
-                flashbulb: { title: 'Flashbulb Memory', description: 'Highly detailed, vivid memories of events that are very arousing or surprising (e.g., where you were on 9/11). They feel like a "photo" frozen in memory, though their accuracy can still be debated.' }
-            };
-
-            const flawData = {
-                interference: {
-                    title: 'Forgetting due to Interference (Infographic)',
-                    content: `
-                        <h4 class="text-lg font-semibold text-stone-800 mb-4">Forgetting due to Interference</h4>
-                        <p class="text-stone-600 mb-6">This theory suggests forgetting is caused by competition between different sets of stored information. Old and new memories get mixed up.</p>
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="border border-red-300 bg-red-50 p-4 rounded-lg">
-                                <h5 class="font-bold text-red-700 text-lg mb-2">Proactive Interference (Forward-moving)</h5>
-                                <p class="text-red-600 mb-4">When <strong>old</strong> learning interferes with recalling <strong>new</strong> learning.</p>
-                                <div class="space-y-2">
-                                    <div class="p-2 border border-red-400 rounded bg-white">1. Learn <strong>Old Password</strong></div>
-                                    <div class="diagram-arrow text-xl text-red-500">↓</div>
-                                    <div class="p-2 border border-red-400 rounded bg-white">2. Learn <strong>New Password</strong></div>
-                                    <div class="diagram-arrow text-xl text-red-500">↓</div>
-                                    <div class="p-2 border border-red-400 rounded bg-red-100">3. Try to recall <strong>New Password</strong>... but you keep remembering the <strong>Old</strong> one!</div>
-                                </div>
-                            </div>
-                            <div class="border border-blue-300 bg-blue-50 p-4 rounded-lg">
-                                <h5 class="font-bold text-blue-700 text-lg mb-2">Retroactive Interference (Backward-moving)</h5>
-                                <p class="text-blue-600 mb-4">When <strong>new</strong> learning interferes with recalling <strong>old</strong> learning.</p>
-                                <div class="space-y-2">
-                                    <div class="p-2 border border-blue-400 rounded bg-white">1. Learn <strong>Spanish</strong> vocab</div>
-                                    <div class="diagram-arrow text-xl text-blue-500">↓</div>
-                                    <div class="p-2 border border-blue-400 rounded bg-white">2. Learn <strong>French</strong> vocab</div>
-                                    <div class="diagram-arrow text-xl text-blue-500">↓</div>
-                                    <div class="p-2 border border-blue-400 rounded bg-blue-100">3. Try to recall <strong>Spanish</strong>... but the new <strong>French</strong> words get in the way!</div>
-                                </div>
-                            </div>
-                        </div>
-                    `
-                },
-                retrieval: {
-                    title: 'Forgetting due to Retrieval Failure',
-                    content: `
-                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Forgetting due to Retrieval Failure</h4>
-                        <p class="text-stone-600">This type of forgetting occurs when the information is still stored in LTM, but it becomes inaccessible. This is often due to the absence of appropriate <strong>Retrieval Cues</strong> at the time of recall.</p>
-                        <p class="text-stone-600 mt-2">Retrieval cues are aids (like category names, the physical context of learning, or the emotional state you were in) that help recover stored information. This is why you might remember something later when you're "back in the context" where you learned it.</p>
-                    `
-                },
-                eyewitness: {
-                    title: 'Eyewitness Memory Flaws',
-                    content: `
-                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Eyewitness Memory Flaws</h4>
-                        <p class="text-stone-600">Eyewitness testimony is highly susceptible to flaws. Memory is a constructive process, not a perfect recording. Experiments by Loftus showed that:</p>
-                        <ul class="list-disc list-inside space-y-2 text-stone-600">
-                            <li><strong>Leading Questions</strong> can alter an eyewitness's memory. For example, asking "How fast were the cars going when they <strong>smashed</strong>?" results in higher speed estimates than asking "when they <strong>contacted</strong>?".</li>
-                            <li><strong>Post-event information</strong> can overwrite or distort the original encoding of the event.</li>
-                            <li><strong>Strong emotions</strong> during a traumatic event can overwhelm attention, preventing detailed encoding in the first place.</li>
-                        </ul>
-                    `
-                },
-                false: {
-                    title: 'False Memory',
-                    content: `
-                        <h4 class="text-lg font-semibold text-stone-800 mb-2">False Memory</h4>
-                        <p class="text-stone-600">Memory can be induced or implanted, often through the powerful imagination of events that never actually took place. This is sometimes called "imagination inflation."</p>
-                        <p class="text-stone-600 mt-2">Simply visualizing and imagining an event as real can cause a person to later rate that event as having a high likelihood of actually occurring in their life, even if it never did. This shows how memory can be highly malleable.</p>
-                    `
-                }
-            };
-
-            const mnemonicData = {
-                processing: {
-                    title: 'Engage in Deep Level Processing',
-                    content: `
-                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Engage in Deep Level Processing</h4>
-                        <p class="text-stone-600">This is one of the most effective strategies. Instead of rote memorization (shallow processing), focus on the *meaning* of the information (semantic processing).</p>
-                        <ul class="list-disc list-inside space-y-2 text-stone-600 mt-2">
-                            <li>Ask "why" questions about the material.</li>
-                            <li>Consider its meaning and how it relates to things you already know.</li>
-                            <li>Try to explain the concept in your own words to someone else.</li>
-                        </ul>
-                        <p class="text-stone-600 mt-2">This creates more connections and retrieval cues, making the memory stronger.</p>
-                    `
-                },
-                keyword: {
-                    title: 'The Keyword Method (Infographic)',
-                    content: `
-                        <h4 class="text-lg font-semibold text-stone-800 mb-2">The Keyword Method</h4>
-                        <p class="text-stone-600 mb-4">This image-based mnemonic is very effective for learning foreign language vocabulary.</p>
-                        <p class="text-stone-600 mb-4"><strong>Example:</strong> To remember the Spanish word <strong>Pato</strong> (which means "duck").</p>
-                        <div class="space-y-3">
-                            <div class="p-3 border border-stone-300 rounded-lg bg-white">
-                                <span class="font-bold text-lg">1. Foreign Word:</span> "Pato"
-                            </div>
-                            <div class="diagram-arrow text-xl text-stone-500">↓</div>
-                            <div class="p-3 border border-stone-300 rounded-lg bg-white">
-                                <span class="font-bold text-lg">2. Keyword (sounds like):</span> "Pot"
-                            </div>
-                            <div class="diagram-arrow text-xl text-stone-500">↓</div>
-                            <div class="p-3 border border-amber-400 rounded-lg bg-amber-50 text-center">
-                                <span class="font-bold text-lg text-amber-800">3. Create Vivid Image:</span>
-                                <p class="text-amber-700">Imagine a <strong>duck</strong> with a <strong>pot</strong> on its head.</p>
-                            </div>
-                            <div class="diagram-arrow text-xl text-stone-500">↓</div>
-                            <div class="p-3 border border-green-400 rounded-lg bg-green-50">
-                                <span class="font-bold text-lg text-green-800">4. Link Meaning:</span> "Pato" = "Duck"
-                            </div>
-                        </div>
-                    `
-                },
-                loci: {
-                    title: 'The Method of Loci',
-                    content: `
-                        <h4 class="text-lg font-semibold text-stone-800 mb-2">The Method of Loci</h4>
-                        <p class="text-stone-600">This is an excellent strategy for remembering items in a specific order (serial recall).</p>
-                        <ol class="list-decimal list-inside space-y-2 text-stone-600 mt-2">
-                            <li>Think of a well-known physical route or series of locations (loci), such as the rooms in your house or your walk to school.</li>
-                            <li>Mentally "place" the items you need to remember, one by one, in each of these locations in sequence.</li>
-                            <li>To recall the list, you mentally "walk" the route, retrieving the item associated with each location.</li>
-                        </ol>
-                    `
-                },
-                chunking: {
-                    title: 'Chunking',
-                    content: `
-                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Chunking</h4>
-                        <p class="text-stone-600">This organizational mnemonic helps expand the capacity of Short-Term Memory (which is normally 7±2 items).</p>
-                        <p class="text-stone-600 mt-2">Chunking involves combining several smaller units into larger, more meaningful chunks. By discovering an organizational principle, you reduce the number of items you have to remember.</p>
-                        <p class="text-stone-600 mt-2"><strong>Example:</strong> Remembering the number string <strong>194719492004</strong> is hard. But if you "chunk" it into <strong>1947, 1949, 2004</strong> (three meaningful years), it becomes much easier to hold in STM.</p>
-                    `
-                },
-                firstletter: {
-                    title: 'First Letter Technique',
-                    content: `
-                        <h4 class="text-lg font-semibold text-stone-800 mb-2">First Letter Technique</h4>
-                        <p class="text-stone-600">This is a simple organizational mnemonic for remembering lists.</p>
-                        <p class="text-stone-600 mt-2">You take the first letter of each word you need to remember and arrange them to form another word or a sentence (an acronym or acrostic).</p>
-                        <p class="text-stone-600 mt-2"><strong>Example:</strong> To remember the colors of the rainbow (Red, Orange, Yellow, Green, Blue, Indigo, Violet), you can use the name <strong>VIBGYOR</strong> (in reverse) or the sentence <strong>"Richard Of York Gave Battle In Vain"</strong>.</p>
-                    `
-                },
-                pqrst: {
-                    title: 'PQRST Method',
-                    content: `
-                        <h4 class="text-lg font-semibold text-stone-800 mb-2">PQRST Method</h4>
-                        <p class="text-stone-600">This is a comprehensive strategy for studying and remembering textbook material. It stands for:</p>
-                        <ul class="list-disc list-inside space-y-2 text-stone-600 mt-2">
-                            <li><strong>Preview:</strong> Give a cursory look at the chapter contents to get an overview.</li>
-                            <li><strong>Question:</strong> Raise questions and seek answers from the lesson. Turn headings into questions.</li>
-                            <li><strong>Read:</strong> Read the material actively, looking for the answers to the questions you raised.</li>
-                            <li><strong>Self-recitation:</strong> After reading a section, try to rewrite or state what you have read in your own words.</li>
-                            <li><strong>Test:</strong> At the end, assess how much you have understood and can recall.</li>
-                        </ul>
-                    `
-                }
-            };
-
-            const navButtons = document.querySelectorAll('.nav-btn');
-            const mobileNav = document.getElementById('mobile-nav');
-            const header = document.getElementById('main-header');
-            const contentSections = document.querySelectorAll('[data-content]');
-            let forgettingChart = null;
-
-            function scrollToSection(sectionId) {
-                const section = document.getElementById(sectionId);
-                if (!section) return;
-
-                const headerHeight = header.offsetHeight;
-                const sectionTop = section.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-
-                window.scrollTo({
-                    top: sectionTop,
-                    behavior: 'smooth'
-                });
-            }
-
-            navButtons.forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const sectionId = button.dataset.scrollTo;
-                    scrollToSection(sectionId);
-                });
-            });
-
-            mobileNav.addEventListener('change', (e) => {
-                scrollToSection(e.target.value);
-            });
-
-            function updateActiveNav() {
-                const headerHeight = header.offsetHeight;
-                let currentSectionId = '';
-
-                contentSections.forEach(section => {
-                    const sectionTop = section.getBoundingClientRect().top;
-                    if (sectionTop < (headerHeight + 60)) { 
-                        currentSectionId = section.id;
-                    }
-                });
-                
-                if (window.innerHeight + Math.ceil(window.pageYOffset) >= document.body.offsetHeight - 50) {
-                    currentSectionId = contentSections[contentSections.length - 1].id;
-                } else if (window.pageYOffset < 100) {
-                    currentSectionId = contentSections[0].id;
-                }
-
-                if (currentSectionId) {
-                    navButtons.forEach(btn => {
-                        btn.classList.remove('active');
-                        if (btn.dataset.scrollTo === currentSectionId) {
-                            btn.classList.add('active');
-                        }
-                    });
-                    
-                    if (mobileNav.value !== currentSectionId) {
-                        mobileNav.value = currentSectionId;
-                    }
-                }
-            }
-
-            window.addEventListener('scroll', updateActiveNav);
-
-            function renderForgettingChart() {
-                const ctx = document.getElementById('forgettingCurveChart').getContext('2d');
-                if (forgettingChart) {
-                    forgettingChart.destroy();
-                }
-                forgettingChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Initial (20 min)', '1 hour', '9 hours', '1 day', '2 days', '6 days', '31 days'],
-                        datasets: [{
-                            label: 'Retention (%)',
-                            data: [58.2, 44.2, 35.8, 33.7, 27.8, 25.4, 21.1],
-                            borderColor: 'rgb(217, 119, 6)',
-                            backgroundColor: 'rgba(217, 119, 6, 0.1)',
-                            fill: true,
-                            tension: 0.1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100,
-                                title: {
-                                    display: true,
-                                    text: 'Percentage Retained'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Time After Learning'
-                                }
-                            }
-                        },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.dataset.label}: ${context.parsed.y}%`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            
-            let chartRendered = false;
-            const chartSection = document.getElementById('forgetting-content');
-            
-            const chartObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !chartRendered) {
-                        renderForgettingChart();
-                        chartRendered = true;
-                        chartObserver.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            chartObserver.observe(chartSection);
+<a href="index.html" style="position:fixed;top:16px;left:16px;z-index:9999;display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.9);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.15);text-decoration:none;color:#374151;font-size:20px;transition:background 0.2s,box-shadow 0.2s;" title="Back to Home" onmouseover="this.style.background='rgba(240,240,240,0.98)';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.9)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'">&#8592;</a>
 
 
-            const modelNav = document.getElementById('models-content');
-            const modelDetails = document.getElementById('model-details-content');
-            modelNav.addEventListener('click', (e) => {
-                if (e.target.matches('[data-model]')) {
-                    const modelKey = e.target.dataset.model;
-                    modelDetails.innerHTML = modelData[modelKey].content;
-                    
-                    modelNav.querySelectorAll('[data-model]').forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
-                }
-            });
+   <header id="main-header" class="bg-white shadow-sm sticky top-0 z-10">
+       <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+           <div class="flex justify-between items-center h-16">
+               <h1 class="text-xl font-bold text-amber-700">The Architecture of Memory</h1>
+               <div class="hidden sm:flex sm:space-x-2">
+                   <button class="nav-btn active" data-scroll-to="home-content">Home</button>
+                   <button class="nav-btn" data-scroll-to="models-content">Models of Memory</button>
+                   <button class="nav-btn" data-scroll-to="types-content">Types of Memory</button>
+                   <button class="nav-btn" data-scroll-to="forgetting-content">Forgetting & Flaws</button>
+                   <button class="nav-btn" data-scroll-to="enhancement-content">Enhancement</button>
+               </div>
+               <div class="sm:hidden">
+                   <select id="mobile-nav" class="rounded-md border-stone-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                       <option value="home-content">Home</option>
+                       <option value="models-content">Models of Memory</option>
+                       <option value="types-content">Types of Memory</option>
+                       <option value="forgetting-content">Forgetting & Flaws</option>
+                       <option value="enhancement-content">Enhancement</option>
+                   </select>
+               </div>
+           </div>
+       </nav>
+   </header>
 
-            const hierarchy = document.getElementById('memory-hierarchy');
-            const typeDetails = document.getElementById('memory-type-details');
-            hierarchy.addEventListener('click', (e) => {
-                const node = e.target.closest('.memory-node');
-                if (node) {
-                    const key = node.dataset.key;
-                    const data = memoryTypeData[key];
-                    
-                    typeDetails.innerHTML = `
-                        <h3 class="text-xl font-semibold text-stone-800 mb-2">${data.title}</h3>
-                        <p class="text-stone-600">${data.description}</p>
-                    `;
-                    
-                    hierarchy.querySelectorAll('.memory-node').forEach(n => n.classList.remove('active'));
-                    node.classList.add('active');
 
-                    const childrenId = `${key}-children`;
-                    const childrenEl = document.getElementById(childrenId);
-                    if (childrenEl) {
-                        childrenEl.classList.toggle('hidden');
-                    }
-                }
-            });
+   <main id="content-area" class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
 
-            const flawNav = document.getElementById('forgetting-content');
-            const flawDetails = document.getElementById('flaw-details-content');
-            flawNav.addEventListener('click', (e) => {
-                if (e.target.matches('[data-flaw]')) {
-                    const flawKey = e.target.dataset.flaw;
-                    flawDetails.innerHTML = flawData[flawKey].content;
-                    
-                    flawNav.querySelectorAll('[data-flaw]').forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
-                }
-            });
 
-            const mnemonicNav = document.getElementById('enhancement-content');
-            const mnemonicDetails = document.getElementById('mnemonic-details');
-            mnemonicNav.addEventListener('click', (e) => {
-                if (e.target.matches('[data-mnemonic]')) {
-                    const mnemonicKey = e.target.dataset.mnemonic;
-                    mnemonicDetails.innerHTML = `
-                        <h3 class="text-xl font-semibold text-stone-800 mb-2">${mnemonicData[mnemonicKey].title}</h3>
-                        <div class="text-stone-600">${mnemonicData[mnemonicKey].content}</div>
-                    `;
-                    
-                    mnemonicNav.querySelectorAll('[data-mnemonic]').forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
-                }
-            });
+       <!-- Home Content -->
+       <section id="home-content" class="space-y-6 pt-6" data-content>
+           <div class="bg-white p-6 rounded-lg shadow-md">
+               <h2 class="text-2xl font-bold text-amber-700 mb-4">What is Memory?</h2>
+               <p class="text-lg text-stone-700 mb-4">
+                   This application provides an interactive exploration of human memory, based on established psychological concepts. Memory is the faculty that allows us to retain and recall information over time. It is central to nearly all cognitive processes, including perception, thinking, and problem-solving, and is fundamental to our sense of self.
+               </p>
+               <p class="text-stone-600">
+                   Psychologists study how information is committed to memory, the mechanisms by which it is retained, the reasons for its loss, and techniques for improvement. This guide breaks down these complex topics into key areas you can explore.
+               </p>
+           </div>
 
-            function initializeContent() {
-                const initialModelBtn = document.querySelector('[data-model="stage"]');
-                initialModelBtn.classList.add('active');
-                modelDetails.innerHTML = modelData.stage.content;
 
-                const initialFlawBtn = document.querySelector('[data-flaw="interference"]');
-                initialFlawBtn.classList.add('active');
-                flawDetails.innerHTML = flawData.interference.content;
+           <div class="bg-white p-6 rounded-lg shadow-md">
+               <h2 class="text-2xl font-bold text-center text-amber-700 mb-6">The Three Foundational Processes</h2>
+               <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
+                   All information must pass through three interrelated stages to be successfully remembered. A failure at any stage can result in memory loss.
+               </p>
+               <div class="grid md:grid-cols-3 gap-6">
+                   <div class="border border-stone-200 p-6 rounded-lg bg-stone-50 hover:shadow-lg transition-shadow">
+                       <h3 class="text-xl font-semibold text-stone-800 mb-2">1. Encoding</h3>
+                       <p class="text-stone-600">
+                           The first stage where information is recorded and registered for the first time. External stimuli are received by sensory organs, converted into neural impulses, and represented in a way that the memory system can use.
+                       </p>
+                   </div>
+                   <div class="border border-stone-200 p-6 rounded-lg bg-stone-50 hover:shadow-lg transition-shadow">
+                       <h3 class="text-xl font-semibold text-stone-800 mb-2">2. Storage</h3>
+                       <p class="text-stone-600">
+                           The second stage. This is the process through which encoded information is retained and held over a period of time so that it can be put to use later.
+                       </p>
+                   </div>
+                   <div class="border border-stone-200 p-6 rounded-lg bg-stone-50 hover:shadow-lg transition-shadow">
+                       <h3 class="text-xl font-semibold text-stone-800 mb-2">3. Retrieval</h3>
+                       <p class="text-stone-600">
+                           The third stage. This refers to recovering the stored information and bringing it into awareness so it can be used for cognitive tasks like problem-solving or decision-making.
+                       </p>
+                   </div>
+               </div>
+           </div>
+       </section>
 
-                const initialMnemonicBtn = document.querySelector('[data-mnemonic="processing"]');
-                initialMnemonicBtn.classList.add('active');
-                mnemonicDetails.innerHTML = `
-                    <h3 class="text-xl font-semibold text-stone-800 mb-2">${mnemonicData.processing.title}</h3>
-                    <div class="text-stone-600">${mnemonicData.processing.content}</div>
-                `;
-                
-                updateActiveNav();
-            }
 
-            initializeContent();
+       <!-- Models of Memory Content -->
+       <section id="models-content" class="space-y-6 pt-20" data-content>
+           <div class="bg-white p-6 rounded-lg shadow-md">
+               <h2 class="text-2xl font-bold text-amber-700 mb-4">Models of Memory</h2>
+               <p class="text-stone-600">
+                   To understand how memory works, psychologists have proposed several models. These models provide a framework for how information is processed, stored, and retrieved. Select a model below to explore its structure and key concepts.
+               </p>
+           </div>
 
-        });
-    </script>
+
+           <div class="flex flex-wrap gap-2 mb-6">
+               <button class="sub-nav-btn active" data-model="stage">Stage Model</button>
+               <button class="sub-nav-btn" data-model="working">Working Memory</button>
+               <button class="sub-nav-btn" data-model="levels">Levels of Processing</button>
+           </div>
+
+
+           <div id="model-details-content" class="bg-white p-6 rounded-lg shadow-md min-h-[300px]">
+               <!-- Content injected by JS -->
+           </div>
+       </section>
+
+
+       <!-- Types of Memory Content -->
+       <section id="types-content" class="space-y-6 pt-20" data-content>
+           <div class="bg-white p-6 rounded-lg shadow-md">
+               <h2 class="text-2xl font-bold text-amber-700 mb-4">Types of Memory</h2>
+               <p class="text-stone-600">
+                   Memory is not a single, unitary system. It is composed of distinct types, each with different functions, capacities, and durations. This section explores the hierarchical organization of memory systems. Click on an item in the hierarchy to learn more about it and to reveal its sub-types.
+               </p>
+           </div>
+
+
+           <div class="flex flex-col md:flex-row gap-6">
+               <div id="memory-hierarchy" class="w-full md:w-1/3 bg-stone-50 p-4 rounded-lg shadow-inner border border-stone-200">
+                   <div class="memory-node" data-key="memory">Memory Systems</div>
+                   <div class="memory-children" id="memory-children">
+                       <div class="memory-node" data-key="sensory">Sensory Memory</div>
+                       <div class="memory-node" data-key="stm">Short-Term Memory (STM)</div>
+                       <div class="memory-node" data-key="ltm">Long-Term Memory (LTM)</div>
+                       <div class="memory-children hidden" id="ltm-children">
+                           <div class="memory-node" data-key="declarative">Declarative Memory</div>
+                           <div class="memory-children hidden" id="declarative-children">
+                               <div class="memory-node" data-key="episodic">Episodic Memory</div>
+                               <div class="memory-node" data-key="semantic">Semantic Memory</div>
+                           </div>
+                           <div class="memory-node" data-key="procedural">Procedural Memory</div>
+                       </div>
+                       <div class="memory-node" data-key="implicit">Implicit Memory</div>
+                       <div class="memory-node" data-key="flashbulb">Flashbulb Memory</div>
+                   </div>
+               </div>
+               <div id="memory-type-details" class="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-md">
+                   <h3 class="text-xl font-semibold text-stone-800 mb-2">Select a Memory Type</h3>
+                   <p class="text-stone-600">Click an item on the left to see its definition and characteristics.</p>
+               </div>
+           </div>
+       </section>
+
+
+       <!-- Forgetting & Flaws Content -->
+       <section id="forgetting-content" class="space-y-6 pt-20" data-content>
+           <div class="bg-white p-6 rounded-lg shadow-md">
+               <h2 class="text-2xl font-bold text-amber-700 mb-4">Forgetting & Memory Flaws</h2>
+               <p class="text-stone-600">
+                   Forgetting is the loss of stored information. The first systematic exploration of memory by Hermann Ebbinghaus revealed that forgetting happens rapidly at first and then levels off. Beyond simple decay, memory can also be distorted or fail due to interference or flawed retrieval processes.
+               </p>
+           </div>
+
+
+           <div class="bg-white p-6 rounded-lg shadow-md">
+               <h3 class="text-xl font-bold text-center text-stone-800 mb-4">Ebbinghaus's Forgetting Curve</h3>
+               <p class="text-center text-stone-600 mb-6 max-w-2xl mx-auto">
+                   This chart illustrates the findings of Hermann Ebbinghaus, showing how quickly we forget new, meaningless information. The rate of forgetting is steepest in the first few hours and days.
+               </p>
+               <div class="chart-container">
+                   <canvas id="forgettingCurveChart"></canvas>
+               </div>
+           </div>
+
+
+           <div class="bg-white p-6 rounded-lg shadow-md">
+               <h3 class="text-xl font-bold text-stone-800 mb-4">Why We Forget: Theories & Flaws</h3>
+               <p class="text-stone-600 mb-6">
+                   Forgetting isn't just about time. Other factors, like interference from other memories or even the way a question is asked, can cause memory failure or distortion. Select a topic to learn more.
+               </p>
+               <div class="flex flex-wrap gap-2 mb-6">
+                   <button class="sub-nav-btn active" data-flaw="interference">Interference</button>
+                   <button class="sub-nav-btn" data-flaw="retrieval">Retrieval Failure</button>
+                   <button class="sub-nav-btn" data-flaw="eyewitness">Eyewitness Flaws</button>
+                   <button class="sub-nav-btn" data-flaw="false">False Memory</button>
+               </div>
+               <div id="flaw-details-content" class="min-h-[200px] p-4 bg-stone-50 rounded-lg">
+                   <!-- Content injected by JS -->
+               </div>
+           </div>
+       </section>
+
+
+       <!-- Enhancement Content -->
+       <section id="enhancement-content" class="space-y-6 pt-20" data-content>
+           <div class="bg-white p-6 rounded-lg shadow-md">
+               <h2 class="text-2xl font-bold text-amber-700 mb-4">Memory Enhancement Strategies</h2>
+               <p class="text-stone-600">
+                   Given that memory is a constructive process and subject to flaws, psychologists have developed strategies, known as mnemonics, to improve it. These techniques help organize information in a way that makes it easier to encode, store, and retrieve. Select a strategy from the list to see how it works.
+               </p>
+           </div>
+          
+           <div class="flex flex-col md:flex-row gap-6">
+               <div class="w-full md:w-1/3 space-y-3">
+                   <h3 class="text-lg font-semibold text-stone-800 mb-2">Choose a Technique:</h3>
+                   <button class="mnemonic-btn" data-mnemonic="processing">Deep Processing</button>
+                   <button class="mnemonic-btn" data-mnemonic="keyword">Keyword Method</button>
+                   <button class="mnemonic-btn" data-mnemonic="loci">Method of Loci</button>
+                   <button class="mnemonic-btn" data-mnemonic="chunking">Chunking</button>
+                   <button class="mnemonic-btn" data-mnemonic="firstletter">First Letter Technique</button>
+                   <button class="mnemonic-btn" data-mnemonic="pqrst">PQRST Method</button>
+               </div>
+               <div id="mnemonic-details" class="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-md">
+                   <h3 class="text-xl font-semibold text-stone-800 mb-2">Select a Mnemonic</h3>
+                   <p class="text-stone-600">Click an item on the left to learn how to use that memory strategy.</p>
+               </div>
+           </div>
+       </section>
+
+
+   </main>
+
+
+   <footer class="text-center py-6 mt-8 text-stone-500 text-sm">
+       <p>An interactive exploration of the concepts of human memory.</p>
+   </footer>
+
+
+   <script>
+       document.addEventListener('DOMContentLoaded', () => {
+
+
+           const modelData = {
+               stage: {
+                   title: 'The Stage Model (Atkinson and Shiffrin, 1968)',
+                   content: `
+                       <h3 class="text-xl font-semibold text-stone-800 mb-4">The Stage Model</h3>
+                       <p class="text-stone-600 mb-6">This influential model proposed that memory consists of three distinct, sequential stores. Information must pass through each store to be remembered long-term.</p>
+                       <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 p-4 text-center">
+                           <div class="diagram-box w-48">
+                               <h4 class="font-bold">Sensory Memory</h4>
+                               <p class="text-sm">Large capacity<br>Duration: < 1 sec</p>
+                           </div>
+                           <div class="diagram-arrow">&rarr;</div>
+                           <div class="diagram-box w-48 relative">
+                               <h4 class="font-bold">Short-Term Memory (STM)</h4>
+                               <p class="text-sm">Capacity: 7±2 chunks<br>Duration: < 30 sec</p>
+                               <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm text-stone-600">Maintenance Rehearsal ↺</span>
+                           </div>
+                           <div class="diagram-arrow">&rarr;</div>
+                           <div class="diagram-box w-48">
+                               <h4 class="font-bold">Long-Term Memory (LTM)</h4>
+                               <p class="text-sm">Unlimited capacity<br>Duration: Lifetime</p>
+                           </div>
+                       </div>
+                       <p class="text-stone-600 mt-12"><strong>Control Processes</strong> like <strong>Selective Attention</strong> (decides what enters STM from Sensory) and <strong>Elaborative Rehearsal</strong> (moves info from STM to LTM by linking it to existing knowledge) regulate the flow of information.</p>
+                   `
+               },
+               working: {
+                   title: 'Working Memory (Baddeley, 1986)',
+                   content: `
+                       <h3 class="text-xl font-semibold text-stone-800 mb-4">Working Memory (Infographic)</h3>
+                       <p class="text-stone-600 mb-6">This model views short-term memory not as a passive store, but as an active "workbench" with multiple components managed by a Central Executive.</p>
+                       <div class="w-full p-4">
+                           <div class="flex flex-col items-center">
+                               <div class="grid grid-cols-2 gap-4 w-full max-w-md">
+                                   <div class="diagram-box bg-amber-50 border-amber-400">
+                                       <h4 class="font-bold text-amber-900">Phonological Loop</h4>
+                                       <p class="text-sm text-amber-800">(Sounds, Language)</p>
+                                   </div>
+                                   <div class="diagram-box bg-green-50 border-green-400">
+                                       <h4 class="font-bold text-green-800">Visuospatial Sketchpad</h4>
+                                       <p class="text-sm text-green-700">(Visual, Spatial Data)</p>
+                                   </div>
+                               </div>
+                               <div class="flex justify-center">
+                                   <div class="diagram-arrow transform -rotate-45 -mr-12">↳</div>
+                                   <div class="diagram-arrow transform rotate-45 -ml-12">↲</div>
+                               </div>
+                               <div class="diagram-box bg-amber-50 border-amber-500 w-full max-w-xs my-2">
+                                   <h4 class="font-bold text-amber-800">Central Executive</h4>
+                                   <p class="text-sm text-amber-700">(The "Manager" / Allocates Attention)</p>
+                               </div>
+                               <div class="diagram-arrow transform rotate-90">↕</div>
+                               <div class="diagram-box bg-stone-50 border-stone-400 w-full max-w-xs">
+                                   <h4 class="font-bold text-stone-800">Long-Term Memory</h4>
+                                   <p class="text-sm text-stone-700">(Integrates & Retrieves)</p>
+                               </div>
+                           </div>
+                       </div>
+                   `
+               },
+               levels: {
+                   title: 'Levels of Processing (Craik & Lockhart, 1972)',
+                   content: `
+                       <h3 class="text-xl font-semibold text-stone-800 mb-4">Levels of Processing (Infographic)</h3>
+                       <p class="text-stone-600 mb-6">This view argues that retention is determined by the *depth* of processing. Deeper analysis leads to stronger memories.</p>
+                       <div class="space-y-4 max-w-md mx-auto">
+                           <div class="p-4 border border-red-200 bg-red-50 rounded-lg shadow-sm">
+                               <strong class="text-red-700">1. Shallow Level (Structural)</strong>
+                               <p class="text-red-600 text-sm">Processing based on physical features (e.g., "The word is in capital letters.").</p>
+                               <p class="font-bold text-center mt-2">Leads to fragile, short-term memory.</p>
+                           </div>
+                           <div class="diagram-arrow text-center text-xl">↓</div>
+                           <div class="p-4 border border-yellow-200 bg-yellow-50 rounded-lg shadow-sm">
+                               <strong class="text-yellow-700">2. Intermediate Level (Phonetic)</strong>
+                               <p class="text-yellow-600 text-sm">Processing based on sound (e.g., "The word rhymes with 'cat'.").</p>
+                               <p class="font-bold text-center mt-2">Leads to slightly better memory.</p>
+                           </div>
+                           <div class="diagram-arrow text-center text-xl">↓</div>
+                           <div class="p-4 border border-green-200 bg-green-50 rounded-lg shadow-sm">
+                               <strong class="text-green-700">3. Deepest Level (Semantic)</strong>
+                               <p class="text-green-600 text-sm">Processing based on meaning (e.g., "This word means a type of animal. I have a pet cat.").</p>
+                               <p class="font-bold text-center mt-2">Leads to strong, long-term retention.</p>
+                           </div>
+                       </div>
+                   `
+               }
+           };
+
+
+           const memoryTypeData = {
+               memory: { title: 'Memory Systems', description: 'Memory is composed of multiple interacting systems, broadly divided by duration and content.' },
+               sensory: { title: 'Sensory Memory', description: 'The briefest form of memory. It acts as a register for all incoming sensory information (e.g., iconic memory for sight, echoic for sound) but decays in less than a second unless attended to.' },
+               stm: { title: 'Short-Term Memory (STM)', description: 'A memory store with a limited capacity (approx. 7±2 chunks) and a short duration (less than 30 seconds) without rehearsal. It holds information currently in awareness.' },
+               ltm: { title: 'Long-Term Memory (LTM)', description: 'The permanent and limitless storehouse of memory. Information is stored here primarily based on meaning (semantically) and can last a lifetime. Forgetting is often a failure of retrieval, not storage.' },
+               declarative: { title: 'Declarative Memory', description: 'A type of LTM that holds information pertaining to facts, names, and dates (also known as "explicit memory"). These are memories that can be consciously recalled and verbally described.' },
+               procedural: { title: 'Procedural Memory', description: 'A type of LTM (also "nondeclarative") for skills and procedures (e.g., how to ride a bike or play an instrument). These memories are retrieved automatically and are difficult to describe verbally.' },
+               episodic: { title: 'Episodic Memory', description: 'A sub-type of Declarative Memory. It contains biographical details and personal life experiences. These memories are "dated" (tied to a specific time and place) and often emotional.' },
+               semantic: { title: 'Semantic Memory', description: 'A sub-type of Declarative Memory. This is the memory of general awareness and knowledge, including concepts, facts, and rules of logic (e.g., knowing that Paris is the capital of France). It is not dated.' },
+               implicit: { title: 'Implicit Memory', description: 'Memory that remains outside a person\'s conscious awareness but still influences behavior. Procedural memory is a type of implicit memory. We are not aware a memory exists, but it affects us.' },
+               flashbulb: { title: 'Flashbulb Memory', description: 'Highly detailed, vivid memories of events that are very arousing or surprising (e.g., where you were on 9/11). They feel like a "photo" frozen in memory, though their accuracy can still be debated.' }
+           };
+
+
+           const flawData = {
+               interference: {
+                   title: 'Forgetting due to Interference (Infographic)',
+                   content: `
+                       <h4 class="text-lg font-semibold text-stone-800 mb-4">Forgetting due to Interference</h4>
+                       <p class="text-stone-600 mb-6">This theory suggests forgetting is caused by competition between different sets of stored information. Old and new memories get mixed up.</p>
+                       <div class="grid md:grid-cols-2 gap-6">
+                           <div class="border border-red-300 bg-red-50 p-4 rounded-lg">
+                               <h5 class="font-bold text-red-700 text-lg mb-2">Proactive Interference (Forward-moving)</h5>
+                               <p class="text-red-600 mb-4">When <strong>old</strong> learning interferes with recalling <strong>new</strong> learning.</p>
+                               <div class="space-y-2">
+                                   <div class="p-2 border border-red-400 rounded bg-white">1. Learn <strong>Old Password</strong></div>
+                                   <div class="diagram-arrow text-xl text-red-500">↓</div>
+                                   <div class="p-2 border border-red-400 rounded bg-white">2. Learn <strong>New Password</strong></div>
+                                   <div class="diagram-arrow text-xl text-red-500">↓</div>
+                                   <div class="p-2 border border-red-400 rounded bg-red-100">3. Try to recall <strong>New Password</strong>... but you keep remembering the <strong>Old</strong> one!</div>
+                               </div>
+                           </div>
+                           <div class="border border-amber-300 bg-amber-50 p-4 rounded-lg">
+                               <h5 class="font-bold text-amber-800 text-lg mb-2">Retroactive Interference (Backward-moving)</h5>
+                               <p class="text-amber-700 mb-4">When <strong>new</strong> learning interferes with recalling <strong>old</strong> learning.</p>
+                               <div class="space-y-2">
+                                   <div class="p-2 border border-amber-400 rounded bg-white">1. Learn <strong>Spanish</strong> vocab</div>
+                                   <div class="diagram-arrow text-xl text-amber-600">↓</div>
+                                   <div class="p-2 border border-amber-400 rounded bg-white">2. Learn <strong>French</strong> vocab</div>
+                                   <div class="diagram-arrow text-xl text-amber-600">↓</div>
+                                   <div class="p-2 border border-amber-400 rounded bg-amber-100">3. Try to recall <strong>Spanish</strong>... but the new <strong>French</strong> words get in the way!</div>
+                               </div>
+                           </div>
+                       </div>
+                   `
+               },
+               retrieval: {
+                   title: 'Forgetting due to Retrieval Failure',
+                   content: `
+                       <h4 class="text-lg font-semibold text-stone-800 mb-2">Forgetting due to Retrieval Failure</h4>
+                       <p class="text-stone-600">This type of forgetting occurs when the information is still stored in LTM, but it becomes inaccessible. This is often due to the absence of appropriate <strong>Retrieval Cues</strong> at the time of recall.</p>
+                       <p class="text-stone-600 mt-2">Retrieval cues are aids (like category names, the physical context of learning, or the emotional state you were in) that help recover stored information. This is why you might remember something later when you're "back in the context" where you learned it.</p>
+                   `
+               },
+               eyewitness: {
+                   title: 'Eyewitness Memory Flaws',
+                   content: `
+                       <h4 class="text-lg font-semibold text-stone-800 mb-2">Eyewitness Memory Flaws</h4>
+                       <p class="text-stone-600">Eyewitness testimony is highly susceptible to flaws. Memory is a constructive process, not a perfect recording. Experiments by Loftus showed that:</p>
+                       <ul class="list-disc list-inside space-y-2 text-stone-600">
+                           <li><strong>Leading Questions</strong> can alter an eyewitness's memory. For example, asking "How fast were the cars going when they <strong>smashed</strong>?" results in higher speed estimates than asking "when they <strong>contacted</strong>?".</li>
+                           <li><strong>Post-event information</strong> can overwrite or distort the original encoding of the event.</li>
+                           <li><strong>Strong emotions</strong> during a traumatic event can overwhelm attention, preventing detailed encoding in the first place.</li>
+                       </ul>
+                   `
+               },
+               false: {
+                   title: 'False Memory',
+                   content: `
+                       <h4 class="text-lg font-semibold text-stone-800 mb-2">False Memory</h4>
+                       <p class="text-stone-600">Memory can be induced or implanted, often through the powerful imagination of events that never actually took place. This is sometimes called "imagination inflation."</p>
+                       <p class="text-stone-600 mt-2">Simply visualizing and imagining an event as real can cause a person to later rate that event as having a high likelihood of actually occurring in their life, even if it never did. This shows how memory can be highly malleable.</p>
+                   `
+               }
+           };
+
+
+           const mnemonicData = {
+               processing: {
+                   title: 'Engage in Deep Level Processing',
+                   content: `
+                       <h4 class="text-lg font-semibold text-stone-800 mb-2">Engage in Deep Level Processing</h4>
+                       <p class="text-stone-600">This is one of the most effective strategies. Instead of rote memorization (shallow processing), focus on the *meaning* of the information (semantic processing).</p>
+                       <ul class="list-disc list-inside space-y-2 text-stone-600 mt-2">
+                           <li>Ask "why" questions about the material.</li>
+                           <li>Consider its meaning and how it relates to things you already know.</li>
+                           <li>Try to explain the concept in your own words to someone else.</li>
+                       </ul>
+                       <p class="text-stone-600 mt-2">This creates more connections and retrieval cues, making the memory stronger.</p>
+                   `
+               },
+               keyword: {
+                   title: 'The Keyword Method (Infographic)',
+                   content: `
+                       <h4 class="text-lg font-semibold text-stone-800 mb-2">The Keyword Method</h4>
+                       <p class="text-stone-600 mb-4">This image-based mnemonic is very effective for learning foreign language vocabulary.</p>
+                       <p class="text-stone-600 mb-4"><strong>Example:</strong> To remember the Spanish word <strong>Pato</strong> (which means "duck").</p>
+                       <div class="space-y-3">
+                           <div class="p-3 border border-stone-300 rounded-lg bg-white">
+                               <span class="font-bold text-lg">1. Foreign Word:</span> "Pato"
+                           </div>
+                           <div class="diagram-arrow text-xl text-stone-500">↓</div>
+                           <div class="p-3 border border-stone-300 rounded-lg bg-white">
+                               <span class="font-bold text-lg">2. Keyword (sounds like):</span> "Pot"
+                           </div>
+                           <div class="diagram-arrow text-xl text-stone-500">↓</div>
+                           <div class="p-3 border border-amber-400 rounded-lg bg-amber-50 text-center">
+                               <span class="font-bold text-lg text-amber-800">3. Create Vivid Image:</span>
+                               <p class="text-amber-700">Imagine a <strong>duck</strong> with a <strong>pot</strong> on its head.</p>
+                           </div>
+                           <div class="diagram-arrow text-xl text-stone-500">↓</div>
+                           <div class="p-3 border border-green-400 rounded-lg bg-green-50">
+                               <span class="font-bold text-lg text-green-800">4. Link Meaning:</span> "Pato" = "Duck"
+                           </div>
+                       </div>
+                   `
+               },
+               loci: {
+                   title: 'The Method of Loci',
+                   content: `
+                       <h4 class="text-lg font-semibold text-stone-800 mb-2">The Method of Loci</h4>
+                       <p class="text-stone-600">This is an excellent strategy for remembering items in a specific order (serial recall).</p>
+                       <ol class="list-decimal list-inside space-y-2 text-stone-600 mt-2">
+                           <li>Think of a well-known physical route or series of locations (loci), such as the rooms in your house or your walk to school.</li>
+                           <li>Mentally "place" the items you need to remember, one by one, in each of these locations in sequence.</li>
+                           <li>To recall the list, you mentally "walk" the route, retrieving the item associated with each location.</li>
+                       </ol>
+                   `
+               },
+               chunking: {
+                   title: 'Chunking',
+                   content: `
+                       <h4 class="text-lg font-semibold text-stone-800 mb-2">Chunking</h4>
+                       <p class="text-stone-600">This organizational mnemonic helps expand the capacity of Short-Term Memory (which is normally 7±2 items).</p>
+                       <p class="text-stone-600 mt-2">Chunking involves combining several smaller units into larger, more meaningful chunks. By discovering an organizational principle, you reduce the number of items you have to remember.</p>
+                       <p class="text-stone-600 mt-2"><strong>Example:</strong> Remembering the number string <strong>194719492004</strong> is hard. But if you "chunk" it into <strong>1947, 1949, 2004</strong> (three meaningful years), it becomes much easier to hold in STM.</p>
+                   `
+               },
+               firstletter: {
+                   title: 'First Letter Technique',
+                   content: `
+                       <h4 class="text-lg font-semibold text-stone-800 mb-2">First Letter Technique</h4>
+                       <p class="text-stone-600">This is a simple organizational mnemonic for remembering lists.</p>
+                       <p class="text-stone-600 mt-2">You take the first letter of each word you need to remember and arrange them to form another word or a sentence (an acronym or acrostic).</p>
+                       <p class="text-stone-600 mt-2"><strong>Example:</strong> To remember the colors of the rainbow (Red, Orange, Yellow, Green, Blue, Indigo, Violet), you can use the name <strong>VIBGYOR</strong> (in reverse) or the sentence <strong>"Richard Of York Gave Battle In Vain"</strong>.</p>
+                   `
+               },
+               pqrst: {
+                   title: 'PQRST Method',
+                   content: `
+                       <h4 class="text-lg font-semibold text-stone-800 mb-2">PQRST Method</h4>
+                       <p class="text-stone-600">This is a comprehensive strategy for studying and remembering textbook material. It stands for:</p>
+                       <ul class="list-disc list-inside space-y-2 text-stone-600 mt-2">
+                           <li><strong>Preview:</strong> Give a cursory look at the chapter contents to get an overview.</li>
+                           <li><strong>Question:</strong> Raise questions and seek answers from the lesson. Turn headings into questions.</li>
+                           <li><strong>Read:</strong> Read the material actively, looking for the answers to the questions you raised.</li>
+                           <li><strong>Self-recitation:</strong> After reading a section, try to rewrite or state what you have read in your own words.</li>
+                           <li><strong>Test:</strong> At the end, assess how much you have understood and can recall.</li>
+                       </ul>
+                   `
+               }
+           };
+
+
+           const navButtons = document.querySelectorAll('.nav-btn');
+           const mobileNav = document.getElementById('mobile-nav');
+           const header = document.getElementById('main-header');
+           const contentSections = document.querySelectorAll('[data-content]');
+           let forgettingChart = null;
+
+
+           function scrollToSection(sectionId) {
+               const section = document.getElementById(sectionId);
+               if (!section) return;
+
+
+               const headerHeight = header.offsetHeight;
+               const sectionTop = section.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+
+
+               window.scrollTo({
+                   top: sectionTop,
+                   behavior: 'smooth'
+               });
+           }
+
+
+           navButtons.forEach(button => {
+               button.addEventListener('click', (e) => {
+                   e.preventDefault();
+                   const sectionId = button.dataset.scrollTo;
+                   scrollToSection(sectionId);
+               });
+           });
+
+
+           mobileNav.addEventListener('change', (e) => {
+               scrollToSection(e.target.value);
+           });
+
+
+           function updateActiveNav() {
+               const headerHeight = header.offsetHeight;
+               let currentSectionId = '';
+
+
+               contentSections.forEach(section => {
+                   const sectionTop = section.getBoundingClientRect().top;
+                   if (sectionTop < (headerHeight + 60)) {
+                       currentSectionId = section.id;
+                   }
+               });
+              
+               if (window.innerHeight + Math.ceil(window.pageYOffset) >= document.body.offsetHeight - 50) {
+                   currentSectionId = contentSections[contentSections.length - 1].id;
+               } else if (window.pageYOffset < 100) {
+                   currentSectionId = contentSections[0].id;
+               }
+
+
+               if (currentSectionId) {
+                   navButtons.forEach(btn => {
+                       btn.classList.remove('active');
+                       if (btn.dataset.scrollTo === currentSectionId) {
+                           btn.classList.add('active');
+                       }
+                   });
+                  
+                   if (mobileNav.value !== currentSectionId) {
+                       mobileNav.value = currentSectionId;
+                   }
+               }
+           }
+
+
+           window.addEventListener('scroll', updateActiveNav);
+
+
+           function renderForgettingChart() {
+               const ctx = document.getElementById('forgettingCurveChart').getContext('2d');
+               if (forgettingChart) {
+                   forgettingChart.destroy();
+               }
+               forgettingChart = new Chart(ctx, {
+                   type: 'line',
+                   data: {
+                       labels: ['Initial (20 min)', '1 hour', '9 hours', '1 day', '2 days', '6 days', '31 days'],
+                       datasets: [{
+                           label: 'Retention (%)',
+                           data: [58.2, 44.2, 35.8, 33.7, 27.8, 25.4, 21.1],
+                           borderColor: 'rgb(217, 119, 6)',
+                           backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                           fill: true,
+                           tension: 0.1
+                       }]
+                   },
+                   options: {
+                       responsive: true,
+                       maintainAspectRatio: false,
+                       scales: {
+                           y: {
+                               beginAtZero: true,
+                               max: 100,
+                               title: {
+                                   display: true,
+                                   text: 'Percentage Retained'
+                               }
+                           },
+                           x: {
+                               title: {
+                                   display: true,
+                                   text: 'Time After Learning'
+                               }
+                           }
+                       },
+                       plugins: {
+                           tooltip: {
+                               callbacks: {
+                                   label: function(context) {
+                                       return `${context.dataset.label}: ${context.parsed.y}%`;
+                                   }
+                               }
+                           }
+                       }
+                   }
+               });
+           }
+          
+           let chartRendered = false;
+           const chartSection = document.getElementById('forgetting-content');
+          
+           const chartObserver = new IntersectionObserver((entries) => {
+               entries.forEach(entry => {
+                   if (entry.isIntersecting && !chartRendered) {
+                       renderForgettingChart();
+                       chartRendered = true;
+                       chartObserver.unobserve(entry.target);
+                   }
+               });
+           }, { threshold: 0.1 });
+
+
+           chartObserver.observe(chartSection);
+
+
+
+
+           const modelNav = document.getElementById('models-content');
+           const modelDetails = document.getElementById('model-details-content');
+           modelNav.addEventListener('click', (e) => {
+               if (e.target.matches('[data-model]')) {
+                   const modelKey = e.target.dataset.model;
+                   modelDetails.innerHTML = modelData[modelKey].content;
+                  
+                   modelNav.querySelectorAll('[data-model]').forEach(btn => btn.classList.remove('active'));
+                   e.target.classList.add('active');
+               }
+           });
+
+
+           const hierarchy = document.getElementById('memory-hierarchy');
+           const typeDetails = document.getElementById('memory-type-details');
+           hierarchy.addEventListener('click', (e) => {
+               const node = e.target.closest('.memory-node');
+               if (node) {
+                   const key = node.dataset.key;
+                   const data = memoryTypeData[key];
+                  
+                   typeDetails.innerHTML = `
+                       <h3 class="text-xl font-semibold text-stone-800 mb-2">${data.title}</h3>
+                       <p class="text-stone-600">${data.description}</p>
+                   `;
+                  
+                   hierarchy.querySelectorAll('.memory-node').forEach(n => n.classList.remove('active'));
+                   node.classList.add('active');
+
+
+                   const childrenId = `${key}-children`;
+                   const childrenEl = document.getElementById(childrenId);
+                   if (childrenEl) {
+                       childrenEl.classList.toggle('hidden');
+                   }
+               }
+           });
+
+
+           const flawNav = document.getElementById('forgetting-content');
+           const flawDetails = document.getElementById('flaw-details-content');
+           flawNav.addEventListener('click', (e) => {
+               if (e.target.matches('[data-flaw]')) {
+                   const flawKey = e.target.dataset.flaw;
+                   flawDetails.innerHTML = flawData[flawKey].content;
+                  
+                   flawNav.querySelectorAll('[data-flaw]').forEach(btn => btn.classList.remove('active'));
+                   e.target.classList.add('active');
+               }
+           });
+
+
+           const mnemonicNav = document.getElementById('enhancement-content');
+           const mnemonicDetails = document.getElementById('mnemonic-details');
+           mnemonicNav.addEventListener('click', (e) => {
+               if (e.target.matches('[data-mnemonic]')) {
+                   const mnemonicKey = e.target.dataset.mnemonic;
+                   mnemonicDetails.innerHTML = `
+                       <h3 class="text-xl font-semibold text-stone-800 mb-2">${mnemonicData[mnemonicKey].title}</h3>
+                       <div class="text-stone-600">${mnemonicData[mnemonicKey].content}</div>
+                   `;
+                  
+                   mnemonicNav.querySelectorAll('[data-mnemonic]').forEach(btn => btn.classList.remove('active'));
+                   e.target.classList.add('active');
+               }
+           });
+
+
+           function initializeContent() {
+               const initialModelBtn = document.querySelector('[data-model="stage"]');
+               initialModelBtn.classList.add('active');
+               modelDetails.innerHTML = modelData.stage.content;
+
+
+               const initialFlawBtn = document.querySelector('[data-flaw="interference"]');
+               initialFlawBtn.classList.add('active');
+               flawDetails.innerHTML = flawData.interference.content;
+
+
+               const initialMnemonicBtn = document.querySelector('[data-mnemonic="processing"]');
+               initialMnemonicBtn.classList.add('active');
+               mnemonicDetails.innerHTML = `
+                   <h3 class="text-xl font-semibold text-stone-800 mb-2">${mnemonicData.processing.title}</h3>
+                   <div class="text-stone-600">${mnemonicData.processing.content}</div>
+               `;
+              
+               updateActiveNav();
+           }
+
+
+           initializeContent();
+
+
+       });
+   </script>
 </body>
 </html>
