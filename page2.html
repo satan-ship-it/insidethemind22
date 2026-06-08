@@ -47,12 +47,12 @@
             color: #3A6B6F;
         }
         .chart-container {
-            position: relative; 
-            width: 100%; 
-            max-width: 450px; 
-            margin-left: auto; 
-            margin-right: auto; 
-            height: 300px; 
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
             max-height: 400px;
         }
         @media (min-width: 768px) {
@@ -63,6 +63,8 @@
     </style>
 </head>
 <body class="antialiased">
+<a href="index.html" style="position:fixed;top:16px;left:16px;z-index:9999;display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.9);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.15);text-decoration:none;color:#374151;font-size:20px;transition:background 0.2s,box-shadow 0.2s;" title="Back to Home" onmouseover="this.style.background='rgba(240,240,240,0.98)';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.9)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'">&#8592;</a>
+
 
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -89,6 +91,7 @@
         </div>
     </header>
 
+
     <main class="container mx-auto px-6 py-12">
         
         <!-- HOME SECTION - Anchor point for the top of the page -->
@@ -100,6 +103,7 @@
                 </p>
             </div>
         </section>
+
 
         <!-- CONCEPTS SECTION -->
         <section id="concepts" class="py-16 border-t border-gray-200">
@@ -143,6 +147,7 @@
                 </div>
             </div>
         </section>
+
 
         <!-- EVOLUTION SECTION -->
         <section id="evolution" class="py-16 border-t border-gray-200">
@@ -189,6 +194,7 @@
             </div>
         </section>
 
+
         <!-- INDIA SECTION -->
         <section id="india" class="py-16 border-t border-gray-200">
             <div class="text-center mb-12">
@@ -212,6 +218,7 @@
                             <div class="phase-label text-lg font-semibold text-gray-700">Phase 2: Post-Independence to 1960s</div>
                         </div>
                     </div>
+
 
                     <div class="phase relative flex items-center justify-start" data-phase="phase3">
                         <div class="w-1/2 pr-8 text-right">
@@ -248,7 +255,9 @@
             </div>
         </section>
 
+
     </main>
+
 
     <footer class="bg-gray-800 text-white mt-16">
         <div class="container mx-auto px-6 py-8 text-center">
@@ -257,10 +266,12 @@
         </div>
     </footer>
 
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sections = document.querySelectorAll('main > section');
             const navLinks = document.querySelectorAll('.nav-link');
+
 
             const contentData = {
                 concepts: {
@@ -304,6 +315,7 @@
                 });
             }
 
+
             function scrollToSection(targetId) {
                 const targetElement = document.getElementById(targetId);
                 if (targetElement) {
@@ -311,6 +323,7 @@
                 }
                 updateActiveLink(targetId);
             }
+
 
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -320,6 +333,7 @@
                 });
             });
 
+
             document.getElementById('mobile-menu-button').addEventListener('click', () => {
                 document.getElementById('mobile-menu').classList.toggle('hidden');
             });
@@ -327,12 +341,14 @@
             // Set up initial content/state and active link
             updateActiveLink('home');
 
+
             // Logic to update active navigation link while scrolling
             const observerOptions = {
                 root: null,
                 rootMargin: '0px',
                 threshold: 0.3 // 30% of the section must be visible to be considered active
             };
+
 
             const sectionObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -342,9 +358,12 @@
                 });
             }, observerOptions);
 
+
             sections.forEach(section => {
                 sectionObserver.observe(section);
             });
+
+
 
 
             const conceptCards = document.querySelectorAll('.concept-card');
@@ -355,6 +374,7 @@
                     conceptDetails.innerHTML = `<p class="text-gray-700 text-left">${contentData.concepts[conceptKey]}</p>`;
                 });
             });
+
 
             const tabBtns = document.querySelectorAll('.tab-btn');
             const schoolDetails = document.getElementById('school-details');
@@ -370,6 +390,7 @@
                 });
             });
             updateSchoolContent('structuralism');
+
 
             const branchBtns = document.querySelectorAll('.branch-btn');
             const branchDetails = document.getElementById('branch-details');
@@ -398,6 +419,7 @@
                 });
             });
             updatePhaseContent('phase1');
+
 
             const ctx = document.getElementById('branches-chart');
             if (ctx) {
